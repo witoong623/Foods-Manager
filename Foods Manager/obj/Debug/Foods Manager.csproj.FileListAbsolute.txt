@@ -7,3 +7,11 @@ C:\Users\alive\Documents\GitHub\Foods-Manager\Foods Manager\obj\Debug\frmMain.re
 C:\Users\alive\Documents\GitHub\Foods-Manager\Foods Manager\obj\Debug\Foods Manager.csproj.GenerateResource.Cache
 C:\Users\alive\Documents\GitHub\Foods-Manager\Foods Manager\obj\Debug\Foods Manager.exe
 C:\Users\alive\Documents\GitHub\Foods-Manager\Foods Manager\obj\Debug\Foods Manager.pdb
+C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\Foods Manager\bin\Debug\Foods Manager.exe.config
+C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\Foods Manager\obj\Debug\Foods Manager.exe
+C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\Foods Manager\obj\Debug\Foods Manager.pdb
+C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\Foods Manager\bin\Debug\Foods Manager.exe
+C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\Foods Manager\bin\Debug\Foods Manager.pdb
+C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\Foods Manager\obj\Debug\Foods Manager.csprojResolveAssemblyReference.cache
+C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\Foods Manager\obj\Debug\frmMain.resources
+C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\Foods Manager\obj\Debug\Foods Manager.csproj.GenerateResource.Cache
