@@ -277,6 +277,7 @@ public class frmMain : Form
     public static void Main()
     {
         frmMain main = new frmMain();
+        Application.EnableVisualStyles();
         Application.Run(main);
     }
 
