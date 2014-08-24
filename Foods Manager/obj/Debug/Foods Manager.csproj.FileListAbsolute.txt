@@ -15,3 +15,5 @@ C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\Foods Manager\bin\Debug\Foods 
 C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\Foods Manager\obj\Debug\Foods Manager.csprojResolveAssemblyReference.cache
 C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\Foods Manager\obj\Debug\frmMain.resources
 C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\Foods Manager\obj\Debug\Foods Manager.csproj.GenerateResource.Cache
+C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\Foods Manager\bin\Debug\MySql.Data.dll
+C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\Foods Manager\bin\Debug\System.Data.dll
