@@ -47,14 +47,21 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="clsIngredient.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="DBConnector.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="clsIngredient.resx">
+      <DependentUpon>clsIngredient.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>

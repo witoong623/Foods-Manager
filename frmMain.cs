@@ -181,6 +181,7 @@ public class frmMain : Form
             this.btnAddMaterial.TabIndex = 7;
             this.btnAddMaterial.Text = "เพิ่มวัตถุดิบ";
             this.btnAddMaterial.UseVisualStyleBackColor = true;
+            this.btnAddMaterial.Click += new System.EventHandler(this.btnAddMaterial_Click);
             // 
             // lstvMaterialsHave
             // 
@@ -291,5 +292,11 @@ public class frmMain : Form
     private void btnAddMenu_Click(object sender, EventArgs e)
     {
 
+    }
+
+    private void btnAddMaterial_Click(object sender, EventArgs e)
+    {
+        clsIngredient myIngredient = new clsIngredient();
+        myIngredient.ShowDialog();
     }
 }
