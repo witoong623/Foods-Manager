@@ -27,6 +27,8 @@ public class frmMain : Form
     private Button btnAddMenu;
     private Button btnAddMaterial;
     private GroupBox gpbMaterialsHave;
+    private StatusStrip stsStatusBar;
+    private ToolStripStatusLabel tssDBconnectStatus;
     private DBConnector myDB = new DBConnector();
 
     #region windows component
@@ -55,10 +57,13 @@ public class frmMain : Form
             this.lstvMaterialsOutOfStock = new System.Windows.Forms.ListView();
             this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cbMaterialsOut = new System.Windows.Forms.ComboBox();
+            this.stsStatusBar = new System.Windows.Forms.StatusStrip();
+            this.tssDBconnectStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.gpbFoodsCanMake.SuspendLayout();
             this.gpbFoodsCannotMake.SuspendLayout();
             this.gpbMaterialsHave.SuspendLayout();
             this.gpbMaterialsOut.SuspendLayout();
+            this.stsStatusBar.SuspendLayout();
             this.SuspendLayout();
             // 
             // gpbFoodsCanMake
@@ -256,9 +261,25 @@ public class frmMain : Form
             this.cbMaterialsOut.Size = new System.Drawing.Size(121, 21);
             this.cbMaterialsOut.TabIndex = 3;
             // 
+            // stsStatusBar
+            // 
+            this.stsStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tssDBconnectStatus});
+            this.stsStatusBar.Location = new System.Drawing.Point(0, 336);
+            this.stsStatusBar.Name = "stsStatusBar";
+            this.stsStatusBar.Size = new System.Drawing.Size(1064, 22);
+            this.stsStatusBar.TabIndex = 4;
+            this.stsStatusBar.Text = "statusStrip1";
+            // 
+            // tssDBconnectStatus
+            // 
+            this.tssDBconnectStatus.Name = "tssDBconnectStatus";
+            this.tssDBconnectStatus.Size = new System.Drawing.Size(0, 17);
+            // 
             // frmMain
             // 
-            this.ClientSize = new System.Drawing.Size(1064, 328);
+            this.ClientSize = new System.Drawing.Size(1064, 358);
+            this.Controls.Add(this.stsStatusBar);
             this.Controls.Add(this.gpbMaterialsOut);
             this.Controls.Add(this.gpbMaterialsHave);
             this.Controls.Add(this.gpbFoodsCannotMake);
@@ -270,7 +291,10 @@ public class frmMain : Form
             this.gpbFoodsCannotMake.ResumeLayout(false);
             this.gpbMaterialsHave.ResumeLayout(false);
             this.gpbMaterialsOut.ResumeLayout(false);
+            this.stsStatusBar.ResumeLayout(false);
+            this.stsStatusBar.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
     }
     #endregion windows component
@@ -283,7 +307,10 @@ public class frmMain : Form
     public frmMain()
     {
         InitializeComponent();
-        IngredientUpdate();
+        if (DBConnectStatus() == true)
+        {
+            IngredientUpdate();
+        }
     }
     public static void Main()
     {
@@ -301,7 +328,46 @@ public class frmMain : Form
     {
         clsIngredient myIngredient = new clsIngredient();
         myIngredient.ShowDialog();
+        IngredientUpdate();
     }
+
+    private string UnitTextDisplay(int unit)
+    {
+        switch (unit)
+        {
+            case 10 :
+                return "ฟอง";
+            case 11 :
+                return "กรัม";
+            case 12 :
+                return "ต้น";
+            case 13 :
+                return "หัว";
+            case 14 :
+                return "ลูก";
+            case 15 :
+                return "มัด";
+            default :
+                return "กลีบ";
+        }
+    }
+
+    private bool DBConnectStatus()
+    {
+        if (myDB.ConnectStatus == true)
+        {
+            tssDBconnectStatus.Text = "Connected to database";
+            return true;
+        }
+        else
+        {
+            tssDBconnectStatus.Text = "Cannot connect to database, please contact to administor";
+            this.Enabled = false;
+            return false;
+        }
+        stsStatusBar.Refresh();
+    }
+
     private void IngredientUpdate()
     {
         int i;
@@ -317,7 +383,7 @@ public class frmMain : Form
             {
                 sub = new ListViewItem(data[1][i]);
                 sub.SubItems.Add(data[2][i]);
-                sub.SubItems.Add(data[3][i]);
+                sub.SubItems.Add(UnitTextDisplay(int.Parse(data[3][i])));
                 lstvMaterialsInStock.Items.Add(sub);
             }
             else

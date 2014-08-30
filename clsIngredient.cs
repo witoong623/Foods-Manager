@@ -278,6 +278,7 @@ public class clsIngredient : Form
     public clsIngredient()
     {
         InitializeComponent();
+        txtIngredientName.Select();
     }
 
     //============== Helper Method ==================
