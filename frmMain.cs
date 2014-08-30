@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 public class frmMain : Form
 {
     private GroupBox gpbFoodsCanMake;
@@ -26,6 +27,7 @@ public class frmMain : Form
     private Button btnAddMenu;
     private Button btnAddMaterial;
     private GroupBox gpbMaterialsHave;
+    private DBConnector myDB = new DBConnector();
 
     #region windows component
     private void InitializeComponent()
@@ -273,7 +275,7 @@ public class frmMain : Form
     }
     #endregion windows component
 
-    void lstvFoodsCanMake_ItemActivate(object sender, EventArgs e)
+    private void lstvFoodsCanMake_ItemActivate(object sender, EventArgs e)
     {
         int id;
         ListView.SelectedListViewItemCollection itemSelected = lstvFoodsCanMake.SelectedItems;
@@ -281,6 +283,7 @@ public class frmMain : Form
     public frmMain()
     {
         InitializeComponent();
+        IngredientUpdate();
     }
     public static void Main()
     {
@@ -298,5 +301,19 @@ public class frmMain : Form
     {
         clsIngredient myIngredient = new clsIngredient();
         myIngredient.ShowDialog();
+    }
+    private void IngredientUpdate()
+    {
+        int i;
+        List<string>[] data = new List<string>[4];
+        data = myDB.IngredientSelect();
+        ListViewItem sub;
+        for (i = 0; i < data[0].Count; i++)
+        {
+            sub = new ListViewItem(data[1][i]);
+            sub.SubItems.Add(data[2][i]);
+            sub.SubItems.Add(data[3][i]);
+            lstvMaterialsHave.Items.Add(sub);
+        }
     }
 }

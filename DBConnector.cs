@@ -121,14 +121,16 @@ public class DBConnector
     /// To load player data sort be descending of score
     /// </summary>
     /// <returns>Array of string list contain name and money</returns>
-    public List<string>[] Select()
+    public List<string>[] IngredientSelect()
     {
-        string query = "SELECT * FROM player_score ORDER BY score DESC";
+        string query = "SELECT * FROM ingredient";
 
         //Create a list to store the result
-        List<string>[] list = new List<string>[2];
+        List<string>[] list = new List<string>[4];
         list[0] = new List<string>();
         list[1] = new List<string>();
+        list[2] = new List<string>();
+        list[3] = new List<string>();
 
         //Open connection
         if (this.OpenConnection() == true)
@@ -141,8 +143,10 @@ public class DBConnector
             //Read the data and store them in the list
             while (dataReader.Read())
             {
-                list[0].Add(dataReader["name"] + "");
-                list[1].Add(dataReader["score"] + "");
+                list[0].Add(dataReader["type_id"] + "");
+                list[1].Add(dataReader["ingredient_name"] + "");
+                list[2].Add(dataReader["ingredient_quantity"] + "");
+                list[3].Add(dataReader["unit_id"] + "");
             }
 
             //close Data Reader
