@@ -31,6 +31,8 @@ public class frmMain : Form
     private ToolStripStatusLabel tssDBconnectStatus;
     private DBConnector myDB = new DBConnector();
 
+    private const int ADD = 0;
+    private const int EDIT = 1;
     #region windows component
     private void InitializeComponent()
     {
@@ -326,7 +328,7 @@ public class frmMain : Form
 
     private void btnAddMaterial_Click(object sender, EventArgs e)
     {
-        clsIngredient myIngredient = new clsIngredient();
+        clsIngredient myIngredient = new clsIngredient(EDIT);
         myIngredient.ShowDialog();
         IngredientUpdate();
     }
@@ -354,18 +356,29 @@ public class frmMain : Form
 
     private bool DBConnectStatus()
     {
-        if (myDB.ConnectStatus == true)
+        try
         {
-            tssDBconnectStatus.Text = "Connected to database";
-            return true;
+            if (myDB.ConnectStatus == true)
+            {
+                tssDBconnectStatus.Text = "Connected to database";
+                return true;
+            }
+            else
+            {
+                tssDBconnectStatus.Text = "Cannot connect to database, please contact to administrator";
+                this.Enabled = false;
+                return false;
+            }
         }
-        else
+        catch(Exception ex)
         {
-            tssDBconnectStatus.Text = "Cannot connect to database, please contact to administor";
-            this.Enabled = false;
+            MessageBox.Show(ex.Message);
             return false;
         }
-        stsStatusBar.Refresh();
+        finally
+        {
+            stsStatusBar.Refresh();
+        }
     }
 
     private void IngredientUpdate()

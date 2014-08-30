@@ -4,7 +4,7 @@ using System.Windows.Forms;
 public class clsIngredient : Form
 {
     private Label label1;
-    private Label label2;
+    private Label lblQuantity;
     private TextBox txtQuantity;
     private GroupBox gbUnit;
     private RadioButton rdbGreb;
@@ -16,19 +16,24 @@ public class clsIngredient : Form
     private RadioButton rdbFong;
     private GroupBox gbType;
     private RadioButton rdbMeat;
-    private RadioButton radioButton2;
+    private RadioButton rdbFlavoring;
     private RadioButton rdbFruit;
     private RadioButton rdbVegetable;
     private TextBox txtIngredientName;
-    private Button btnAdd;
+    private Button btnSubmit;
     private Button btnClose;
+    private CheckBox cbDelete;
     private DBConnector myDB = new DBConnector();
+
+    private const int ADD = 0;
+    private const int EDIT = 1;
+
     #region windows code
     private void InitializeComponent()
     {
             this.label1 = new System.Windows.Forms.Label();
             this.txtIngredientName = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblQuantity = new System.Windows.Forms.Label();
             this.txtQuantity = new System.Windows.Forms.TextBox();
             this.gbUnit = new System.Windows.Forms.GroupBox();
             this.rdbGreb = new System.Windows.Forms.RadioButton();
@@ -39,12 +44,13 @@ public class clsIngredient : Form
             this.rdbGram = new System.Windows.Forms.RadioButton();
             this.rdbFong = new System.Windows.Forms.RadioButton();
             this.gbType = new System.Windows.Forms.GroupBox();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.rdbFlavoring = new System.Windows.Forms.RadioButton();
             this.rdbFruit = new System.Windows.Forms.RadioButton();
             this.rdbVegetable = new System.Windows.Forms.RadioButton();
             this.rdbMeat = new System.Windows.Forms.RadioButton();
-            this.btnAdd = new System.Windows.Forms.Button();
+            this.btnSubmit = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
+            this.cbDelete = new System.Windows.Forms.CheckBox();
             this.gbUnit.SuspendLayout();
             this.gbType.SuspendLayout();
             this.SuspendLayout();
@@ -66,15 +72,14 @@ public class clsIngredient : Form
             this.txtIngredientName.Size = new System.Drawing.Size(154, 20);
             this.txtIngredientName.TabIndex = 1;
             // 
-            // label2
+            // lblQuantity
             // 
-            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label2.Location = new System.Drawing.Point(12, 74);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(100, 20);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "จำนวนเริ่มต้น";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblQuantity.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lblQuantity.Location = new System.Drawing.Point(12, 74);
+            this.lblQuantity.Name = "lblQuantity";
+            this.lblQuantity.Size = new System.Drawing.Size(100, 20);
+            this.lblQuantity.TabIndex = 2;
+            this.lblQuantity.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // txtQuantity
             // 
@@ -82,7 +87,6 @@ public class clsIngredient : Form
             this.txtQuantity.Name = "txtQuantity";
             this.txtQuantity.Size = new System.Drawing.Size(154, 20);
             this.txtQuantity.TabIndex = 3;
-            this.txtQuantity.Text = "0";
             // 
             // gbUnit
             // 
@@ -174,7 +178,7 @@ public class clsIngredient : Form
             // 
             // gbType
             // 
-            this.gbType.Controls.Add(this.radioButton2);
+            this.gbType.Controls.Add(this.rdbFlavoring);
             this.gbType.Controls.Add(this.rdbFruit);
             this.gbType.Controls.Add(this.rdbVegetable);
             this.gbType.Controls.Add(this.rdbMeat);
@@ -185,16 +189,16 @@ public class clsIngredient : Form
             this.gbType.TabStop = false;
             this.gbType.Text = "ประเภท";
             // 
-            // radioButton2
+            // rdbFlavoring
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(181, 19);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(72, 17);
-            this.radioButton2.TabIndex = 10;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "เครื่องปรุง";
-            this.radioButton2.UseVisualStyleBackColor = true;
+            this.rdbFlavoring.AutoSize = true;
+            this.rdbFlavoring.Location = new System.Drawing.Point(181, 19);
+            this.rdbFlavoring.Name = "rdbFlavoring";
+            this.rdbFlavoring.Size = new System.Drawing.Size(72, 17);
+            this.rdbFlavoring.TabIndex = 10;
+            this.rdbFlavoring.TabStop = true;
+            this.rdbFlavoring.Text = "เครื่องปรุง";
+            this.rdbFlavoring.UseVisualStyleBackColor = true;
             // 
             // rdbFruit
             // 
@@ -230,19 +234,17 @@ public class clsIngredient : Form
             this.rdbMeat.Text = "เนื้อสัตว์";
             this.rdbMeat.UseVisualStyleBackColor = true;
             // 
-            // btnAdd
+            // btnSubmit
             // 
-            this.btnAdd.Location = new System.Drawing.Point(42, 270);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnAdd.TabIndex = 5;
-            this.btnAdd.Text = "เพิ่ม";
-            this.btnAdd.UseVisualStyleBackColor = true;
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            this.btnSubmit.Location = new System.Drawing.Point(42, 279);
+            this.btnSubmit.Name = "btnSubmit";
+            this.btnSubmit.Size = new System.Drawing.Size(75, 23);
+            this.btnSubmit.TabIndex = 5;
+            this.btnSubmit.UseVisualStyleBackColor = true;
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(163, 270);
+            this.btnClose.Location = new System.Drawing.Point(163, 279);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 6;
@@ -250,22 +252,33 @@ public class clsIngredient : Form
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
+            // cbDelete
+            // 
+            this.cbDelete.AutoSize = true;
+            this.cbDelete.Location = new System.Drawing.Point(101, 255);
+            this.cbDelete.Name = "cbDelete";
+            this.cbDelete.Size = new System.Drawing.Size(81, 17);
+            this.cbDelete.TabIndex = 7;
+            this.cbDelete.Text = "ลบวัตถุดิบนี้";
+            this.cbDelete.UseVisualStyleBackColor = true;
+            this.cbDelete.Visible = false;
+            // 
             // clsIngredient
             // 
-            this.ClientSize = new System.Drawing.Size(284, 305);
+            this.ClientSize = new System.Drawing.Size(284, 317);
+            this.Controls.Add(this.cbDelete);
             this.Controls.Add(this.btnClose);
-            this.Controls.Add(this.btnAdd);
+            this.Controls.Add(this.btnSubmit);
             this.Controls.Add(this.gbType);
             this.Controls.Add(this.gbUnit);
             this.Controls.Add(this.txtQuantity);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.lblQuantity);
             this.Controls.Add(this.txtIngredientName);
             this.Controls.Add(this.label1);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "clsIngredient";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "เพิ่มวัตถุดิบ";
             this.gbUnit.ResumeLayout(false);
             this.gbUnit.PerformLayout();
             this.gbType.ResumeLayout(false);
@@ -275,10 +288,30 @@ public class clsIngredient : Form
 
     }
     #endregion windows code
+
     public clsIngredient()
     {
         InitializeComponent();
-        txtIngredientName.Select();
+    }
+
+    public clsIngredient(int action):this()
+    {
+        if (action == ADD)
+        {
+            btnSubmit.Click += new System.EventHandler(this.btnAdd_Click);
+            this.Text = "เพิ่มวัตถุดิบ";
+            lblQuantity.Text = "จำนวนเริ่มต้น";
+            btnSubmit.Text = "เพิ่ม";
+            txtQuantity.Text = "0";
+        }
+        else
+        {
+            btnSubmit.Click += new System.EventHandler(this.btnEdit_Click);
+            this.Text = "แก้ไขวัตถุดิบ";
+            lblQuantity.Text = "จำนวน";
+            btnSubmit.Text = "แก้ไข";
+            cbDelete.Visible = true;
+        }
     }
 
     //============== Helper Method ==================
@@ -368,6 +401,11 @@ public class clsIngredient : Form
 
         myDB.Insert(TypeSelected(), txtIngredientName.Text, quantity, UnitSelected());
         Close();
+    }
+
+    private void btnEdit_Click(object sender, EventArgs e)
+    {
+
     }
 
     private void btnClose_Click(object sender, EventArgs e)
