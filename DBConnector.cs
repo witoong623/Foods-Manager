@@ -16,6 +16,7 @@ public class DBConnector
     private static string database;
     private static string uid;
     private static string password;
+    private static string charset;
 
     /// <summary>
     /// To Initialize about DB information such as server database id etc.
@@ -31,9 +32,10 @@ public class DBConnector
         database = "food_manager";
         uid = "root";
         password = "root";
+        charset = "utf8";
         string ConnectionString;
-        ConnectionString = "SERVER=" + server + ";" + "DATABASE=" +
-        database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+        ConnectionString = "SERVER=" + server + ";" + "DATABASE=" + database + ";" +
+        "UID=" + uid + ";" + "PASSWORD=" + password + ";" + "CHARSET=" + charset + ";";
         connection = new MySqlConnection(ConnectionString);
     }
 

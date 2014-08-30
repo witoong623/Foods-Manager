@@ -16,13 +16,13 @@ public class frmMain : Form
     private ColumnHeader columnHeader4;
     private ColumnHeader columnHeader5;
     private ComboBox cbFoodsCannotMake;
-    private ListView lstvMaterialsHave;
+    private ListView lstvMaterialsInStock;
     private ColumnHeader columnHeader6;
     private ColumnHeader columnHeader7;
     private ColumnHeader columnHeader8;
     private ComboBox cbMaterialsHave;
     private ComboBox cbMaterialsOut;
-    private ListView listView1;
+    private ListView lstvMaterialsOutOfStock;
     private ColumnHeader columnHeader9;
     private Button btnAddMenu;
     private Button btnAddMaterial;
@@ -46,13 +46,13 @@ public class frmMain : Form
             this.cbFoodsCannotMake = new System.Windows.Forms.ComboBox();
             this.gpbMaterialsHave = new System.Windows.Forms.GroupBox();
             this.btnAddMaterial = new System.Windows.Forms.Button();
-            this.lstvMaterialsHave = new System.Windows.Forms.ListView();
+            this.lstvMaterialsInStock = new System.Windows.Forms.ListView();
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cbMaterialsHave = new System.Windows.Forms.ComboBox();
             this.gpbMaterialsOut = new System.Windows.Forms.GroupBox();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.lstvMaterialsOutOfStock = new System.Windows.Forms.ListView();
             this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cbMaterialsOut = new System.Windows.Forms.ComboBox();
             this.gpbFoodsCanMake.SuspendLayout();
@@ -165,7 +165,7 @@ public class frmMain : Form
             // gpbMaterialsHave
             // 
             this.gpbMaterialsHave.Controls.Add(this.btnAddMaterial);
-            this.gpbMaterialsHave.Controls.Add(this.lstvMaterialsHave);
+            this.gpbMaterialsHave.Controls.Add(this.lstvMaterialsInStock);
             this.gpbMaterialsHave.Controls.Add(this.cbMaterialsHave);
             this.gpbMaterialsHave.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gpbMaterialsHave.Location = new System.Drawing.Point(630, 12);
@@ -185,18 +185,18 @@ public class frmMain : Form
             this.btnAddMaterial.UseVisualStyleBackColor = true;
             this.btnAddMaterial.Click += new System.EventHandler(this.btnAddMaterial_Click);
             // 
-            // lstvMaterialsHave
+            // lstvMaterialsInStock
             // 
-            this.lstvMaterialsHave.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lstvMaterialsInStock.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader6,
             this.columnHeader7,
             this.columnHeader8});
-            this.lstvMaterialsHave.Location = new System.Drawing.Point(6, 20);
-            this.lstvMaterialsHave.Name = "lstvMaterialsHave";
-            this.lstvMaterialsHave.Size = new System.Drawing.Size(238, 243);
-            this.lstvMaterialsHave.TabIndex = 5;
-            this.lstvMaterialsHave.UseCompatibleStateImageBehavior = false;
-            this.lstvMaterialsHave.View = System.Windows.Forms.View.Details;
+            this.lstvMaterialsInStock.Location = new System.Drawing.Point(6, 20);
+            this.lstvMaterialsInStock.Name = "lstvMaterialsInStock";
+            this.lstvMaterialsInStock.Size = new System.Drawing.Size(238, 243);
+            this.lstvMaterialsInStock.TabIndex = 5;
+            this.lstvMaterialsInStock.UseCompatibleStateImageBehavior = false;
+            this.lstvMaterialsInStock.View = System.Windows.Forms.View.Details;
             // 
             // columnHeader6
             // 
@@ -222,7 +222,7 @@ public class frmMain : Form
             // 
             // gpbMaterialsOut
             // 
-            this.gpbMaterialsOut.Controls.Add(this.listView1);
+            this.gpbMaterialsOut.Controls.Add(this.lstvMaterialsOutOfStock);
             this.gpbMaterialsOut.Controls.Add(this.cbMaterialsOut);
             this.gpbMaterialsOut.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gpbMaterialsOut.Location = new System.Drawing.Point(901, 12);
@@ -232,16 +232,16 @@ public class frmMain : Form
             this.gpbMaterialsOut.TabStop = false;
             this.gpbMaterialsOut.Text = "วัตถุดิบที่หมด";
             // 
-            // listView1
+            // lstvMaterialsOutOfStock
             // 
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lstvMaterialsOutOfStock.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader9});
-            this.listView1.Location = new System.Drawing.Point(6, 20);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(134, 243);
-            this.listView1.TabIndex = 4;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
+            this.lstvMaterialsOutOfStock.Location = new System.Drawing.Point(6, 20);
+            this.lstvMaterialsOutOfStock.Name = "lstvMaterialsOutOfStock";
+            this.lstvMaterialsOutOfStock.Size = new System.Drawing.Size(134, 243);
+            this.lstvMaterialsOutOfStock.TabIndex = 4;
+            this.lstvMaterialsOutOfStock.UseCompatibleStateImageBehavior = false;
+            this.lstvMaterialsOutOfStock.View = System.Windows.Forms.View.Details;
             // 
             // columnHeader9
             // 
@@ -305,15 +305,26 @@ public class frmMain : Form
     private void IngredientUpdate()
     {
         int i;
+        lstvMaterialsInStock.Items.Clear();
+        lstvMaterialsOutOfStock.Items.Clear();
         List<string>[] data = new List<string>[4];
         data = myDB.IngredientSelect();
         ListViewItem sub;
         for (i = 0; i < data[0].Count; i++)
         {
-            sub = new ListViewItem(data[1][i]);
-            sub.SubItems.Add(data[2][i]);
-            sub.SubItems.Add(data[3][i]);
-            lstvMaterialsHave.Items.Add(sub);
+            int quantity = int.Parse(data[2][i]);
+            if (quantity != 0)
+            {
+                sub = new ListViewItem(data[1][i]);
+                sub.SubItems.Add(data[2][i]);
+                sub.SubItems.Add(data[3][i]);
+                lstvMaterialsInStock.Items.Add(sub);
+            }
+            else
+            {
+                sub = new ListViewItem(data[1][i]);
+                lstvMaterialsOutOfStock.Items.Add(sub);
+            }
         }
     }
 }
