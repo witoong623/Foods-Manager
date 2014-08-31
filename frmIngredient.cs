@@ -1,7 +1,10 @@
 ﻿using System;
 ﻿using System.Drawing;
 using System.Windows.Forms;
-public class clsIngredient : Form
+/// <summary>
+/// This class use to display window form and manage about ingredint
+/// </summary>
+public class frmIngredient : Form
 {
     private Label label1;
     private Label lblQuantity;
@@ -25,8 +28,7 @@ public class clsIngredient : Form
     private CheckBox cbDelete;
     private DBConnector myDB = new DBConnector();
 
-    private const int ADD = 0;
-    private const int EDIT = 1;
+    private int currentQuantity;
 
     #region windows code
     private void InitializeComponent()
@@ -157,12 +159,10 @@ public class clsIngredient : Form
             // rdbGram
             // 
             this.rdbGram.AutoSize = true;
-            this.rdbGram.Checked = true;
             this.rdbGram.Location = new System.Drawing.Point(30, 19);
             this.rdbGram.Name = "rdbGram";
             this.rdbGram.Size = new System.Drawing.Size(45, 17);
             this.rdbGram.TabIndex = 6;
-            this.rdbGram.TabStop = true;
             this.rdbGram.Text = "กรัม";
             this.rdbGram.UseVisualStyleBackColor = true;
             // 
@@ -196,7 +196,6 @@ public class clsIngredient : Form
             this.rdbFlavoring.Name = "rdbFlavoring";
             this.rdbFlavoring.Size = new System.Drawing.Size(72, 17);
             this.rdbFlavoring.TabIndex = 10;
-            this.rdbFlavoring.TabStop = true;
             this.rdbFlavoring.Text = "เครื่องปรุง";
             this.rdbFlavoring.UseVisualStyleBackColor = true;
             // 
@@ -207,7 +206,6 @@ public class clsIngredient : Form
             this.rdbFruit.Name = "rdbFruit";
             this.rdbFruit.Size = new System.Drawing.Size(51, 17);
             this.rdbFruit.TabIndex = 7;
-            this.rdbFruit.TabStop = true;
             this.rdbFruit.Text = "ผลไม้";
             this.rdbFruit.UseVisualStyleBackColor = true;
             // 
@@ -218,19 +216,16 @@ public class clsIngredient : Form
             this.rdbVegetable.Name = "rdbVegetable";
             this.rdbVegetable.Size = new System.Drawing.Size(39, 17);
             this.rdbVegetable.TabIndex = 6;
-            this.rdbVegetable.TabStop = true;
             this.rdbVegetable.Text = "ผัก";
             this.rdbVegetable.UseVisualStyleBackColor = true;
             // 
             // rdbMeat
             // 
             this.rdbMeat.AutoSize = true;
-            this.rdbMeat.Checked = true;
             this.rdbMeat.Location = new System.Drawing.Point(6, 19);
             this.rdbMeat.Name = "rdbMeat";
             this.rdbMeat.Size = new System.Drawing.Size(63, 17);
             this.rdbMeat.TabIndex = 5;
-            this.rdbMeat.TabStop = true;
             this.rdbMeat.Text = "เนื้อสัตว์";
             this.rdbMeat.UseVisualStyleBackColor = true;
             // 
@@ -263,7 +258,7 @@ public class clsIngredient : Form
             this.cbDelete.UseVisualStyleBackColor = true;
             this.cbDelete.Visible = false;
             // 
-            // clsIngredient
+            // frmIngredient
             // 
             this.ClientSize = new System.Drawing.Size(284, 317);
             this.Controls.Add(this.cbDelete);
@@ -277,7 +272,7 @@ public class clsIngredient : Form
             this.Controls.Add(this.label1);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "clsIngredient";
+            this.Name = "frmIngredient";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.gbUnit.ResumeLayout(false);
             this.gbUnit.PerformLayout();
@@ -289,28 +284,25 @@ public class clsIngredient : Form
     }
     #endregion windows code
 
-    public clsIngredient()
+    public frmIngredient()
     {
         InitializeComponent();
     }
 
-    public clsIngredient(int action):this()
+    /// <summary>
+    /// Constructor use to build form that correspond to task
+    /// </summary>
+    /// <param name="item">string   name of ingredient or null to add ingredient</param>
+    public frmIngredient(string item):this()
     {
-        if (action == ADD)
+        if(item == null)
         {
-            btnSubmit.Click += new System.EventHandler(this.btnAdd_Click);
-            this.Text = "เพิ่มวัตถุดิบ";
-            lblQuantity.Text = "จำนวนเริ่มต้น";
-            btnSubmit.Text = "เพิ่ม";
-            txtQuantity.Text = "0";
+            AddForm();
         }
         else
         {
-            btnSubmit.Click += new System.EventHandler(this.btnEdit_Click);
-            this.Text = "แก้ไขวัตถุดิบ";
-            lblQuantity.Text = "จำนวน";
-            btnSubmit.Text = "แก้ไข";
-            cbDelete.Visible = true;
+            EditForm();
+            LoadIngredient(item);
         }
     }
 
@@ -375,8 +367,110 @@ public class clsIngredient : Form
             return 16;
         }
     }
+
+    /// <summary>
+    /// Construct form to add ingredient
+    /// </summary>
+    private void AddForm()
+    {
+        btnSubmit.Click += new System.EventHandler(this.btnAdd_Click);
+        this.Text = "เพิ่มวัตถุดิบ";
+        lblQuantity.Text = "จำนวนเริ่มต้น";
+        btnSubmit.Text = "เพิ่ม";
+        txtQuantity.Text = "0";
+        rdbGram.Checked = true;
+        rdbMeat.Checked = true;
+    }
+
+    /// <summary>
+    /// Construct form to edit/delete ingredient
+    /// </summary>
+    private void EditForm()
+    {
+        btnSubmit.Click += new System.EventHandler(this.btnEdit_Click);
+        this.Text = "แก้ไขวัตถุดิบ";
+        lblQuantity.Text = "จำนวน";
+        btnSubmit.Text = "แก้ไข";
+        cbDelete.Visible = true;
+    }
+
+    /// <summary>
+    /// Load specified ingredient by name
+    /// </summary>
+    /// <param name="item">string   name of ingredient</param>
+    private void LoadIngredient(string item)
+    {
+        string[] data;
+        data = myDB.SelectSpecifiedIngredient(item);
+        txtIngredientName.Text = data[1];   //name
+        txtQuantity.Text = data[2]; //quantity
+        currentQuantity = int.Parse(data[2]);  
+        UnitCheckedDisplay(int.Parse(data[3])); //unit
+        TypeCheckedDisplay(int.Parse(data[0]));
+        txtIngredientName.ReadOnly = true;  //you cannot edit name
+    }
+
+    /// <summary>
+    /// To determine which radio button is checked
+    /// </summary>
+    /// <param name="unit">int  value of unit in database</param>
+    private void UnitCheckedDisplay(int unit)
+    {
+        switch (unit)
+        {
+            case 10:
+                rdbFong.Checked = true;
+                break;
+            case 11:
+                rdbGram.Checked = true;
+                break;
+            case 12:
+                rdbTon.Checked = true;
+                break;
+            case 13:
+                rdbHua.Checked = true;
+                break;
+            case 14:
+                rdbLuk.Checked = true;
+                break;
+            case 15:
+                rdbMud.Checked = true;
+                break;
+            case 16:
+                rdbGreb.Checked = true;
+                break;
+        }
+    }
+
+    /// <summary>
+    /// To determine which radio button is checked
+    /// </summary>
+    /// <param name="type">int  value of type in database</param>
+    private void TypeCheckedDisplay(int type)
+    {
+        switch (type)
+        {
+            case 2 :
+                rdbMeat.Checked = true;
+                break;
+            case 3 :
+                rdbVegetable.Checked = true;
+                break;
+            case 4 :
+                rdbFruit.Checked = true;
+                break;
+            case 1 :
+                rdbFlavoring.Checked = true;
+                break;
+        }
+    }
     #endregion Helper method
 
+    /// <summary>
+    /// Add button validated data before add to database
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void btnAdd_Click(object sender, EventArgs e)
     {
         int quantity;
@@ -403,9 +497,20 @@ public class clsIngredient : Form
         Close();
     }
 
+    /// <summary>
+    /// To only increase ingredient or delete from database
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void btnEdit_Click(object sender, EventArgs e)
     {
+        int quantity;
+        quantity = int.Parse(txtQuantity.Text);
+        if (quantity < currentQuantity)
+        {
+            MessageBox.Show("คูณไม่สามารถปรับลดปริมาณของวัตถุดิบ\nให้ต่ำกว่าเดิมได้", "ข้อมูลผิดพลาด");
 
+        }
     }
 
     private void btnClose_Click(object sender, EventArgs e)

@@ -27,4 +27,4 @@ C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\bin\Debug\System.Data.dll
 C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\obj\Debug\Foods Manager.csprojResolveAssemblyReference.cache
 C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\obj\Debug\frmMain.resources
 C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\obj\Debug\Foods Manager.csproj.GenerateResource.Cache
-C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\obj\Debug\clsIngredient.resources
+C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\obj\Debug\frmIngredient.resources

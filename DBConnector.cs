@@ -183,6 +183,39 @@ public class DBConnector
         }
     }
 
+    public string[] SelectSpecifiedIngredient(string name)
+    {
+        string query = "SELECT type_id,ingredient_name,ingredient_quantity,unit_id " +
+                        "FROM ingredient " +
+                        "WHERE ingredient_name='" + name + "'";
+
+        //Create a list to store the result
+        string[] list = new string[4];
+
+        //Open connection
+        if (OpenConnection() == true)
+        {
+            //Create Command
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            //Create a data reader and Execute the command
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            //Read from database
+            dataReader.Read();
+            //assign to list
+            list[0] = dataReader.GetString(0);  //type_id
+            list[1] = dataReader.GetString(1);  //ingreient_name
+            list[2] = dataReader.GetString(2);  //ingredient_quantity
+            list[3] = dataReader.GetString(3);  //unit_id
+            dataReader.Close();
+            this.CloseConnection();
+            return list;
+        }
+        else
+        {
+            return list;
+        }
+    }
+
     /// <summary>
     /// To count number of row in DB
     /// </summary>

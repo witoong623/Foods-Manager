@@ -50,7 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="clsIngredient.cs">
+    <Compile Include="frmIngredient.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="DBConnector.cs" />
@@ -59,8 +59,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="clsIngredient.resx">
-      <DependentUpon>clsIngredient.cs</DependentUpon>
+    <EmbeddedResource Include="frmIngredient.resx">
+      <DependentUpon>frmIngredient.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>

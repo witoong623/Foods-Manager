@@ -31,8 +31,8 @@ public class frmMain : Form
     private ToolStripStatusLabel tssDBconnectStatus;
     private DBConnector myDB = new DBConnector();
 
-    private const int ADD = 0;
-    private const int EDIT = 1;
+    private const string ADD = null;
+
     #region windows component
     private void InitializeComponent()
     {
@@ -93,11 +93,12 @@ public class frmMain : Form
             // 
             // lstvFoodsCanMake
             // 
-            this.lstvFoodsCanMake.Activation = System.Windows.Forms.ItemActivation.TwoClick;
             this.lstvFoodsCanMake.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3});
+            this.lstvFoodsCanMake.FullRowSelect = true;
+            this.lstvFoodsCanMake.GridLines = true;
             this.lstvFoodsCanMake.Location = new System.Drawing.Point(6, 20);
             this.lstvFoodsCanMake.Name = "lstvFoodsCanMake";
             this.lstvFoodsCanMake.Size = new System.Drawing.Size(238, 243);
@@ -144,6 +145,8 @@ public class frmMain : Form
             this.lstvFoodsCannotMake.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader4,
             this.columnHeader5});
+            this.lstvFoodsCannotMake.FullRowSelect = true;
+            this.lstvFoodsCannotMake.GridLines = true;
             this.lstvFoodsCannotMake.Location = new System.Drawing.Point(6, 20);
             this.lstvFoodsCannotMake.Name = "lstvFoodsCannotMake";
             this.lstvFoodsCannotMake.Size = new System.Drawing.Size(332, 243);
@@ -198,12 +201,15 @@ public class frmMain : Form
             this.columnHeader6,
             this.columnHeader7,
             this.columnHeader8});
+            this.lstvMaterialsInStock.FullRowSelect = true;
+            this.lstvMaterialsInStock.GridLines = true;
             this.lstvMaterialsInStock.Location = new System.Drawing.Point(6, 20);
             this.lstvMaterialsInStock.Name = "lstvMaterialsInStock";
             this.lstvMaterialsInStock.Size = new System.Drawing.Size(238, 243);
             this.lstvMaterialsInStock.TabIndex = 5;
             this.lstvMaterialsInStock.UseCompatibleStateImageBehavior = false;
             this.lstvMaterialsInStock.View = System.Windows.Forms.View.Details;
+            this.lstvMaterialsInStock.DoubleClick += new System.EventHandler(this.Meterial_Selected_DoubleClick);
             // 
             // columnHeader6
             // 
@@ -243,12 +249,15 @@ public class frmMain : Form
             // 
             this.lstvMaterialsOutOfStock.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader9});
+            this.lstvMaterialsOutOfStock.FullRowSelect = true;
+            this.lstvMaterialsOutOfStock.GridLines = true;
             this.lstvMaterialsOutOfStock.Location = new System.Drawing.Point(6, 20);
             this.lstvMaterialsOutOfStock.Name = "lstvMaterialsOutOfStock";
             this.lstvMaterialsOutOfStock.Size = new System.Drawing.Size(134, 243);
             this.lstvMaterialsOutOfStock.TabIndex = 4;
             this.lstvMaterialsOutOfStock.UseCompatibleStateImageBehavior = false;
             this.lstvMaterialsOutOfStock.View = System.Windows.Forms.View.Details;
+            this.lstvMaterialsOutOfStock.DoubleClick += new System.EventHandler(this.Meterial_Selected_DoubleClick);
             // 
             // columnHeader9
             // 
@@ -301,11 +310,6 @@ public class frmMain : Form
     }
     #endregion windows component
 
-    private void lstvFoodsCanMake_ItemActivate(object sender, EventArgs e)
-    {
-        int id;
-        ListView.SelectedListViewItemCollection itemSelected = lstvFoodsCanMake.SelectedItems;
-    }
     public frmMain()
     {
         InitializeComponent();
@@ -314,6 +318,7 @@ public class frmMain : Form
             IngredientUpdate();
         }
     }
+
     public static void Main()
     {
         frmMain main = new frmMain();
@@ -321,14 +326,27 @@ public class frmMain : Form
         Application.Run(main);
     }
 
+
+
     private void btnAddMenu_Click(object sender, EventArgs e)
     {
 
     }
 
+    private void Meterial_Selected_DoubleClick(object sender, EventArgs e)
+    {
+        if (lstvMaterialsInStock.SelectedItems.Count > 0)
+        {
+            frmIngredient myEdit = new frmIngredient(lstvMaterialsInStock.SelectedItems[0].Text);
+            myEdit.ShowDialog();
+            IngredientUpdate();
+        }
+    }
+
+
     private void btnAddMaterial_Click(object sender, EventArgs e)
     {
-        clsIngredient myIngredient = new clsIngredient(EDIT);
+        frmIngredient myIngredient = new frmIngredient(ADD);
         myIngredient.ShowDialog();
         IngredientUpdate();
     }
