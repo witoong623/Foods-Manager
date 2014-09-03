@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using FoodsManager;
 public class frmMain : Form
 {
     private GroupBox gpbFoodsCanMake;
@@ -206,6 +207,7 @@ public class frmMain : Form
             this.lstvMaterialsInStock.Location = new System.Drawing.Point(6, 20);
             this.lstvMaterialsInStock.Name = "lstvMaterialsInStock";
             this.lstvMaterialsInStock.Size = new System.Drawing.Size(238, 243);
+            this.lstvMaterialsInStock.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.lstvMaterialsInStock.TabIndex = 5;
             this.lstvMaterialsInStock.UseCompatibleStateImageBehavior = false;
             this.lstvMaterialsInStock.View = System.Windows.Forms.View.Details;
@@ -310,6 +312,9 @@ public class frmMain : Form
     }
     #endregion windows component
 
+    /// <summary>
+    /// Construct windows component and check if program ready to use
+    /// </summary>
     public frmMain()
     {
         InitializeComponent();
@@ -327,12 +332,16 @@ public class frmMain : Form
     }
 
 
-
     private void btnAddMenu_Click(object sender, EventArgs e)
     {
 
     }
 
+    /// <summary>
+    /// Double event on selected list view to edit or delete ingredient
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void Meterial_Selected_DoubleClick(object sender, EventArgs e)
     {
         if (lstvMaterialsInStock.SelectedItems.Count > 0)
@@ -341,9 +350,19 @@ public class frmMain : Form
             myEdit.ShowDialog();
             IngredientUpdate();
         }
+        else
+        {
+            frmIngredient myEdit = new frmIngredient(lstvMaterialsOutOfStock.SelectedItems[0].Text);
+            myEdit.ShowDialog();
+            IngredientUpdate();
+        }
     }
 
-
+    /// <summary>
+    /// Click event to add new ingredient
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void btnAddMaterial_Click(object sender, EventArgs e)
     {
         frmIngredient myIngredient = new frmIngredient(ADD);
@@ -351,27 +370,10 @@ public class frmMain : Form
         IngredientUpdate();
     }
 
-    private string UnitTextDisplay(int unit)
-    {
-        switch (unit)
-        {
-            case 10 :
-                return "ฟอง";
-            case 11 :
-                return "กรัม";
-            case 12 :
-                return "ต้น";
-            case 13 :
-                return "หัว";
-            case 14 :
-                return "ลูก";
-            case 15 :
-                return "มัด";
-            default :
-                return "กลีบ";
-        }
-    }
-
+    /// <summary>
+    /// Get connection status by call ConnectDB.ConnectStstus and update status bar
+    /// </summary>
+    /// <returns>True if connected otherwise false</returns>
     private bool DBConnectStatus()
     {
         try
@@ -414,7 +416,7 @@ public class frmMain : Form
             {
                 sub = new ListViewItem(data[1][i]);
                 sub.SubItems.Add(data[2][i]);
-                sub.SubItems.Add(UnitTextDisplay(int.Parse(data[3][i])));
+                sub.SubItems.Add(int.Parse(data[3][i]).ToUnitString());
                 lstvMaterialsInStock.Items.Add(sub);
             }
             else

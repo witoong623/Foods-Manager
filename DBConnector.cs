@@ -114,21 +114,70 @@ public class DBConnector
     /// <param name="name">Ingredient name</param>
     /// <param name="initial">Ingredient initial quantity</param>
     /// <param name="unitID">Ingredient unit called</param>
-    public void Insert(int typeID, string name, int initial, int unitID)
+    public bool Insert(int typeID, string name, int initial, int unitID)
     {
-        string query;
+        try
+        {
+            string query;
 
-        query = "INSERT INTO ingredient (type_id, ingredient_name," + 
-                " ingredient_quantity, unit_id) VALUES('" + typeID + "', '" + 
-                name + "', '" + initial + "', '" + unitID + "')";
+            query = "INSERT INTO ingredient (type_id, ingredient_name," +
+                    " ingredient_quantity, unit_id) VALUES('" + typeID + "', '" +
+                    name + "', '" + initial + "', '" + unitID + "')";
 
-        //open connection
+            //open connection
+            if (this.OpenConnection() == true)
+            {
+                //create command and assign the query and connection from the constructor
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+
+                //Execute command
+                cmd.ExecuteNonQuery();
+
+                //close connection
+                this.CloseConnection();
+            }
+            return true;
+        }
+        catch(MySqlException ex)
+        {
+            if (ex.Number == 1062)
+            {
+                MessageBox.Show(name + "ถูกเพิ่มแล้ว","ข้อมูลซ้ำกัน");
+            }
+            return false;
+        }
+        finally
+        {
+            this.CloseConnection();
+        }
+        
+    }
+
+    /// <summary>
+    /// To update ingredient but can't edit name
+    /// </summary>
+    /// <param name="typeID">Ingredient type</param>
+    /// <param name="name">Ingredient name</param>
+    /// <param name="initial">Ingredient initial quantity</param>
+    /// <param name="unitID">Ingredient unit called</param>
+    public void Update(int typeID, string name, int initial, int unitID)
+    {
+        string query = "UPDATE ingredient " +
+                        "SET type_id='" + typeID + "', ingredient_quantity='" + initial + "', unit_id='" + unitID + "' " +
+                        "WHERE ingredient_name='" + name + "'";
+                        
+
+        //Open connection
         if (this.OpenConnection() == true)
         {
-            //create command and assign the query and connection from the constructor
-            MySqlCommand cmd = new MySqlCommand(query, connection);
+            //create mysql command
+            MySqlCommand cmd = new MySqlCommand();
+            //Assign the query using CommandText
+            cmd.CommandText = query;
+            //Assign the connection using Connection
+            cmd.Connection = connection;
 
-            //Execute command
+            //Execute query
             cmd.ExecuteNonQuery();
 
             //close connection

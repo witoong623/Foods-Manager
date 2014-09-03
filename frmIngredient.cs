@@ -303,6 +303,7 @@ public class frmIngredient : Form
         {
             EditForm();
             LoadIngredient(item);
+            txtQuantity.Select(txtQuantity.Text.Length, 0);
         }
     }
 
@@ -378,6 +379,7 @@ public class frmIngredient : Form
         lblQuantity.Text = "จำนวนเริ่มต้น";
         btnSubmit.Text = "เพิ่ม";
         txtQuantity.Text = "0";
+        txtIngredientName.Select();
         rdbGram.Checked = true;
         rdbMeat.Checked = true;
     }
@@ -493,8 +495,17 @@ public class frmIngredient : Form
             return;
         }
 
-        myDB.Insert(TypeSelected(), txtIngredientName.Text, quantity, UnitSelected());
-        Close();
+        if (myDB.Insert(TypeSelected(), txtIngredientName.Text, quantity, UnitSelected()) == true)
+        {
+            Close();
+        }
+        else
+        {
+            MessageBox.Show("กรุณาใส่ชื่อวัตถุดิบอื่น", "ข้อมูลผิดพลาด");
+            txtIngredientName.Clear();
+            txtIngredientName.Select();
+            return;
+        }
     }
 
     /// <summary>
@@ -509,8 +520,10 @@ public class frmIngredient : Form
         if (quantity < currentQuantity)
         {
             MessageBox.Show("คูณไม่สามารถปรับลดปริมาณของวัตถุดิบ\nให้ต่ำกว่าเดิมได้", "ข้อมูลผิดพลาด");
-
+            return;
         }
+        myDB.Update(TypeSelected(), txtIngredientName.Text, quantity, UnitSelected());
+        Close();
     }
 
     private void btnClose_Click(object sender, EventArgs e)
