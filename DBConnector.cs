@@ -186,12 +186,110 @@ public class DBConnector
     }
 
     /// <summary>
-    /// To load player data sort be descending of score
+    /// Select all ingredient information from table
     /// </summary>
-    /// <returns>Array of string list contain name and money</returns>
+    /// <returns>Array of List string contain data</returns>
     public List<string>[] IngredientSelect()
     {
         string query = "SELECT * FROM ingredient";
+
+        //Create a list to store the result
+        List<string>[] list = new List<string>[4];
+        list[0] = new List<string>();
+        list[1] = new List<string>();
+        list[2] = new List<string>();
+        list[3] = new List<string>();
+
+        //Open connection
+        if (this.OpenConnection() == true)
+        {
+            //Create Command
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            //Create a data reader and Execute the command
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            //Read the data and store them in the list
+            while (dataReader.Read())
+            {
+                list[0].Add(dataReader["type_id"] + "");
+                list[1].Add(dataReader["ingredient_name"] + "");
+                list[2].Add(dataReader["ingredient_quantity"] + "");
+                list[3].Add(dataReader["unit_id"] + "");
+            }
+
+            //close Data Reader
+            dataReader.Close();
+
+            //close Connection
+            this.CloseConnection();
+
+            //return list to be displayed
+            return list;
+        }
+        else
+        {
+            return list;
+        }
+    }
+
+    /// <summary>
+    /// Load Ingredient information from table by specific type id
+    /// </summary>
+    /// <param name="typeID">Ingredient type</param>
+    /// <returns>Array of List string contain data</returns>
+    public List<string>[] IngredientSelect(int typeID)
+    {
+        string query = "SELECT * FROM ingredient WHERE type_id='" + typeID + "'";
+
+        //Create a list to store the result
+        List<string>[] list = new List<string>[4];
+        list[0] = new List<string>();
+        list[1] = new List<string>();
+        list[2] = new List<string>();
+        list[3] = new List<string>();
+
+        //Open connection
+        if (this.OpenConnection() == true)
+        {
+            //Create Command
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            //Create a data reader and Execute the command
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            //Read the data and store them in the list
+            while (dataReader.Read())
+            {
+                list[0].Add(dataReader["type_id"] + "");
+                list[1].Add(dataReader["ingredient_name"] + "");
+                list[2].Add(dataReader["ingredient_quantity"] + "");
+                list[3].Add(dataReader["unit_id"] + "");
+            }
+
+            //close Data Reader
+            dataReader.Close();
+
+            //close Connection
+            this.CloseConnection();
+
+            //return list to be displayed
+            return list;
+        }
+        else
+        {
+            return list;
+        }
+    }
+
+    /// <summary>
+    /// Load Ingredient information from table by specific type id and quantity
+    /// </summary>
+    /// <param name="typeID">Ingredient type</param>
+    /// <param name="quantity">Ingredient quantity</param>
+    /// <returns></returns>
+    public List<string>[] IngredientSelect(int typeID, int quantity)
+    {
+        string query = "SELECT * FROM ingredient " +
+                        "WHERE type_id='" + typeID + "' AND ingredient_quantity='" + quantity + "'";
 
         //Create a list to store the result
         List<string>[] list = new List<string>[4];

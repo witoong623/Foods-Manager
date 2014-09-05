@@ -397,7 +397,7 @@ public class frmIngredient : Form
     }
 
     /// <summary>
-    /// Load specified ingredient by name
+    /// Load specified ingredient by name to edit form
     /// </summary>
     /// <param name="item">string   name of ingredient</param>
     private void LoadIngredient(string item)
@@ -407,7 +407,7 @@ public class frmIngredient : Form
         txtIngredientName.Text = data[1];   //name
         txtQuantity.Text = data[2]; //quantity
         currentQuantity = int.Parse(data[2]);  
-        UnitCheckedDisplay(int.Parse(data[3])); //unit
+        ToCheckedUnit(int.Parse(data[3])); //unit
         TypeCheckedDisplay(int.Parse(data[0]));
         txtIngredientName.ReadOnly = true;  //you cannot edit name
     }
@@ -416,7 +416,7 @@ public class frmIngredient : Form
     /// To determine which radio button is checked
     /// </summary>
     /// <param name="unit">int  value of unit in database</param>
-    private void UnitCheckedDisplay(int unit)
+    private void ToCheckedUnit(int unit)
     {
         switch (unit)
         {
