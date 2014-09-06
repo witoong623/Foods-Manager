@@ -240,7 +240,7 @@ public class frmMain : Form
             this.cbMaterialsInStock.Name = "cbMaterialsInStock";
             this.cbMaterialsInStock.Size = new System.Drawing.Size(121, 21);
             this.cbMaterialsInStock.TabIndex = 3;
-            this.cbMaterialsInStock.SelectedIndexChanged += new System.EventHandler(this.IngredientSelectedIndexChange);
+            this.cbMaterialsInStock.SelectedIndexChanged += new System.EventHandler(this.cbInstockIndexChange);
             // 
             // gpbMaterialsOut
             // 
@@ -287,7 +287,7 @@ public class frmMain : Form
             this.cbMaterialsOutOfStock.Name = "cbMaterialsOutOfStock";
             this.cbMaterialsOutOfStock.Size = new System.Drawing.Size(121, 21);
             this.cbMaterialsOutOfStock.TabIndex = 3;
-            this.cbMaterialsOutOfStock.SelectedIndexChanged += new System.EventHandler(this.IngredientSelectedIndexChange);
+            this.cbMaterialsOutOfStock.SelectedIndexChanged += new System.EventHandler(this.cbOutOfStockIndexChange);
             // 
             // stsStatusBar
             // 
@@ -417,12 +417,6 @@ public class frmMain : Form
         }
     }
 
-    private void IngredientUpdate()
-    {
-        InStockUpdate();
-        OutOfStockUpdate();
-    }
-
     private void InStockUpdate()
     {
         int i;
@@ -475,16 +469,13 @@ public class frmMain : Form
         }
     }
 
-    private void IngredientSelectedIndexChange(object sender, EventArgs s)
+    private void cbInstockIndexChange(object sender, EventArgs s)
     {
-        ComboBox cb = sender as ComboBox;
-        if (cb != null & cb.Name.Equals("cbMaterialsInStock"))
-        {
-            InStockUpdate();
-        }
-        else if (cb != null & cb.Name.Equals("cbMaterialsOutOfStock"))
-        {
-            OutOfStockUpdate();
-        }
+        InStockUpdate();
+    }
+
+    private void cbOutOfStockIndexChange(object sender, EventArgs s)
+    {
+        OutOfStockUpdate();
     }
 }
