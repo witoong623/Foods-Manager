@@ -1,5 +1,4 @@
 ﻿using System;
-﻿using System.Drawing;
 using System.Windows.Forms;
 /// <summary>
 /// This class use to display window form and manage about ingredint
@@ -59,7 +58,6 @@ public class frmIngredient : Form
             // 
             // label1
             // 
-            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label1.Location = new System.Drawing.Point(12, 39);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(100, 20);
@@ -76,7 +74,6 @@ public class frmIngredient : Form
             // 
             // lblQuantity
             // 
-            this.lblQuantity.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.lblQuantity.Location = new System.Drawing.Point(12, 74);
             this.lblQuantity.Name = "lblQuantity";
             this.lblQuantity.Size = new System.Drawing.Size(100, 20);
@@ -522,7 +519,14 @@ public class frmIngredient : Form
             MessageBox.Show("คูณไม่สามารถปรับลดปริมาณของวัตถุดิบ\nให้ต่ำกว่าเดิมได้", "ข้อมูลผิดพลาด");
             return;
         }
-        myDB.Update(TypeSelected(), txtIngredientName.Text, quantity, UnitSelected());
+        if (cbDelete.Checked)
+        {
+            myDB.Delete(txtIngredientName.Text);
+        }
+        else
+        {
+            myDB.Update(TypeSelected(), txtIngredientName.Text, quantity, UnitSelected());
+        }
         Close();
     }
 

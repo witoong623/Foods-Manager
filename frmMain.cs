@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows.Forms;
+using System.Threading;
 using System.Collections.Generic;
 using FoodsManager;
 public class frmMain : Form
@@ -8,15 +8,15 @@ public class frmMain : Form
     private GroupBox gpbFoodsCanMake;
     private GroupBox gpbFoodsCannotMake;
     private GroupBox gpbMaterialsOut;
-    private ComboBox cbFoodsCanMake;
-    private ListView lstvFoodsCanMake;
+    private ComboBox cbRecipeCanMake;
+    private ListView lstvRecipeCanMake;
     private ColumnHeader columnHeader1;
     private ColumnHeader columnHeader2;
     private ColumnHeader columnHeader3;
-    private ListView lstvFoodsCannotMake;
+    private ListView lstvRecipeCannotMake;
     private ColumnHeader columnHeader4;
     private ColumnHeader columnHeader5;
-    private ComboBox cbFoodsCannotMake;
+    private ComboBox cbRecipeCannotMake;
     private ListView lstvMaterialsInStock;
     private ColumnHeader columnHeader6;
     private ColumnHeader columnHeader7;
@@ -24,13 +24,14 @@ public class frmMain : Form
     private ComboBox cbMaterialsInStock;
     private ComboBox cbMaterialsOutOfStock;
     private ListView lstvMaterialsOutOfStock;
-    private Button btnAddMenu;
+    private Button btnAddRecipe;
     private Button btnAddMaterial;
     private GroupBox gpbMaterialsHave;
     private StatusStrip stsStatusBar;
     private ToolStripStatusLabel tssDBconnectStatus;
     private DBConnector myDB = new DBConnector();
     private ColumnHeader columnHeader9;
+    private System.ComponentModel.BackgroundWorker backgroundWorker1;
 
     private const string ADD = null;
 
@@ -38,17 +39,17 @@ public class frmMain : Form
     private void InitializeComponent()
     {
             this.gpbFoodsCanMake = new System.Windows.Forms.GroupBox();
-            this.btnAddMenu = new System.Windows.Forms.Button();
-            this.lstvFoodsCanMake = new System.Windows.Forms.ListView();
+            this.btnAddRecipe = new System.Windows.Forms.Button();
+            this.lstvRecipeCanMake = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.cbFoodsCanMake = new System.Windows.Forms.ComboBox();
+            this.cbRecipeCanMake = new System.Windows.Forms.ComboBox();
             this.gpbFoodsCannotMake = new System.Windows.Forms.GroupBox();
-            this.lstvFoodsCannotMake = new System.Windows.Forms.ListView();
+            this.lstvRecipeCannotMake = new System.Windows.Forms.ListView();
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.cbFoodsCannotMake = new System.Windows.Forms.ComboBox();
+            this.cbRecipeCannotMake = new System.Windows.Forms.ComboBox();
             this.gpbMaterialsHave = new System.Windows.Forms.GroupBox();
             this.btnAddMaterial = new System.Windows.Forms.Button();
             this.lstvMaterialsInStock = new System.Windows.Forms.ListView();
@@ -62,6 +63,7 @@ public class frmMain : Form
             this.cbMaterialsOutOfStock = new System.Windows.Forms.ComboBox();
             this.stsStatusBar = new System.Windows.Forms.StatusStrip();
             this.tssDBconnectStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.gpbFoodsCanMake.SuspendLayout();
             this.gpbFoodsCannotMake.SuspendLayout();
             this.gpbMaterialsHave.SuspendLayout();
@@ -71,9 +73,9 @@ public class frmMain : Form
             // 
             // gpbFoodsCanMake
             // 
-            this.gpbFoodsCanMake.Controls.Add(this.btnAddMenu);
-            this.gpbFoodsCanMake.Controls.Add(this.lstvFoodsCanMake);
-            this.gpbFoodsCanMake.Controls.Add(this.cbFoodsCanMake);
+            this.gpbFoodsCanMake.Controls.Add(this.btnAddRecipe);
+            this.gpbFoodsCanMake.Controls.Add(this.lstvRecipeCanMake);
+            this.gpbFoodsCanMake.Controls.Add(this.cbRecipeCanMake);
             this.gpbFoodsCanMake.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gpbFoodsCanMake.Location = new System.Drawing.Point(12, 12);
             this.gpbFoodsCanMake.Name = "gpbFoodsCanMake";
@@ -82,30 +84,30 @@ public class frmMain : Form
             this.gpbFoodsCanMake.TabStop = false;
             this.gpbFoodsCanMake.Text = "อาหารที่ทำได้";
             // 
-            // btnAddMenu
+            // btnAddRecipe
             // 
-            this.btnAddMenu.Location = new System.Drawing.Point(6, 269);
-            this.btnAddMenu.Name = "btnAddMenu";
-            this.btnAddMenu.Size = new System.Drawing.Size(90, 23);
-            this.btnAddMenu.TabIndex = 6;
-            this.btnAddMenu.Text = "เพิ่มเมนูอาหาร";
-            this.btnAddMenu.UseVisualStyleBackColor = true;
-            this.btnAddMenu.Click += new System.EventHandler(this.btnAddMenu_Click);
+            this.btnAddRecipe.Location = new System.Drawing.Point(6, 269);
+            this.btnAddRecipe.Name = "btnAddRecipe";
+            this.btnAddRecipe.Size = new System.Drawing.Size(90, 23);
+            this.btnAddRecipe.TabIndex = 6;
+            this.btnAddRecipe.Text = "เพิ่มเมนูอาหาร";
+            this.btnAddRecipe.UseVisualStyleBackColor = true;
+            this.btnAddRecipe.Click += new System.EventHandler(this.btnAddMenu_Click);
             // 
-            // lstvFoodsCanMake
+            // lstvRecipeCanMake
             // 
-            this.lstvFoodsCanMake.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lstvRecipeCanMake.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3});
-            this.lstvFoodsCanMake.FullRowSelect = true;
-            this.lstvFoodsCanMake.GridLines = true;
-            this.lstvFoodsCanMake.Location = new System.Drawing.Point(6, 20);
-            this.lstvFoodsCanMake.Name = "lstvFoodsCanMake";
-            this.lstvFoodsCanMake.Size = new System.Drawing.Size(238, 243);
-            this.lstvFoodsCanMake.TabIndex = 4;
-            this.lstvFoodsCanMake.UseCompatibleStateImageBehavior = false;
-            this.lstvFoodsCanMake.View = System.Windows.Forms.View.Details;
+            this.lstvRecipeCanMake.FullRowSelect = true;
+            this.lstvRecipeCanMake.GridLines = true;
+            this.lstvRecipeCanMake.Location = new System.Drawing.Point(6, 20);
+            this.lstvRecipeCanMake.Name = "lstvRecipeCanMake";
+            this.lstvRecipeCanMake.Size = new System.Drawing.Size(238, 243);
+            this.lstvRecipeCanMake.TabIndex = 4;
+            this.lstvRecipeCanMake.UseCompatibleStateImageBehavior = false;
+            this.lstvRecipeCanMake.View = System.Windows.Forms.View.Details;
             // 
             // columnHeader1
             // 
@@ -121,18 +123,19 @@ public class frmMain : Form
             // 
             this.columnHeader3.Text = "หน่วย";
             // 
-            // cbFoodsCanMake
+            // cbRecipeCanMake
             // 
-            this.cbFoodsCanMake.FormattingEnabled = true;
-            this.cbFoodsCanMake.Location = new System.Drawing.Point(123, 269);
-            this.cbFoodsCanMake.Name = "cbFoodsCanMake";
-            this.cbFoodsCanMake.Size = new System.Drawing.Size(121, 21);
-            this.cbFoodsCanMake.TabIndex = 1;
+            this.cbRecipeCanMake.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbRecipeCanMake.FormattingEnabled = true;
+            this.cbRecipeCanMake.Location = new System.Drawing.Point(123, 269);
+            this.cbRecipeCanMake.Name = "cbRecipeCanMake";
+            this.cbRecipeCanMake.Size = new System.Drawing.Size(121, 21);
+            this.cbRecipeCanMake.TabIndex = 1;
             // 
             // gpbFoodsCannotMake
             // 
-            this.gpbFoodsCannotMake.Controls.Add(this.lstvFoodsCannotMake);
-            this.gpbFoodsCannotMake.Controls.Add(this.cbFoodsCannotMake);
+            this.gpbFoodsCannotMake.Controls.Add(this.lstvRecipeCannotMake);
+            this.gpbFoodsCannotMake.Controls.Add(this.cbRecipeCannotMake);
             this.gpbFoodsCannotMake.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gpbFoodsCannotMake.Location = new System.Drawing.Point(280, 12);
             this.gpbFoodsCannotMake.Name = "gpbFoodsCannotMake";
@@ -141,19 +144,19 @@ public class frmMain : Form
             this.gpbFoodsCannotMake.TabStop = false;
             this.gpbFoodsCannotMake.Text = "อาหารที่ทำไม่ได้";
             // 
-            // lstvFoodsCannotMake
+            // lstvRecipeCannotMake
             // 
-            this.lstvFoodsCannotMake.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lstvRecipeCannotMake.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader4,
             this.columnHeader5});
-            this.lstvFoodsCannotMake.FullRowSelect = true;
-            this.lstvFoodsCannotMake.GridLines = true;
-            this.lstvFoodsCannotMake.Location = new System.Drawing.Point(6, 20);
-            this.lstvFoodsCannotMake.Name = "lstvFoodsCannotMake";
-            this.lstvFoodsCannotMake.Size = new System.Drawing.Size(332, 243);
-            this.lstvFoodsCannotMake.TabIndex = 5;
-            this.lstvFoodsCannotMake.UseCompatibleStateImageBehavior = false;
-            this.lstvFoodsCannotMake.View = System.Windows.Forms.View.Details;
+            this.lstvRecipeCannotMake.FullRowSelect = true;
+            this.lstvRecipeCannotMake.GridLines = true;
+            this.lstvRecipeCannotMake.Location = new System.Drawing.Point(6, 20);
+            this.lstvRecipeCannotMake.Name = "lstvRecipeCannotMake";
+            this.lstvRecipeCannotMake.Size = new System.Drawing.Size(332, 243);
+            this.lstvRecipeCannotMake.TabIndex = 5;
+            this.lstvRecipeCannotMake.UseCompatibleStateImageBehavior = false;
+            this.lstvRecipeCannotMake.View = System.Windows.Forms.View.Details;
             // 
             // columnHeader4
             // 
@@ -165,13 +168,14 @@ public class frmMain : Form
             this.columnHeader5.Text = "วัตถุดิบที่ขาด";
             this.columnHeader5.Width = 210;
             // 
-            // cbFoodsCannotMake
+            // cbRecipeCannotMake
             // 
-            this.cbFoodsCannotMake.FormattingEnabled = true;
-            this.cbFoodsCannotMake.Location = new System.Drawing.Point(217, 269);
-            this.cbFoodsCannotMake.Name = "cbFoodsCannotMake";
-            this.cbFoodsCannotMake.Size = new System.Drawing.Size(121, 21);
-            this.cbFoodsCannotMake.TabIndex = 3;
+            this.cbRecipeCannotMake.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbRecipeCannotMake.FormattingEnabled = true;
+            this.cbRecipeCannotMake.Location = new System.Drawing.Point(217, 269);
+            this.cbRecipeCannotMake.Name = "cbRecipeCannotMake";
+            this.cbRecipeCannotMake.Size = new System.Drawing.Size(121, 21);
+            this.cbRecipeCannotMake.TabIndex = 3;
             // 
             // gpbMaterialsHave
             // 
@@ -330,6 +334,7 @@ public class frmMain : Form
     /// <summary>
     /// Construct windows component and check if program ready to use
     /// </summary>
+    
     public frmMain()
     {
         InitializeComponent();
@@ -340,6 +345,7 @@ public class frmMain : Form
         }
     }
 
+    [STAThread]
     public static void Main()
     {
         frmMain main = new frmMain();
@@ -347,10 +353,10 @@ public class frmMain : Form
         Application.Run(main);
     }
 
-
     private void btnAddMenu_Click(object sender, EventArgs e)
     {
-
+        frmRecipe myRecipe = new frmRecipe();
+        myRecipe.ShowDialog();
     }
 
     /// <summary>
@@ -370,7 +376,7 @@ public class frmMain : Form
         {
             frmIngredient myEdit = new frmIngredient(lstvMaterialsOutOfStock.SelectedItems[0].Text);
             myEdit.ShowDialog();
-            InStockUpdate();
+            OutOfStockUpdate();
         }
     }
 

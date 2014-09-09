@@ -28,3 +28,4 @@ C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\obj\Debug\Foods Manager.csproj
 C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\obj\Debug\frmMain.resources
 C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\obj\Debug\Foods Manager.csproj.GenerateResource.Cache
 C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\obj\Debug\frmIngredient.resources
+C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\obj\Debug\frmRecipe.resources

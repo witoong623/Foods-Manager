@@ -6,6 +6,7 @@ namespace FoodsManager
     /// </summary>
     static class Convert
     {
+        
         /// <summary>
         /// Convert int unit to string 
         /// </summary>

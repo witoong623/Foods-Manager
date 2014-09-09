@@ -1,8 +1,6 @@
 ﻿﻿using System;
+using System.Data;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 
@@ -74,7 +72,7 @@ public class DBConnector
             //The two most common error numbers when connecting are as follows:
             //0: Cannot connect to server.
             //1045: Invalid user name and/or password.
-            /*switch (ex.Number)
+            switch (ex.Number)
             {
                 case 0:
                     MessageBox.Show("Cannot connect to server.  Contact administrator");
@@ -83,8 +81,10 @@ public class DBConnector
                 case 1045:
                     MessageBox.Show("Invalid username/password, please try again");
                     break;
-            }*/
-            MessageBox.Show(ex.Message,"Error in connection");
+                default :
+                    MessageBox.Show(ex.Message);
+                    break;
+            }
             return false;
         }
     }
@@ -389,6 +389,53 @@ public class DBConnector
         else
         {
             return Count;
+        }
+    }
+
+    public void Delete(string name)
+    {
+        try
+        {
+            string query = "DELETE FROM ingredient WHERE ingredient_name='" + name + "'";
+
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+                this.CloseConnection();
+            }
+        }
+        catch(MySqlException ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
+    }
+
+    public void AssignAutoComplete(AutoCompleteStringCollection autoCom)
+    {
+        try
+        {
+            string query = "SELECT ingredient_name FROM ingredient";
+
+            if (OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    autoCom.Add(dataReader.GetString("ingredient_name"));
+                }
+                dataReader.Close();
+                CloseConnection();
+            }
+            else
+            {
+                return;
+            }
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message);
         }
     }
 }
