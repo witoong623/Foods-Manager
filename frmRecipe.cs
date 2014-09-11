@@ -5,52 +5,57 @@ using System.Windows.Forms;
 
 public class frmRecipe : Form
 {
-    private ListView listView1;
+    private ListView lstvIngredientTable;
     private ColumnHeader columnHeader1;
     private ColumnHeader columnHeader2;
     private Label label1;
     private TextBox txtIngredientName;
-    private TextBox textBox2;
+    private TextBox txtFoodName;
     private Label label3;
     private TextBox txtQuantity;
     private ComboBox cbIngredientType;
     private Label label4;
-    private Button button1;
-    private Button button2;
+    private Button btnAddIngredient;
+    private Button btnDeleteIngredient;
     private Label label2;
+    private GroupBox groupBox1;
+    private Button btnAddRecipe;
     private DBConnector myDB = new DBConnector();
 
     #region windows code
     private void InitializeComponent()
     {
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.lstvIngredientTable = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label1 = new System.Windows.Forms.Label();
             this.txtIngredientName = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.txtFoodName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.txtQuantity = new System.Windows.Forms.TextBox();
             this.cbIngredientType = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnAddIngredient = new System.Windows.Forms.Button();
+            this.btnDeleteIngredient = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnAddRecipe = new System.Windows.Forms.Button();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // listView1
+            // lstvIngredientTable
             // 
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lstvIngredientTable.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
-            this.listView1.FullRowSelect = true;
-            this.listView1.GridLines = true;
-            this.listView1.Location = new System.Drawing.Point(12, 50);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(263, 211);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
+            this.lstvIngredientTable.FullRowSelect = true;
+            this.lstvIngredientTable.GridLines = true;
+            this.lstvIngredientTable.Location = new System.Drawing.Point(12, 50);
+            this.lstvIngredientTable.Name = "lstvIngredientTable";
+            this.lstvIngredientTable.Size = new System.Drawing.Size(263, 211);
+            this.lstvIngredientTable.TabIndex = 0;
+            this.lstvIngredientTable.UseCompatibleStateImageBehavior = false;
+            this.lstvIngredientTable.View = System.Windows.Forms.View.Details;
             // 
             // columnHeader1
             // 
@@ -78,12 +83,12 @@ public class frmRecipe : Form
             this.txtIngredientName.Size = new System.Drawing.Size(152, 20);
             this.txtIngredientName.TabIndex = 2;
             // 
-            // textBox2
+            // txtFoodName
             // 
-            this.textBox2.Location = new System.Drawing.Point(118, 14);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(411, 20);
-            this.textBox2.TabIndex = 3;
+            this.txtFoodName.Location = new System.Drawing.Point(118, 14);
+            this.txtFoodName.Name = "txtFoodName";
+            this.txtFoodName.Size = new System.Drawing.Size(411, 20);
+            this.txtFoodName.TabIndex = 1;
             // 
             // label2
             // 
@@ -108,7 +113,7 @@ public class frmRecipe : Form
             this.txtQuantity.Location = new System.Drawing.Point(371, 94);
             this.txtQuantity.Name = "txtQuantity";
             this.txtQuantity.Size = new System.Drawing.Size(152, 20);
-            this.txtQuantity.TabIndex = 6;
+            this.txtQuantity.TabIndex = 3;
             // 
             // cbIngredientType
             // 
@@ -123,7 +128,7 @@ public class frmRecipe : Form
             this.cbIngredientType.Location = new System.Drawing.Point(371, 132);
             this.cbIngredientType.Name = "cbIngredientType";
             this.cbIngredientType.Size = new System.Drawing.Size(121, 21);
-            this.cbIngredientType.TabIndex = 7;
+            this.cbIngredientType.TabIndex = 6;
             // 
             // label4
             // 
@@ -134,43 +139,66 @@ public class frmRecipe : Form
             this.label4.Text = "ประเภทวัตถุดิบ";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button1
+            // btnAddIngredient
             // 
-            this.button1.Location = new System.Drawing.Point(317, 186);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 9;
-            this.button1.Text = "เพิ่มวัตถุดิบ";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnAddIngredient.Location = new System.Drawing.Point(317, 174);
+            this.btnAddIngredient.Name = "btnAddIngredient";
+            this.btnAddIngredient.Size = new System.Drawing.Size(75, 23);
+            this.btnAddIngredient.TabIndex = 4;
+            this.btnAddIngredient.Text = "เพิ่มวัตถุดิบ";
+            this.btnAddIngredient.UseVisualStyleBackColor = true;
+            this.btnAddIngredient.Click += new System.EventHandler(this.btnAddIngredient_Click);
             // 
-            // button2
+            // btnDeleteIngredient
             // 
-            this.button2.Location = new System.Drawing.Point(417, 186);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 10;
-            this.button2.Text = "ลบวัตถุดิบ";
-            this.button2.UseVisualStyleBackColor = true;
+            this.btnDeleteIngredient.Location = new System.Drawing.Point(417, 174);
+            this.btnDeleteIngredient.Name = "btnDeleteIngredient";
+            this.btnDeleteIngredient.Size = new System.Drawing.Size(75, 23);
+            this.btnDeleteIngredient.TabIndex = 5;
+            this.btnDeleteIngredient.Text = "ลบวัตถุดิบ";
+            this.btnDeleteIngredient.UseVisualStyleBackColor = true;
+            this.btnDeleteIngredient.Click += new System.EventHandler(this.btnDeleteIngredient_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.btnAddRecipe);
+            this.groupBox1.Location = new System.Drawing.Point(317, 216);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(212, 83);
+            this.groupBox1.TabIndex = 9;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "เพิ่มสูครอาหาร";
+            // 
+            // btnAddRecipe
+            // 
+            this.btnAddRecipe.Location = new System.Drawing.Point(18, 34);
+            this.btnAddRecipe.Name = "btnAddRecipe";
+            this.btnAddRecipe.Size = new System.Drawing.Size(75, 23);
+            this.btnAddRecipe.TabIndex = 0;
+            this.btnAddRecipe.Text = "button1";
+            this.btnAddRecipe.UseVisualStyleBackColor = true;
             // 
             // frmRecipe
             // 
             this.ClientSize = new System.Drawing.Size(541, 311);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.btnDeleteIngredient);
+            this.Controls.Add(this.btnAddIngredient);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.cbIngredientType);
             this.Controls.Add(this.txtQuantity);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.txtFoodName);
             this.Controls.Add(this.txtIngredientName);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.lstvIngredientTable);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmRecipe";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "เพิ่มสูตรอาหาร";
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -182,14 +210,63 @@ public class frmRecipe : Form
         InitializeComponent();
         cbIngredientType.SelectedIndex = 0;
         AutoCompleteSource();
+        txtFoodName.Select();
     }
 
     private void AutoCompleteSource()
     {
-        AutoCompleteStringCollection auto = new AutoCompleteStringCollection();
-        auto.Add("text");
+        AutoCompleteStringCollection AutoCompleteCollection = new AutoCompleteStringCollection();
+        myDB.AssignAutoComplete(AutoCompleteCollection);
         txtIngredientName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
         txtIngredientName.AutoCompleteMode = AutoCompleteMode.Suggest;
-        txtIngredientName.AutoCompleteCustomSource = auto;
+        txtIngredientName.AutoCompleteCustomSource = AutoCompleteCollection;
+    }
+
+    private void btnAddIngredient_Click(object sender, EventArgs e)
+    {
+        ListViewItem ListCollection;
+        int dummy;
+        bool flag;
+
+        if (txtIngredientName.Text.Length == 0)
+        {
+            MessageBox.Show("กรุณาใส่ชื่อวัตถุดิบ");
+            txtIngredientName.Select();
+            return;
+        }
+
+        if (txtQuantity.Text.Length == 0)
+        {
+            MessageBox.Show("กรุณาใส่ปริมาณที่ต้องใช้");
+            txtQuantity.Select();
+            return;
+        }
+
+        flag = int.TryParse(txtQuantity.Text, out dummy);
+        
+        if (flag == false)
+        {
+            MessageBox.Show("กรุณาป้อนจำนวนเป็นตัวเลข");
+            txtQuantity.Select();
+            return;
+        }
+
+        ListCollection = new ListViewItem(txtIngredientName.Text);
+        ListCollection.SubItems.Add(txtQuantity.Text);
+        lstvIngredientTable.Items.Add(ListCollection);
+    }
+
+    private void btnDeleteIngredient_Click(object sender, EventArgs e)
+    {
+        int i;
+
+        if (lstvIngredientTable.SelectedItems.Count > 0)
+        {
+            for (i = lstvIngredientTable.SelectedItems.Count - 1; i >= 0; i--)
+            {
+                ListViewItem SelectedDelete = lstvIngredientTable.SelectedItems[i];
+                lstvIngredientTable.Items[SelectedDelete.Index].Remove();
+            }
+        }
     }
 }

@@ -411,6 +411,10 @@ public class DBConnector
         }
     }
 
+    /// <summary>
+    /// Assign name of ingredient from database to AutoCompleteStringCollection
+    /// </summary>
+    /// <param name="autoCom">A collection of Autocomplete string</param>
     public void AssignAutoComplete(AutoCompleteStringCollection autoCom)
     {
         try
