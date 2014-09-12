@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+
 /// <summary>
 /// This class use to display window form and manage about ingredint
 /// </summary>
@@ -289,17 +290,17 @@ public class frmIngredient : Form
     /// <summary>
     /// Constructor use to build form that correspond to task
     /// </summary>
-    /// <param name="item">string   name of ingredient or null to add ingredient</param>
-    public frmIngredient(string item):this()
+    /// <param name="name">string   name of ingredient or null to add ingredient</param>
+    public frmIngredient(string name):this()
     {
-        if(item == null)
+        if(name == null)
         {
             AddForm();
         }
         else
         {
             EditForm();
-            LoadIngredient(item);
+            LoadIngredient(name);
             txtQuantity.Select(txtQuantity.Text.Length, 0);
         }
     }

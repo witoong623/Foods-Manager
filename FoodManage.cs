@@ -1,6 +1,12 @@
 ﻿using System;
+
 namespace FoodsManager
 {
+    /// <summary>
+    /// Specifies weather form use to add or edit
+    /// </summary>
+    public enum DisplayMode { Addition, Editor };
+
     /// <summary>
     /// This class use to collect all extension method
     /// </summary>
