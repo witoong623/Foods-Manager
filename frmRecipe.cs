@@ -21,6 +21,8 @@ public class frmRecipe : Form
     private Label label2;
     private GroupBox groupBox1;
     private Button btnAddRecipe;
+    private RadioButton rdbMeatDish;
+    private RadioButton rdbDessert;
     private DBConnector myDB = new DBConnector();
 
     #region windows code
@@ -41,6 +43,8 @@ public class frmRecipe : Form
             this.btnDeleteIngredient = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnAddRecipe = new System.Windows.Forms.Button();
+            this.rdbMeatDish = new System.Windows.Forms.RadioButton();
+            this.rdbDessert = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -163,25 +167,49 @@ public class frmRecipe : Form
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.rdbDessert);
+            this.groupBox1.Controls.Add(this.rdbMeatDish);
             this.groupBox1.Controls.Add(this.btnAddRecipe);
-            this.groupBox1.Location = new System.Drawing.Point(317, 216);
+            this.groupBox1.Location = new System.Drawing.Point(298, 232);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(212, 83);
+            this.groupBox1.Size = new System.Drawing.Size(212, 128);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "เพิ่มสูครอาหาร";
             // 
             // btnAddRecipe
             // 
-            this.btnAddRecipe.Location = new System.Drawing.Point(18, 34);
+            this.btnAddRecipe.Location = new System.Drawing.Point(19, 80);
             this.btnAddRecipe.Name = "btnAddRecipe";
             this.btnAddRecipe.Size = new System.Drawing.Size(87, 23);
             this.btnAddRecipe.TabIndex = 0;
             this.btnAddRecipe.UseVisualStyleBackColor = true;
             // 
+            // rdbMeatDish
+            // 
+            this.rdbMeatDish.AutoSize = true;
+            this.rdbMeatDish.Location = new System.Drawing.Point(19, 34);
+            this.rdbMeatDish.Name = "rdbMeatDish";
+            this.rdbMeatDish.Size = new System.Drawing.Size(72, 17);
+            this.rdbMeatDish.TabIndex = 1;
+            this.rdbMeatDish.TabStop = true;
+            this.rdbMeatDish.Text = "อาหารคาว";
+            this.rdbMeatDish.UseVisualStyleBackColor = true;
+            // 
+            // rdbDessert
+            // 
+            this.rdbDessert.AutoSize = true;
+            this.rdbDessert.Location = new System.Drawing.Point(97, 34);
+            this.rdbDessert.Name = "rdbDessert";
+            this.rdbDessert.Size = new System.Drawing.Size(72, 17);
+            this.rdbDessert.TabIndex = 2;
+            this.rdbDessert.TabStop = true;
+            this.rdbDessert.Text = "อาหารคาว";
+            this.rdbDessert.UseVisualStyleBackColor = true;
+            // 
             // frmRecipe
             // 
-            this.ClientSize = new System.Drawing.Size(541, 311);
+            this.ClientSize = new System.Drawing.Size(537, 372);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnDeleteIngredient);
             this.Controls.Add(this.btnAddIngredient);
@@ -199,6 +227,7 @@ public class frmRecipe : Form
             this.Name = "frmRecipe";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

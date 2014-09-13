@@ -2,6 +2,9 @@
 
 namespace FoodsManager
 {
+    public enum IngredientType { Flavoring = 1, Meat, Vegetable, Fruit };
+    public enum IngredientUnit { Fong = 10, Gram, Ton, Hua, Luk, Mud, Greb}
+
     /// <summary>
     /// Specifies weather form use to add or edit
     /// </summary>

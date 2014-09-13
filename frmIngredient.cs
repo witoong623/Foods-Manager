@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using FoodsManager;
 
 /// <summary>
 /// This class use to display window form and manage about ingredint
@@ -311,23 +312,23 @@ public class frmIngredient : Form
     /// To determine what type of ingredient is checked
     /// </summary>
     /// <returns>int    that indicate what type is to insert to database</returns>
-    private int TypeSelected()
+    private IngredientType TypeSelected()
     {
         if (rdbMeat.Checked == true)
         {
-            return 2;
+            return IngredientType.Meat;
         }
         else if (rdbVegetable.Checked == true)
         {
-            return 3;
+            return IngredientType.Vegetable;
         }
         else if (rdbFruit.Checked == true)
         {
-            return 4;
+            return IngredientType.Fruit;
         }
         else
         {
-            return 1;
+            return IngredientType.Flavoring;
         }
     }
 
@@ -335,35 +336,35 @@ public class frmIngredient : Form
     /// To determine what unit of ingredient is checked
     /// </summary>
     /// <returns>int    that indicate what unit is to insert to database</returns>
-    private int UnitSelected()
+    private IngredientUnit UnitSelected()
     {
         if (rdbGram.Checked == true)
         {
-            return 11;
+            return IngredientUnit.Gram;
         }
         else if (rdbTon.Checked == true)
         {
-            return 12;
+            return IngredientUnit.Ton;
         }
         else if (rdbLuk.Checked == true)
         {
-            return 14;
+            return IngredientUnit.Luk;
         }
         else if (rdbHua.Checked == true)
         {
-            return 13;
+            return IngredientUnit.Hua;
         }
         else if (rdbFong.Checked == true)
         {
-            return 10;
+            return IngredientUnit.Fong;
         }
         else if (rdbMud.Checked == true)
         {
-            return 15;
+            return IngredientUnit.Mud;
         }
         else
         {
-            return 16;
+            return IngredientUnit.Greb;
         }
     }
 
@@ -493,7 +494,7 @@ public class frmIngredient : Form
             return;
         }
 
-        if (myDB.Insert(TypeSelected(), txtIngredientName.Text, quantity, UnitSelected()) == true)
+        if (myDB.InsertIngredient(TypeSelected(), txtIngredientName.Text, quantity, UnitSelected()) == true)
         {
             Close();
         }

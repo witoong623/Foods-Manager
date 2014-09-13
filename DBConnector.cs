@@ -3,6 +3,7 @@ using System.Data;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using FoodsManager;
 
 /// <summary>
 /// To Connect and perform task concern to DB
@@ -108,21 +109,21 @@ public class DBConnector
     }
 
     /// <summary>
-    /// To insert new ingredient to ingredient table
+    /// Insert new ingredient to ingredient table
     /// </summary>
-    /// <param name="typeID">Ingredient type</param>
+    /// <param name="type">Ingredient type</param>
     /// <param name="name">Ingredient name</param>
     /// <param name="initial">Ingredient initial quantity</param>
-    /// <param name="unitID">Ingredient unit called</param>
-    public bool Insert(int typeID, string name, int initial, int unitID)
+    /// <param name="unit">Ingredient unit called</param>
+    public bool InsertIngredient(IngredientType type, string name, int initial, IngredientUnit unit)
     {
         try
         {
             string query;
 
             query = "INSERT INTO ingredient (type_id, ingredient_name," +
-                    " ingredient_quantity, unit_id) VALUES('" + typeID + "', '" +
-                    name + "', '" + initial + "', '" + unitID + "')";
+                    " ingredient_quantity, unit_id) VALUES('" +  + "', '" +
+                    name + "', '" + initial + "', '" + unit + "')";
 
             //open connection
             if (this.OpenConnection() == true)
@@ -156,14 +157,14 @@ public class DBConnector
     /// <summary>
     /// To update ingredient but can't edit name
     /// </summary>
-    /// <param name="typeID">Ingredient type</param>
+    /// <param name="type">Ingredient type</param>
     /// <param name="name">Ingredient name</param>
     /// <param name="initial">Ingredient initial quantity</param>
-    /// <param name="unitID">Ingredient unit called</param>
-    public void Update(int typeID, string name, int initial, int unitID)
+    /// <param name="unit">Ingredient unit called</param>
+    public void Update(IngredientType type, string name, int initial, IngredientUnit unit)
     {
         string query = "UPDATE ingredient " +
-                        "SET type_id='" + typeID + "', ingredient_quantity='" + initial + "', unit_id='" + unitID + "' " +
+                        "SET type_id='" + type + "', ingredient_quantity='" + initial + "', unit_id='" + unit + "' " +
                         "WHERE ingredient_name='" + name + "'";
                         
 
@@ -189,7 +190,7 @@ public class DBConnector
     /// Select all ingredient information from table
     /// </summary>
     /// <returns>Array of List string contain data</returns>
-    public List<string>[] IngredientSelect()
+    public List<string>[] SelecteIngredient()
     {
         string query = "SELECT * FROM ingredient";
 
@@ -237,7 +238,7 @@ public class DBConnector
     /// </summary>
     /// <param name="typeID">Ingredient type</param>
     /// <returns>Array of List string contain data</returns>
-    public List<string>[] IngredientSelect(int typeID)
+    public List<string>[] SelectIngredient(int typeID)
     {
         string query = "SELECT * FROM ingredient WHERE type_id='" + typeID + "'";
 
@@ -286,7 +287,7 @@ public class DBConnector
     /// <param name="typeID">Ingredient type</param>
     /// <param name="quantity">Ingredient quantity</param>
     /// <returns></returns>
-    public List<string>[] IngredientSelect(int typeID, int quantity)
+    public List<string>[] SelectIngredient(int typeID, int quantity)
     {
         string query = "SELECT * FROM ingredient " +
                         "WHERE type_id='" + typeID + "' AND ingredient_quantity='" + quantity + "'";
@@ -441,6 +442,37 @@ public class DBConnector
         {
             MessageBox.Show(ex.Message);
         }
+    }
+
+    public bool SelectSpecifiedRecipe(string name)
+    {
+        return true;
+    }
+
+    public bool InsertRecipe(string name, int type, List<string>[] ingredient)
+    {
+        try
+        {
+            string query = "INSERT INTO recipe (recipe_type_id, recipe_name)" +
+                            "VALUES (" + type + ", " + name + ")";
+
+            if (OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+            }
+            return true;
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message);
+            return false;
+        }
+        finally
+        {
+
+        }
+        
     }
 }
 

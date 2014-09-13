@@ -354,7 +354,7 @@ public class frmMain : Form
 
     private void btnAddMenu_Click(object sender, EventArgs e)
     {
-        frmRecipe myRecipe = new frmRecipe(DisplayMode.Addition);
+        frmRecipe myRecipe = new frmRecipe(null);
         myRecipe.ShowDialog();
     }
 
@@ -429,11 +429,11 @@ public class frmMain : Form
         List<string>[] data = new List<string>[4];
         if (cbMaterialsInStock.SelectedIndex == 0)
         {
-            data = myDB.IngredientSelect();
+            data = myDB.SelecteIngredient();
         }
         else
         {
-            data = myDB.IngredientSelect(cbMaterialsInStock.SelectedIndex);
+            data = myDB.SelectIngredient(cbMaterialsInStock.SelectedIndex);
         }
         ListViewItem sub;
         for (i = 0; i < data[0].Count; i++)
@@ -456,11 +456,11 @@ public class frmMain : Form
         List<string>[] data = new List<string>[4];
         if (cbMaterialsOutOfStock.SelectedIndex == 0)
         {
-            data = myDB.IngredientSelect();
+            data = myDB.SelecteIngredient();
         }
         else
         {
-            data = myDB.IngredientSelect(cbMaterialsOutOfStock.SelectedIndex, 0);
+            data = myDB.SelectIngredient(cbMaterialsOutOfStock.SelectedIndex, 0);
         }
         ListViewItem sub;
         for (i = 0; i < data[0].Count; i++)
