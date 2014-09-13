@@ -115,14 +115,14 @@ public class DBConnector
     /// <param name="name">Ingredient name</param>
     /// <param name="initial">Ingredient initial quantity</param>
     /// <param name="unit">Ingredient unit called</param>
-    public bool InsertIngredient(IngredientType type, string name, int initial, IngredientUnit unit)
+    public bool InsertIngredient(int type, string name, int initial, int unit)
     {
         try
         {
             string query;
 
             query = "INSERT INTO ingredient (type_id, ingredient_name," +
-                    " ingredient_quantity, unit_id) VALUES('" +  + "', '" +
+                    " ingredient_quantity, unit_id) VALUES('" + type + "', '" +
                     name + "', '" + initial + "', '" + unit + "')";
 
             //open connection
@@ -161,7 +161,7 @@ public class DBConnector
     /// <param name="name">Ingredient name</param>
     /// <param name="initial">Ingredient initial quantity</param>
     /// <param name="unit">Ingredient unit called</param>
-    public void Update(IngredientType type, string name, int initial, IngredientUnit unit)
+    public void Update(int type, string name, int initial, int unit)
     {
         string query = "UPDATE ingredient " +
                         "SET type_id='" + type + "', ingredient_quantity='" + initial + "', unit_id='" + unit + "' " +

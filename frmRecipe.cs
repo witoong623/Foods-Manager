@@ -2,7 +2,6 @@
 using System.Data;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using FoodsManager;
 
 public class frmRecipe : Form
 {
@@ -87,7 +86,6 @@ public class frmRecipe : Form
             this.txtIngredientName.Name = "txtIngredientName";
             this.txtIngredientName.Size = new System.Drawing.Size(152, 20);
             this.txtIngredientName.TabIndex = 2;
-            this.txtIngredientName.Click += new System.EventHandler(this.txtIngredientName_Click);
             // 
             // txtFoodName
             // 
@@ -181,8 +179,9 @@ public class frmRecipe : Form
             // 
             this.btnAddRecipe.Location = new System.Drawing.Point(19, 80);
             this.btnAddRecipe.Name = "btnAddRecipe";
-            this.btnAddRecipe.Size = new System.Drawing.Size(87, 23);
+            this.btnAddRecipe.Size = new System.Drawing.Size(75, 23);
             this.btnAddRecipe.TabIndex = 0;
+            this.btnAddRecipe.Text = "button1";
             this.btnAddRecipe.UseVisualStyleBackColor = true;
             // 
             // rdbMeatDish
@@ -226,6 +225,7 @@ public class frmRecipe : Form
             this.MinimizeBox = false;
             this.Name = "frmRecipe";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "เพิ่มสูตรอาหาร";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -237,39 +237,9 @@ public class frmRecipe : Form
     public frmRecipe()
     {
         InitializeComponent();
-        AutoCompleteSource();
-    }
-
-    public frmRecipe(string name) : this()
-    {
-        if (name == null)
-        {
-            AdditionFormDisplay();
-        }
-        else
-        {
-            EditorFormDisplay();
-        }
-    }
-
-    private void AdditionFormDisplay()
-    {
-        this.Text = "เพิ่มสูตรอาหาร";
-        btnAddRecipe.Text = "เพิ่มสูตรอาหาร";
-        txtFoodName.Select();
         cbIngredientType.SelectedIndex = 0;
-    }
-
-    private void EditorFormDisplay()
-    {
-        this.Text = "แก้ไขสูตรอาหาร";
-        btnAddRecipe.Text = "แก้ไขสูตรอาหาร";
-        lstvIngredientTable.FocusedItem = lstvIngredientTable.Items[0];
-    }
-
-    private void txtIngredientName_Click(object sender, EventArgs s)
-    {
-        txtIngredientName.SelectAll();
+        AutoCompleteSource();
+        txtFoodName.Select();
     }
 
     private void AutoCompleteSource()

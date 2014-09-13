@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using FoodsManager;
 
 /// <summary>
 /// This class use to display window form and manage about ingredint
@@ -291,17 +290,17 @@ public class frmIngredient : Form
     /// <summary>
     /// Constructor use to build form that correspond to task
     /// </summary>
-    /// <param name="name">string   name of ingredient or null to add ingredient</param>
-    public frmIngredient(string name):this()
+    /// <param name="item">string   name of ingredient or null to add ingredient</param>
+    public frmIngredient(string item):this()
     {
-        if(name == null)
+        if(item == null)
         {
             AddForm();
         }
         else
         {
             EditForm();
-            LoadIngredient(name);
+            LoadIngredient(item);
             txtQuantity.Select(txtQuantity.Text.Length, 0);
         }
     }
@@ -312,23 +311,23 @@ public class frmIngredient : Form
     /// To determine what type of ingredient is checked
     /// </summary>
     /// <returns>int    that indicate what type is to insert to database</returns>
-    private IngredientType TypeSelected()
+    private int TypeSelected()
     {
         if (rdbMeat.Checked == true)
         {
-            return IngredientType.Meat;
+            return 2;
         }
         else if (rdbVegetable.Checked == true)
         {
-            return IngredientType.Vegetable;
+            return 3;
         }
         else if (rdbFruit.Checked == true)
         {
-            return IngredientType.Fruit;
+            return 3;
         }
         else
         {
-            return IngredientType.Flavoring;
+            return 1;
         }
     }
 
@@ -336,35 +335,35 @@ public class frmIngredient : Form
     /// To determine what unit of ingredient is checked
     /// </summary>
     /// <returns>int    that indicate what unit is to insert to database</returns>
-    private IngredientUnit UnitSelected()
+    private int UnitSelected()
     {
         if (rdbGram.Checked == true)
         {
-            return IngredientUnit.Gram;
+            return 11;
         }
         else if (rdbTon.Checked == true)
         {
-            return IngredientUnit.Ton;
+            return 12;
         }
         else if (rdbLuk.Checked == true)
         {
-            return IngredientUnit.Luk;
+            return 14;
         }
         else if (rdbHua.Checked == true)
         {
-            return IngredientUnit.Hua;
+            return 13;
         }
         else if (rdbFong.Checked == true)
         {
-            return IngredientUnit.Fong;
+            return 10;
         }
         else if (rdbMud.Checked == true)
         {
-            return IngredientUnit.Mud;
+            return 15;
         }
         else
         {
-            return IngredientUnit.Greb;
+            return 16;
         }
     }
 

@@ -3,7 +3,6 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Collections.Generic;
 using FoodsManager;
-
 public class frmMain : Form
 {
     private GroupBox gpbFoodsCanMake;
@@ -32,6 +31,7 @@ public class frmMain : Form
     private ToolStripStatusLabel tssDBconnectStatus;
     private DBConnector myDB = new DBConnector();
     private ColumnHeader columnHeader9;
+    private System.ComponentModel.BackgroundWorker backgroundWorker1;
 
     private const string ADD = null;
 
@@ -63,6 +63,7 @@ public class frmMain : Form
             this.cbMaterialsOutOfStock = new System.Windows.Forms.ComboBox();
             this.stsStatusBar = new System.Windows.Forms.StatusStrip();
             this.tssDBconnectStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.gpbFoodsCanMake.SuspendLayout();
             this.gpbFoodsCannotMake.SuspendLayout();
             this.gpbMaterialsHave.SuspendLayout();
@@ -354,7 +355,7 @@ public class frmMain : Form
 
     private void btnAddMenu_Click(object sender, EventArgs e)
     {
-        frmRecipe myRecipe = new frmRecipe(null);
+        frmRecipe myRecipe = new frmRecipe();
         myRecipe.ShowDialog();
     }
 

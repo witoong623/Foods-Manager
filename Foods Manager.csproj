@@ -50,7 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FoodManage.cs" />
+    <Compile Include="clsConvert.cs" />
     <Compile Include="frmIngredient.cs">
       <SubType>Form</SubType>
     </Compile>
