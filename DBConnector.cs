@@ -470,7 +470,7 @@ public class DBConnector
         }
         finally
         {
-
+            CloseConnection();
         }
         
     }

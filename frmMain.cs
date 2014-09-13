@@ -355,7 +355,7 @@ public class frmMain : Form
 
     private void btnAddMenu_Click(object sender, EventArgs e)
     {
-        frmRecipe myRecipe = new frmRecipe();
+        frmRecipe myRecipe = new frmRecipe(null);
         myRecipe.ShowDialog();
     }
 
