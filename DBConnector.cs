@@ -393,6 +393,10 @@ public class DBConnector
         }
     }
 
+    /// <summary>
+    /// Delete ingredient from database
+    /// </summary>
+    /// <param name="name">string name of ingredient</param>
     public void Delete(string name)
     {
         try
@@ -449,30 +453,64 @@ public class DBConnector
         return true;
     }
 
+    /// <summary>
+    /// Insert recipe to database
+    /// </summary>
+    /// <param name="name">string name of recipe</param>
+    /// <param name="type">int type of recipe</param>
+    /// <param name="ingredient">List string name of ingredient and quantity to use in string format</param>
+    /// <returns>True if sucesses otherwise false</returns>
     public bool InsertRecipe(string name, int type, List<string>[] ingredient)
     {
         try
         {
+            List<string> ingredient_id = new List<string>();
+            int i;
+            string recipeID = "1";
             string query = "INSERT INTO recipe (recipe_type_id, recipe_name)" +
-                            "VALUES (" + type + ", " + name + ")";
+                            "VALUES ('" + type + "', '" + name + "')";
 
             if (OpenConnection() == true)
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
-                cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();  //insert name of food to recipe table
+
+                query = "SELECT recipe_id FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";   //get recipe id after insert
+                cmd.CommandText = query;
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    recipeID = dataReader.GetString("recipe_id");
+                }
+                dataReader.Close();
+
+                for (i = 0; i < ingredient[0].Count; i++)   //get ingredient id specify by name
+                {
+                    query = "SELECT ingredient_id FROM ingredient WHERE ingredient_name='" + ingredient[0][i] + "' LIMIT 1";
+                    cmd.CommandText = query;
+                    dataReader = cmd.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        ingredient_id.Add(dataReader.GetString("ingredient_id"));
+                    }
+                    dataReader.Close();
+                }
+
+                for (i = 0; i < ingredient[0].Count; i++)
+                {
+                    query = "INSERT INTO recipe_ingredient (recipe_id, ingredient_id, quantity)" +
+                            "VALUES('" + recipeID + "', '" + ingredient_id[i] + "', '" + ingredient[1][i] + "')";
+                    cmd.CommandText = query;
+                    cmd.ExecuteNonQuery();
+                }
             }
             return true;
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message);
+            MessageBox.Show(ex.Message + ex.StackTrace);
             return false;
         }
-        finally
-        {
-            CloseConnection();
-        }
-        
     }
 }
 

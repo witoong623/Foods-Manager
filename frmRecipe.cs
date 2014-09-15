@@ -268,6 +268,9 @@ public class frmRecipe : Form
         }
     }
 
+    /// <summary>
+    /// Display Addition form mode
+    /// </summary>
     private void AdditionFormDisplay()
     {
         this.Text = "เพิ่มสูตรอาหาร";
@@ -276,8 +279,12 @@ public class frmRecipe : Form
         btnCancel.Text = "ยกเลิก";
         txtFoodName.Select();
         rdbMeatDish.Checked = true;
+        btnSubmit.Click += new EventHandler(AddRecipe);
     }
 
+    /// <summary>
+    /// Display Editor form mode
+    /// </summary>
     private void EditorFormDisplay()
     {
         this.Text = "แก้ไขสูตรอาหาร";
@@ -285,6 +292,10 @@ public class frmRecipe : Form
         btnCancel.Text = "ลบสูตรอาหาร";
         btnAddNewIngredient.Visible = true;
     }
+
+    /// <summary>
+    /// Get information from database and add to autostring collection
+    /// </summary>
     private void AutoCompleteSource()
     {
         AutoCompleteStringCollection AutoCompleteCollection = new AutoCompleteStringCollection();
@@ -294,6 +305,11 @@ public class frmRecipe : Form
         txtIngredientName.AutoCompleteCustomSource = AutoCompleteCollection;
     }
 
+    /// <summary>
+    /// Add ingredient to List View
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void btnAddIngredient_Click(object sender, EventArgs e)
     {
         ListViewItem ListCollection;
@@ -328,6 +344,52 @@ public class frmRecipe : Form
         lstvIngredientTable.Items.Add(ListCollection);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void AddRecipe(object sender, EventArgs e)
+    {
+        List<string>[] ingredient = new List<string>[2];
+        ingredient[0] = new List<string>();
+        ingredient[1] = new List<string>();
+        int i;
+        bool flag;
+
+        if (txtFoodName.Text.Length == 0)
+        {
+            MessageBox.Show("กรุณาใส่ชื่อสูตรอาหาร");
+            txtFoodName.Select();
+            return;
+        }
+
+        if (lstvIngredientTable.Items.Count == 0)
+        {
+            MessageBox.Show("กรุณาเพิ่มวัตถุดิบ\nลงไปในรายการทางด้านซ้าย");
+            txtIngredientName.Select();
+            return;
+        }
+
+        for (i = 0; i < lstvIngredientTable.Items.Count; i++)
+        {
+            ListViewItem subitem = lstvIngredientTable.Items[i];
+            ingredient[0].Add(subitem.SubItems[0].Text);
+            ingredient[1].Add(subitem.SubItems[1].Text);
+        }
+
+        flag = myDB.InsertRecipe(txtFoodName.Text, 1, ingredient);
+        if (flag == true)
+        {
+            Close();
+        }
+    }
+
+    /// <summary>
+    /// Delete ingredient from List View
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void btnDeleteIngredient_Click(object sender, EventArgs e)
     {
         int i;
@@ -342,6 +404,11 @@ public class frmRecipe : Form
         }
     }
 
+    /// <summary>
+    /// Clear Textbox for ready to get data from user
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void btnAddEmptyTextbox(object sender, EventArgs e)
     {
         txtIngredientName.Clear();
