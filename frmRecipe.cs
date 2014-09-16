@@ -25,6 +25,7 @@ public class frmRecipe : Form
     private Button btnCancel;
     private Button btnAddNewIngredient;
     private DBConnector myDB = new DBConnector();
+    private AdjustmentIngredient update;
 
     #region windows code
     private void InitializeComponent()
@@ -280,6 +281,7 @@ public class frmRecipe : Form
         txtFoodName.Select();
         rdbMeatDish.Checked = true;
         btnSubmit.Click += new EventHandler(AddRecipe);
+        btnCancel.Click += new EventHandler(CloseForm);
     }
 
     /// <summary>
@@ -414,5 +416,10 @@ public class frmRecipe : Form
         txtIngredientName.Clear();
         txtQuantity.Clear();
         btnAddIngredient.Text = "เพิ่มวัตถุดิบ";
+    }
+
+    private void CloseForm(object sender, EventArgs e)
+    {
+        Close();
     }
 }
