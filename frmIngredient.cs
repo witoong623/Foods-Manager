@@ -27,6 +27,7 @@ public class frmIngredient : Form
     private Button btnClose;
     private CheckBox cbDelete;
     private DBConnector myDB = new DBConnector();
+    private RadioButton rdbGrain;
 
     private int currentQuantity;
 
@@ -53,6 +54,7 @@ public class frmIngredient : Form
             this.btnSubmit = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.cbDelete = new System.Windows.Forms.CheckBox();
+            this.rdbGrain = new System.Windows.Forms.RadioButton();
             this.gbUnit.SuspendLayout();
             this.gbType.SuspendLayout();
             this.SuspendLayout();
@@ -90,6 +92,7 @@ public class frmIngredient : Form
             // 
             // gbUnit
             // 
+            this.gbUnit.Controls.Add(this.rdbGrain);
             this.gbUnit.Controls.Add(this.rdbGreb);
             this.gbUnit.Controls.Add(this.rdbMud);
             this.gbUnit.Controls.Add(this.rdbLuk);
@@ -256,6 +259,17 @@ public class frmIngredient : Form
             this.cbDelete.UseVisualStyleBackColor = true;
             this.cbDelete.Visible = false;
             // 
+            // rdbGrain
+            // 
+            this.rdbGrain.AutoSize = true;
+            this.rdbGrain.Location = new System.Drawing.Point(175, 42);
+            this.rdbGrain.Name = "rdbGrain";
+            this.rdbGrain.Size = new System.Drawing.Size(44, 17);
+            this.rdbGrain.TabIndex = 10;
+            this.rdbGrain.TabStop = true;
+            this.rdbGrain.Text = "เม็ด";
+            this.rdbGrain.UseVisualStyleBackColor = true;
+            // 
             // frmIngredient
             // 
             this.ClientSize = new System.Drawing.Size(284, 317);
@@ -290,8 +304,8 @@ public class frmIngredient : Form
     /// <summary>
     /// Constructor use to build form that correspond to task
     /// </summary>
-    /// <param name="item">string   name of ingredient or null to add ingredient</param>
-    public frmIngredient(string item):this()
+    /// <param name="item">name of ingredient or null to add ingredient</param>
+    public frmIngredient(string item) : this()
     {
         if(item == null)
         {
@@ -310,18 +324,18 @@ public class frmIngredient : Form
     /// <summary>
     /// To determine what type of ingredient is checked
     /// </summary>
-    /// <returns>int    that indicate what type is to insert to database</returns>
+    /// <returns>ID that indicate what type is to insert to database</returns>
     private int TypeSelected()
     {
-        if (rdbMeat.Checked == true)
+        if (rdbMeat.Checked)
         {
             return 2;
         }
-        else if (rdbVegetable.Checked == true)
+        else if (rdbVegetable.Checked)
         {
             return 3;
         }
-        else if (rdbFruit.Checked == true)
+        else if (rdbFruit.Checked)
         {
             return 3;
         }
@@ -337,33 +351,37 @@ public class frmIngredient : Form
     /// <returns>int    that indicate what unit is to insert to database</returns>
     private int UnitSelected()
     {
-        if (rdbGram.Checked == true)
+        if (rdbGram.Checked)
         {
             return 11;
         }
-        else if (rdbTon.Checked == true)
+        else if (rdbTon.Checked)
         {
             return 12;
         }
-        else if (rdbLuk.Checked == true)
+        else if (rdbLuk.Checked)
         {
             return 14;
         }
-        else if (rdbHua.Checked == true)
+        else if (rdbHua.Checked)
         {
             return 13;
         }
-        else if (rdbFong.Checked == true)
+        else if (rdbFong.Checked)
         {
             return 10;
         }
-        else if (rdbMud.Checked == true)
+        else if (rdbMud.Checked)
         {
             return 15;
         }
-        else
+        else if (rdbGreb.Checked)
         {
             return 16;
+        }
+        else
+        {
+            return 17;
         }
     }
 
@@ -411,7 +429,7 @@ public class frmIngredient : Form
     }
 
     /// <summary>
-    /// To determine which radio button is checked
+    /// To determine which radio button is checked. This method is call only when load exist ingredient
     /// </summary>
     /// <param name="unit">int  value of unit in database</param>
     private void ToCheckedUnit(int unit)
@@ -439,11 +457,14 @@ public class frmIngredient : Form
             case 16:
                 rdbGreb.Checked = true;
                 break;
+            case 17:
+                rdbGrain.Checked = true;
+                break;
         }
     }
 
     /// <summary>
-    /// To determine which radio button is checked
+    /// To determine which radio button is checked.  This method is call only when load exist ingredient
     /// </summary>
     /// <param name="type">int  value of type in database</param>
     private void TypeCheckedDisplay(int type)

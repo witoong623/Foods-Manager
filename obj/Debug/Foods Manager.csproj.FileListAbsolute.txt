@@ -30,3 +30,5 @@ C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\obj\Debug\Foods Manager.csproj
 C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\obj\Debug\frmIngredient.resources
 C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\obj\Debug\frmRecipe.resources
 C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\obj\Debug\Foods_Manager.Properties.Resources.resources
+C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\obj\Debug\frmAbout.resources
+C:\Users\Aliveplex\Documents\GitHub\Foods-Manager\obj\Debug\frmCreateDB.resources

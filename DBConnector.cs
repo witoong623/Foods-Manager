@@ -10,6 +10,9 @@ using FoodsManager;
 /// </summary>
 public class DBConnector
 {
+    private const int INSTOCK = 1;
+    private const int OUTOFSTOCK = 0;
+
     private static MySqlConnection connection;
     private static string server;
     private static string database;
@@ -17,11 +20,11 @@ public class DBConnector
     private static string password;
     private static string charset;
 
-    public bool ConnectStatus
+    public bool TestConnection
     {
         get
         {
-            if (OpenConnection() == true)
+            if (OpenConnection())
             {
                 CloseConnection();
                 return true;
@@ -126,7 +129,7 @@ public class DBConnector
                     name + "', '" + initial + "', '" + unit + "')";
 
             // Open connection
-            if (this.OpenConnection() == true)
+            if (OpenConnection())
             {
                 // Create command and assign the query and connection from the constructor
                 MySqlCommand cmd = new MySqlCommand(query, connection);
@@ -135,7 +138,7 @@ public class DBConnector
                 cmd.ExecuteNonQuery();
 
                 // Close connection
-                this.CloseConnection();
+                CloseConnection();
             }
             return true;
         }
@@ -146,12 +149,7 @@ public class DBConnector
                 MessageBox.Show(name + "ถูกเพิ่มแล้ว","ข้อมูลซ้ำกัน");
             }
             return false;
-        }
-        finally
-        {
-            this.CloseConnection();
-        }
-        
+        }  
     }
 
     /// <summary>
@@ -169,7 +167,7 @@ public class DBConnector
                         
 
         //Open connection
-        if (this.OpenConnection() == true)
+        if (OpenConnection())
         {
             // Create mysql command
             MySqlCommand cmd = new MySqlCommand();
@@ -182,7 +180,7 @@ public class DBConnector
             cmd.ExecuteNonQuery();
 
             // Close connection
-            this.CloseConnection();
+            CloseConnection();
         }
     }
 
@@ -200,6 +198,7 @@ public class DBConnector
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 cmd.ExecuteNonQuery();
+                CloseConnection();
                 return true;
             }
         }
@@ -208,128 +207,50 @@ public class DBConnector
             MessageBox.Show(ex.Message + ex.StackTrace);
             return false;
         }
-        finally
-        {
-            CloseConnection();
-        }
         return false;
     }
 
     /// <summary>
-    /// Select all ingredient information from table
-    /// </summary>
-    /// <returns>Array of List string contain data</returns>
-    public List<string>[] SelecteIngredient()
-    {
-        string query = "SELECT * FROM ingredient";
-
-        // Create a list to store the result
-        List<string>[] list = new List<string>[4];
-        list[0] = new List<string>();
-        list[1] = new List<string>();
-        list[2] = new List<string>();
-        list[3] = new List<string>();
-
-        //Open connection
-        if (this.OpenConnection() == true)
-        {
-            // Create Command
-            MySqlCommand cmd = new MySqlCommand(query, connection);
-            // Create a data reader and Execute the command
-            MySqlDataReader dataReader = cmd.ExecuteReader();
-
-            // Read the data and store them in the list
-            while (dataReader.Read())
-            {
-                list[0].Add(dataReader["type_id"] + "");
-                list[1].Add(dataReader["ingredient_name"] + "");
-                list[2].Add(dataReader["ingredient_quantity"] + "");
-                list[3].Add(dataReader["unit_id"] + "");
-            }
-
-            // Close Data Reader
-            dataReader.Close();
-
-            // Close Connection
-            this.CloseConnection();
-
-            // Return list to be displayed
-            return list;
-        }
-        else
-        {
-            return list;
-        }
-    }
-
-    /// <summary>
-    /// Load Ingredient information from table by specific type id
-    /// </summary>
-    /// <param name="typeID">Ingredient type</param>
-    /// <returns>Array of List string contain data</returns>
-    public List<string>[] SelectIngredient(int typeID)
-    {
-        string query = "SELECT * FROM ingredient WHERE type_id='" + typeID + "'";
-
-        // Create a list to store the result
-        List<string>[] list = new List<string>[4];
-        list[0] = new List<string>();
-        list[1] = new List<string>();
-        list[2] = new List<string>();
-        list[3] = new List<string>();
-
-        // Open connection
-        if (this.OpenConnection() == true)
-        {
-            // Create Command
-            MySqlCommand cmd = new MySqlCommand(query, connection);
-            // Create a data reader and Execute the command
-            MySqlDataReader dataReader = cmd.ExecuteReader();
-
-            // Read the data and store them in the list
-            while (dataReader.Read())
-            {
-                list[0].Add(dataReader["type_id"] + "");
-                list[1].Add(dataReader["ingredient_name"] + "");
-                list[2].Add(dataReader["ingredient_quantity"] + "");
-                list[3].Add(dataReader["unit_id"] + "");
-            }
-
-            // Close Data Reader
-            dataReader.Close();
-
-            // Close Connection
-            this.CloseConnection();
-
-            // Return list to be displayed
-            return list;
-        }
-        else
-        {
-            return list;
-        }
-    }
-
-    /// <summary>
-    /// Load Ingredient information from table by specific type id and quantity
+    /// Select Ingredient information from table by specific type id and quantity
     /// </summary>
     /// <param name="typeID">Ingredient type</param>
     /// <param name="quantity">Ingredient quantity</param>
     /// <returns></returns>
     public List<string>[] SelectIngredient(int typeID, int quantity)
     {
-        string query = "SELECT * FROM ingredient " +
-                        "WHERE type_id='" + typeID + "' AND ingredient_quantity='" + quantity + "'";
+        string query;
+
+        if (quantity == INSTOCK)
+        {
+            if (typeID == 0)
+            {
+                query = "SELECT ingredient_name, ingredient_quantity, unit_id FROM ingredient WHERE ingredient_quantity > 0";
+            }
+            else
+            {
+                query = "SELECT ingredient_name, ingredient_quantity, unit_id FROM ingredient WHERE type_id='" + typeID + "' AND ingredient_quantity > 0";
+            }
+        }
+        else
+        {
+            if (typeID == 0)
+            {
+                query = "SELECT ingredient_name, ingredient_quantity, unit_id FROM ingredient WHERE ingredient_quantity = 0";
+            }
+            else
+            {
+                query = "SELECT ingredient_name, ingredient_quantity, unit_id FROM ingredient WHERE type_id='" + typeID + "' AND ingredient_quantity = 0";
+            }
+        }
 
         // Create a list to store the result
-        List<string>[] list = new List<string>[4];
+        List<string>[] list = new List<string>[3];
         list[0] = new List<string>();
         list[1] = new List<string>();
         list[2] = new List<string>();
-        list[3] = new List<string>();
 
         // Open connection
-        if (this.OpenConnection() == true)
+        if (OpenConnection())
         {
             // Create Command
             MySqlCommand cmd = new MySqlCommand(query, connection);
@@ -339,19 +260,73 @@ public class DBConnector
             // Read the data and store them in the list
             while (dataReader.Read())
             {
-                list[0].Add(dataReader["type_id"] + "");
-                list[1].Add(dataReader["ingredient_name"] + "");
-                list[2].Add(dataReader["ingredient_quantity"] + "");
-                list[3].Add(dataReader["unit_id"] + "");
+                list[0].Add(dataReader.GetString("ingredient_name"));
+                list[1].Add(dataReader.GetString("ingredient_quantity"));
+                list[2].Add(dataReader.GetString("unit_id"));
             }
 
             // Close Data Reader
             dataReader.Close();
 
             // Close Connection
-            this.CloseConnection();
+            CloseConnection();
 
             // Return list to be displayed
+            return list;
+        }
+        else
+        {
+            return list;
+        }
+    }
+
+    /// <summary>
+    /// Select recipe name and quantity without filter anything
+    /// </summary>
+    /// <returns>List of recipe name and quantity</returns>
+    public List<string>[] SelectRecipe(int typeID, int quantity)
+    {
+        string query;
+        if (quantity == INSTOCK)
+        {
+            if (typeID == 0)
+            {
+                query = "SELECT recipe_name, quantity, recipe_unit_id FROM recipe WHERE quantity > 0";
+            }
+            else
+            {
+                query = "SELECT recipe_name, quantity, recipe_unit_id FROM recipe WHERE quantity > 0 AND recipe_type_id = '" + typeID + "'";
+            }
+        }
+        else
+        {
+            if (typeID == 0)
+            {
+                query = "SELECT recipe_name, quantity, recipe_unit_id FROM recipe WHERE quantity = 0";
+            }
+            else
+            {
+                query = "SELECT recipe_name, quantity, recipe_unit_id FROM recipe WHERE quantity = 0 AND recipe_type_id = '" + typeID + "'";
+            }
+        }
+        List<string>[] list = new List<string>[3];
+        list[0] = new List<string>();
+        list[1] = new List<string>();
+        list[2] = new List<string>();
+
+        if (OpenConnection())
+        {
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while(dataReader.Read())
+            {
+                list[0].Add(dataReader.GetString("recipe_name"));
+                list[1].Add(dataReader.GetString("quantity"));
+                list[2].Add(dataReader.GetString("recipe_unit_id"));
+            }
+            dataReader.Close();
+            CloseConnection();
             return list;
         }
         else
@@ -370,7 +345,7 @@ public class DBConnector
         string[] list = new string[4];
 
         // Open connection
-        if (OpenConnection() == true)
+        if (OpenConnection())
         {
             // Create Command
             MySqlCommand cmd = new MySqlCommand(query, connection);
@@ -388,7 +363,7 @@ public class DBConnector
             list[2] = dataReader.GetString(2);
             list[3] = dataReader.GetString(3);
             dataReader.Close();
-            this.CloseConnection();
+            CloseConnection();
             return list;
         }
         else
@@ -407,7 +382,7 @@ public class DBConnector
         int Count = -1;
 
         //Open Connection
-        if (this.OpenConnection() == true)
+        if (this.OpenConnection())
         {
             //Create Mysql Command
             MySqlCommand cmd = new MySqlCommand(query, connection);
@@ -416,7 +391,7 @@ public class DBConnector
             Count = int.Parse(cmd.ExecuteScalar() + "");
 
             //close Connection
-            this.CloseConnection();
+            CloseConnection();
 
             return Count;
         }
@@ -436,11 +411,11 @@ public class DBConnector
         {
             string query = "DELETE FROM ingredient WHERE ingredient_name='" + name + "'";
 
-            if (this.OpenConnection() == true)
+            if (this.OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 cmd.ExecuteNonQuery();
-                this.CloseConnection();
+                CloseConnection();
             }
         }
         catch(MySqlException ex)
@@ -502,7 +477,7 @@ public class DBConnector
     }
 
     /// <summary>
-    /// Get current quantity from recipe table by name
+    /// Get current quantity of recipe from recipe table by name
     /// </summary>
     /// <param name="name">name of recipe</param>
     /// <returns></returns>
@@ -518,6 +493,7 @@ public class DBConnector
             {
                 quantity = dataReader.GetInt32("quantity");
             }
+            CloseConnection();
         }
         return quantity;
     }
@@ -554,6 +530,48 @@ public class DBConnector
         }
     }
 
+    public string[] AssignStringCollection(int typeID)
+    {
+        int i;
+        string[] IngredientName;
+        string query;
+        List<string> list = new List<string>();
+
+        if (typeID == 0)
+        {
+            query = "SELECT ingredient_name FROM ingredient";
+        }
+        else
+        {
+            query = "SELECT ingredient_name FROM ingredient WHERE type_id = '" + typeID + "'";
+        }
+
+        if (OpenConnection())
+        {
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                list.Add(dataReader.GetString("ingredient_name"));
+            }
+            dataReader.Close();
+            CloseConnection();
+            IngredientName = new string[list.Count];
+
+            for (i = 0; i <IngredientName.Length; i++)
+            {
+                IngredientName[i] = list[i];
+            }
+
+            return IngredientName;
+        }
+        else
+        {
+            return IngredientName = null;
+        }
+    }
+
     public bool SelectSpecifiedRecipe(string name)
     {
         return true;
@@ -566,15 +584,15 @@ public class DBConnector
     /// <param name="type">int type of recipe</param>
     /// <param name="ingredient">List string name of ingredient and quantity to use in string format</param>
     /// <returns>True if sucesses otherwise false</returns>
-    public bool InsertRecipe(string name, int type, List<string>[] ingredient)
+    public bool InsertRecipe(string name, int type, List<string>[] ingredient, int unitID)
     {
         try
         {
             List<string> ingredient_id = new List<string>();
             int i;
             string recipeID = "1";
-            string query = "INSERT INTO recipe (recipe_type_id, recipe_name)" +
-                            "VALUES ('" + type + "', '" + name + "')";
+            string query = "INSERT INTO recipe (recipe_type_id, recipe_name, recipe_unit_id)" +
+                            "VALUES ('" + type + "', '" + name + "', '" + unitID + "')";
 
             if (OpenConnection() == true)
             {
@@ -605,7 +623,7 @@ public class DBConnector
                     dataReader.Close();
                 }
 
-                // Insert ingredient of recipe to 3rd relation table
+                // Insert ingredient of recipe to 3rd relation table(recipe_ingredient)
                 for (i = 0; i < ingredient[0].Count; i++)
                 {
                     query = "INSERT INTO recipe_ingredient (recipe_id, ingredient_id, quantity)" +
@@ -620,6 +638,10 @@ public class DBConnector
         {
             MessageBox.Show(ex.Message + ex.StackTrace);
             return false;
+        }
+        finally
+        {
+            CloseConnection();
         }
     }
 }

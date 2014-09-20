@@ -59,5 +59,15 @@ namespace Foods_Manager.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap aliveplex_program_logo {
+            get {
+                object obj = ResourceManager.GetObject("aliveplex-program-logo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

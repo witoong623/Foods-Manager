@@ -5,22 +5,14 @@ using System.Windows.Forms;
 public class AdjustmentIngredient
 {
     private List<string> ListName;
-    private DBConnector myDB;
+    private DBConnector myDB = new DBConnector();
     private string recipeName;
-
-    /// <summary>
-    /// Initializes a new instance of AdjustmentIngredient
-    /// </summary>
-    public AdjustmentIngredient()
-    {
-        myDB = new DBConnector();
-    }
 
     /// <summary>
     /// Initializes a new instance of AdjustmentIngredient with recipe's name
     /// </summary>
     /// <param name="name">a name of recipe</param>
-    public AdjustmentIngredient(string name) : this()
+    public AdjustmentIngredient(string name)
     {
         recipeName = name;
     }
@@ -29,7 +21,7 @@ public class AdjustmentIngredient
     /// Initializes a new instance of AdjustmentIngredient with list of recipe's name
     /// </summary>
     /// <param name="ListOfName">List of recipe's name</param>
-    public AdjustmentIngredient(List<string> ListOfName) : this()
+    public AdjustmentIngredient(List<string> ListOfName)
     {
         ListName = ListOfName;
     }
@@ -37,12 +29,12 @@ public class AdjustmentIngredient
     /// <summary>
     /// Adjust quantity of recipe. This method can Adjust only one recipe per call
     /// </summary>
-    /// <param name="name"></param>
+    /// <param name="recipeName"></param>
     /// <returns>True if sucesses otherwise false</returns>
-    public bool UpdateRecipeQuantity(string name)
+    public bool UpdateRecipeQuantity()
     {
-        int CurrentQuantity = myDB.GetCurrentQuantity(name);
-        List<int>[] IngredientQuantity = myDB.GetIngredientByRecipe(name);
+        int CurrentQuantity = myDB.GetCurrentQuantity(recipeName);
+        List<int>[] IngredientQuantity = myDB.GetIngredientByRecipe(recipeName);
 
         for (var i = 0; i < IngredientQuantity[0].Count; i++)
         {
@@ -52,7 +44,7 @@ public class AdjustmentIngredient
                 CurrentQuantity = processQuantity;
             }
         }
-        if (myDB.UpdateRecipeQuantity(name, CurrentQuantity))
+        if (myDB.UpdateRecipeQuantity(recipeName, CurrentQuantity))
         {
             return true;
         }

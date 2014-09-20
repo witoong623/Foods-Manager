@@ -2,12 +2,18 @@
 using System.Windows.Forms;
 using System.Threading;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using FoodsManager;
 public class frmMain : Form
 {
-    private GroupBox gpbFoodsCanMake;
-    private GroupBox gpbFoodsCannotMake;
-    private GroupBox gpbMaterialsOut;
+    private const string ADD = null;
+    private const int INSTOCK = 1;
+    private const int OUTOFSTOCK = 0;
+
+    private GroupBox gbFoodsCanMake;
+    private GroupBox gbFoodsCannotMake;
+    private GroupBox gbMaterialsOut;
     private ComboBox cbRecipeCanMake;
     private ListView lstvRecipeCanMake;
     private ColumnHeader columnHeader1;
@@ -26,63 +32,70 @@ public class frmMain : Form
     private ListView lstvMaterialsOutOfStock;
     private Button btnAddRecipe;
     private Button btnAddMaterial;
-    private GroupBox gpbMaterialsHave;
+    private GroupBox gbMaterialsHave;
     private StatusStrip stsStatusBar;
     private ToolStripStatusLabel tssDBconnectStatus;
     private DBConnector myDB = new DBConnector();
     private ColumnHeader columnHeader9;
-    private System.ComponentModel.BackgroundWorker backgroundWorker1;
-
-    private const string ADD = null;
+    private MenuStrip menuStrip1;
+    private ToolStripMenuItem mnMenu;
+    private ToolStripMenuItem smnSelectOrCreateDB;
+    private ToolStripMenuItem mnHelp;
+    private ToolStripMenuItem smnAbout;
 
     #region windows component
     private void InitializeComponent()
     {
-            this.gpbFoodsCanMake = new System.Windows.Forms.GroupBox();
+            this.gbFoodsCanMake = new System.Windows.Forms.GroupBox();
             this.btnAddRecipe = new System.Windows.Forms.Button();
             this.lstvRecipeCanMake = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cbRecipeCanMake = new System.Windows.Forms.ComboBox();
-            this.gpbFoodsCannotMake = new System.Windows.Forms.GroupBox();
+            this.gbFoodsCannotMake = new System.Windows.Forms.GroupBox();
             this.lstvRecipeCannotMake = new System.Windows.Forms.ListView();
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cbRecipeCannotMake = new System.Windows.Forms.ComboBox();
-            this.gpbMaterialsHave = new System.Windows.Forms.GroupBox();
+            this.gbMaterialsHave = new System.Windows.Forms.GroupBox();
             this.btnAddMaterial = new System.Windows.Forms.Button();
             this.lstvMaterialsInStock = new System.Windows.Forms.ListView();
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cbMaterialsInStock = new System.Windows.Forms.ComboBox();
-            this.gpbMaterialsOut = new System.Windows.Forms.GroupBox();
+            this.gbMaterialsOut = new System.Windows.Forms.GroupBox();
             this.lstvMaterialsOutOfStock = new System.Windows.Forms.ListView();
             this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cbMaterialsOutOfStock = new System.Windows.Forms.ComboBox();
             this.stsStatusBar = new System.Windows.Forms.StatusStrip();
             this.tssDBconnectStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.gpbFoodsCanMake.SuspendLayout();
-            this.gpbFoodsCannotMake.SuspendLayout();
-            this.gpbMaterialsHave.SuspendLayout();
-            this.gpbMaterialsOut.SuspendLayout();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.mnMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.smnSelectOrCreateDB = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.smnAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.gbFoodsCanMake.SuspendLayout();
+            this.gbFoodsCannotMake.SuspendLayout();
+            this.gbMaterialsHave.SuspendLayout();
+            this.gbMaterialsOut.SuspendLayout();
             this.stsStatusBar.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // gpbFoodsCanMake
+            // gbFoodsCanMake
             // 
-            this.gpbFoodsCanMake.Controls.Add(this.btnAddRecipe);
-            this.gpbFoodsCanMake.Controls.Add(this.lstvRecipeCanMake);
-            this.gpbFoodsCanMake.Controls.Add(this.cbRecipeCanMake);
-            this.gpbFoodsCanMake.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gpbFoodsCanMake.Location = new System.Drawing.Point(12, 12);
-            this.gpbFoodsCanMake.Name = "gpbFoodsCanMake";
-            this.gpbFoodsCanMake.Size = new System.Drawing.Size(250, 300);
-            this.gpbFoodsCanMake.TabIndex = 0;
-            this.gpbFoodsCanMake.TabStop = false;
-            this.gpbFoodsCanMake.Text = "อาหารที่ทำได้";
+            this.gbFoodsCanMake.Controls.Add(this.btnAddRecipe);
+            this.gbFoodsCanMake.Controls.Add(this.lstvRecipeCanMake);
+            this.gbFoodsCanMake.Controls.Add(this.cbRecipeCanMake);
+            this.gbFoodsCanMake.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gbFoodsCanMake.Location = new System.Drawing.Point(12, 28);
+            this.gbFoodsCanMake.Name = "gbFoodsCanMake";
+            this.gbFoodsCanMake.Size = new System.Drawing.Size(250, 300);
+            this.gbFoodsCanMake.TabIndex = 0;
+            this.gbFoodsCanMake.TabStop = false;
+            this.gbFoodsCanMake.Text = "อาหารที่ทำได้";
             // 
             // btnAddRecipe
             // 
@@ -127,22 +140,27 @@ public class frmMain : Form
             // 
             this.cbRecipeCanMake.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbRecipeCanMake.FormattingEnabled = true;
+            this.cbRecipeCanMake.Items.AddRange(new object[] {
+            "ทั้งหมด",
+            "อาหารคาว",
+            "อาหารหวาน"});
             this.cbRecipeCanMake.Location = new System.Drawing.Point(123, 269);
             this.cbRecipeCanMake.Name = "cbRecipeCanMake";
             this.cbRecipeCanMake.Size = new System.Drawing.Size(121, 21);
             this.cbRecipeCanMake.TabIndex = 1;
+            this.cbRecipeCanMake.SelectedIndexChanged += new System.EventHandler(this.cbRecipeCanMake_SelectedIndexChanged);
             // 
-            // gpbFoodsCannotMake
+            // gbFoodsCannotMake
             // 
-            this.gpbFoodsCannotMake.Controls.Add(this.lstvRecipeCannotMake);
-            this.gpbFoodsCannotMake.Controls.Add(this.cbRecipeCannotMake);
-            this.gpbFoodsCannotMake.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gpbFoodsCannotMake.Location = new System.Drawing.Point(280, 12);
-            this.gpbFoodsCannotMake.Name = "gpbFoodsCannotMake";
-            this.gpbFoodsCannotMake.Size = new System.Drawing.Size(344, 300);
-            this.gpbFoodsCannotMake.TabIndex = 1;
-            this.gpbFoodsCannotMake.TabStop = false;
-            this.gpbFoodsCannotMake.Text = "อาหารที่ทำไม่ได้";
+            this.gbFoodsCannotMake.Controls.Add(this.lstvRecipeCannotMake);
+            this.gbFoodsCannotMake.Controls.Add(this.cbRecipeCannotMake);
+            this.gbFoodsCannotMake.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gbFoodsCannotMake.Location = new System.Drawing.Point(280, 28);
+            this.gbFoodsCannotMake.Name = "gbFoodsCannotMake";
+            this.gbFoodsCannotMake.Size = new System.Drawing.Size(344, 300);
+            this.gbFoodsCannotMake.TabIndex = 1;
+            this.gbFoodsCannotMake.TabStop = false;
+            this.gbFoodsCannotMake.Text = "อาหารที่ทำไม่ได้";
             // 
             // lstvRecipeCannotMake
             // 
@@ -172,23 +190,28 @@ public class frmMain : Form
             // 
             this.cbRecipeCannotMake.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbRecipeCannotMake.FormattingEnabled = true;
+            this.cbRecipeCannotMake.Items.AddRange(new object[] {
+            "ทั้งหมด",
+            "อาหารคาว",
+            "อาหารหวาน"});
             this.cbRecipeCannotMake.Location = new System.Drawing.Point(217, 269);
             this.cbRecipeCannotMake.Name = "cbRecipeCannotMake";
             this.cbRecipeCannotMake.Size = new System.Drawing.Size(121, 21);
             this.cbRecipeCannotMake.TabIndex = 3;
+            this.cbRecipeCannotMake.SelectedIndexChanged += new System.EventHandler(this.cbRecipeCannotMake_SelectedIndexChanged);
             // 
-            // gpbMaterialsHave
+            // gbMaterialsHave
             // 
-            this.gpbMaterialsHave.Controls.Add(this.btnAddMaterial);
-            this.gpbMaterialsHave.Controls.Add(this.lstvMaterialsInStock);
-            this.gpbMaterialsHave.Controls.Add(this.cbMaterialsInStock);
-            this.gpbMaterialsHave.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gpbMaterialsHave.Location = new System.Drawing.Point(630, 12);
-            this.gpbMaterialsHave.Name = "gpbMaterialsHave";
-            this.gpbMaterialsHave.Size = new System.Drawing.Size(250, 300);
-            this.gpbMaterialsHave.TabIndex = 2;
-            this.gpbMaterialsHave.TabStop = false;
-            this.gpbMaterialsHave.Text = "วัตถุดิบที่มี";
+            this.gbMaterialsHave.Controls.Add(this.btnAddMaterial);
+            this.gbMaterialsHave.Controls.Add(this.lstvMaterialsInStock);
+            this.gbMaterialsHave.Controls.Add(this.cbMaterialsInStock);
+            this.gbMaterialsHave.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gbMaterialsHave.Location = new System.Drawing.Point(630, 28);
+            this.gbMaterialsHave.Name = "gbMaterialsHave";
+            this.gbMaterialsHave.Size = new System.Drawing.Size(250, 300);
+            this.gbMaterialsHave.TabIndex = 2;
+            this.gbMaterialsHave.TabStop = false;
+            this.gbMaterialsHave.Text = "วัตถุดิบที่มี";
             // 
             // btnAddMaterial
             // 
@@ -246,17 +269,17 @@ public class frmMain : Form
             this.cbMaterialsInStock.TabIndex = 3;
             this.cbMaterialsInStock.SelectedIndexChanged += new System.EventHandler(this.cbInstockIndexChange);
             // 
-            // gpbMaterialsOut
+            // gbMaterialsOut
             // 
-            this.gpbMaterialsOut.Controls.Add(this.lstvMaterialsOutOfStock);
-            this.gpbMaterialsOut.Controls.Add(this.cbMaterialsOutOfStock);
-            this.gpbMaterialsOut.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gpbMaterialsOut.Location = new System.Drawing.Point(901, 12);
-            this.gpbMaterialsOut.Name = "gpbMaterialsOut";
-            this.gpbMaterialsOut.Size = new System.Drawing.Size(146, 300);
-            this.gpbMaterialsOut.TabIndex = 3;
-            this.gpbMaterialsOut.TabStop = false;
-            this.gpbMaterialsOut.Text = "วัตถุดิบที่หมด";
+            this.gbMaterialsOut.Controls.Add(this.lstvMaterialsOutOfStock);
+            this.gbMaterialsOut.Controls.Add(this.cbMaterialsOutOfStock);
+            this.gbMaterialsOut.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gbMaterialsOut.Location = new System.Drawing.Point(901, 28);
+            this.gbMaterialsOut.Name = "gbMaterialsOut";
+            this.gbMaterialsOut.Size = new System.Drawing.Size(146, 300);
+            this.gbMaterialsOut.TabIndex = 3;
+            this.gbMaterialsOut.TabStop = false;
+            this.gbMaterialsOut.Text = "วัตถุดิบที่หมด";
             // 
             // lstvMaterialsOutOfStock
             // 
@@ -308,23 +331,68 @@ public class frmMain : Form
             this.tssDBconnectStatus.Name = "tssDBconnectStatus";
             this.tssDBconnectStatus.Size = new System.Drawing.Size(0, 17);
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnMenu,
+            this.mnHelp});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1064, 24);
+            this.menuStrip1.TabIndex = 5;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // mnMenu
+            // 
+            this.mnMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.smnSelectOrCreateDB});
+            this.mnMenu.Name = "mnMenu";
+            this.mnMenu.Size = new System.Drawing.Size(36, 20);
+            this.mnMenu.Text = "เมนู";
+            // 
+            // smnSelectOrCreateDB
+            // 
+            this.smnSelectOrCreateDB.Name = "smnSelectOrCreateDB";
+            this.smnSelectOrCreateDB.Size = new System.Drawing.Size(157, 22);
+            this.smnSelectOrCreateDB.Text = "เลือกไฟล์ฐานข้อมูล";
+            this.smnSelectOrCreateDB.Click += new System.EventHandler(this.RestoreDatabaseClick);
+            // 
+            // mnHelp
+            // 
+            this.mnHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.smnAbout});
+            this.mnHelp.Name = "mnHelp";
+            this.mnHelp.Size = new System.Drawing.Size(59, 20);
+            this.mnHelp.Text = "ช่วยเหลือ";
+            // 
+            // smnAbout
+            // 
+            this.smnAbout.Name = "smnAbout";
+            this.smnAbout.Size = new System.Drawing.Size(109, 22);
+            this.smnAbout.Text = "เกี่ยวกับ";
+            this.smnAbout.Click += new System.EventHandler(this.AboutMenuClick);
+            // 
             // frmMain
             // 
             this.ClientSize = new System.Drawing.Size(1064, 358);
             this.Controls.Add(this.stsStatusBar);
-            this.Controls.Add(this.gpbMaterialsOut);
-            this.Controls.Add(this.gpbMaterialsHave);
-            this.Controls.Add(this.gpbFoodsCannotMake);
-            this.Controls.Add(this.gpbFoodsCanMake);
+            this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.gbMaterialsOut);
+            this.Controls.Add(this.gbMaterialsHave);
+            this.Controls.Add(this.gbFoodsCannotMake);
+            this.Controls.Add(this.gbFoodsCanMake);
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Food Manager";
-            this.gpbFoodsCanMake.ResumeLayout(false);
-            this.gpbFoodsCannotMake.ResumeLayout(false);
-            this.gpbMaterialsHave.ResumeLayout(false);
-            this.gpbMaterialsOut.ResumeLayout(false);
+            this.gbFoodsCanMake.ResumeLayout(false);
+            this.gbFoodsCannotMake.ResumeLayout(false);
+            this.gbMaterialsHave.ResumeLayout(false);
+            this.gbMaterialsOut.ResumeLayout(false);
             this.stsStatusBar.ResumeLayout(false);
             this.stsStatusBar.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -338,10 +406,12 @@ public class frmMain : Form
     public frmMain()
     {
         InitializeComponent();
-        if (DBConnectStatus() == true)
+        if (DBConnectStatus())
         {
             cbMaterialsInStock.SelectedIndex = 0;
             cbMaterialsOutOfStock.SelectedIndex = 0;
+            cbRecipeCanMake.SelectedIndex = 0;
+            cbRecipeCannotMake.SelectedIndex = 0;
         }
     }
 
@@ -355,8 +425,12 @@ public class frmMain : Form
 
     private void btnAddMenu_Click(object sender, EventArgs e)
     {
-        frmRecipe myRecipe = new frmRecipe(null);
+        frmRecipe myRecipe = new frmRecipe(ADD, stsStatusBar);
         myRecipe.ShowDialog();
+        if (!myRecipe.BackgoundWorkerComplete)
+        {
+            RecipeUpdate();
+        }
     }
 
     /// <summary>
@@ -370,13 +444,13 @@ public class frmMain : Form
         {
             frmIngredient myEdit = new frmIngredient(lstvMaterialsInStock.SelectedItems[0].Text);
             myEdit.ShowDialog();
-            InStockUpdate();
+            IngredientInStockUpdate();
         }
         else
         {
             frmIngredient myEdit = new frmIngredient(lstvMaterialsOutOfStock.SelectedItems[0].Text);
             myEdit.ShowDialog();
-            OutOfStockUpdate();
+            IngredientInStockUpdate();
         }
     }
 
@@ -389,7 +463,7 @@ public class frmMain : Form
     {
         frmIngredient myIngredient = new frmIngredient(ADD);
         myIngredient.ShowDialog();
-        InStockUpdate();
+        IngredientUpdate();
     }
 
     /// <summary>
@@ -398,90 +472,141 @@ public class frmMain : Form
     /// <returns>True if connected otherwise false</returns>
     private bool DBConnectStatus()
     {
-        try
+        if (myDB.TestConnection)
         {
-            if (myDB.ConnectStatus == true)
-            {
-                tssDBconnectStatus.Text = "Connected to database";
-                return true;
-            }
-            else
-            {
-                tssDBconnectStatus.Text = "Cannot connect to database, please contact to administrator";
-                this.Enabled = false;
-                return false;
-            }
-        }
-        catch(Exception ex)
-        {
-            MessageBox.Show(ex.Message);
-            return false;
-        }
-        finally
-        {
+            tssDBconnectStatus.Text = "Connected to database";
             stsStatusBar.Refresh();
-        }
-    }
-
-    private void InStockUpdate()
-    {
-        int i;
-        lstvMaterialsInStock.Items.Clear();
-        List<string>[] data = new List<string>[4];
-        if (cbMaterialsInStock.SelectedIndex == 0)
-        {
-            data = myDB.SelecteIngredient();
+            return true;
         }
         else
         {
-            data = myDB.SelectIngredient(cbMaterialsInStock.SelectedIndex);
-        }
-        ListViewItem sub;
-        for (i = 0; i < data[0].Count; i++)
-        {
-            int quantity = int.Parse(data[2][i]);
-            if (quantity != 0)
-            {
-                sub = new ListViewItem(data[1][i]);
-                sub.SubItems.Add(data[2][i]);
-                sub.SubItems.Add(int.Parse(data[3][i]).ToUnitString());
-                lstvMaterialsInStock.Items.Add(sub);
-            }
+            tssDBconnectStatus.Text = "Cannot connect to database";
+            stsStatusBar.Refresh();
+            return false;
         }
     }
 
-    private void OutOfStockUpdate()
+    private void DisableForm()
+    {
+        gbFoodsCanMake.Enabled = false;
+        gbFoodsCannotMake.Enabled = false;
+        gbMaterialsHave.Enabled = false;
+        gbMaterialsOut.Enabled = false;
+    }
+
+    private void EnableForm()
+    {
+        gbFoodsCanMake.Enabled = true;
+        gbFoodsCannotMake.Enabled = true;
+        gbMaterialsHave.Enabled = true;
+        gbMaterialsOut.Enabled = true;
+    }
+
+    private void IngredientUpdate()
+    {
+        IngredientInStockUpdate();
+        IngredientOutOfStockUpdate();
+    }
+
+    private void RecipeUpdate()
+    {
+        RecipeInStockUpdate();
+        RecipeOutOfStockUpdate();
+    }
+
+    private void IngredientInStockUpdate()
+    {
+        int i;
+        List<string>[] data = new List<string>[4];
+
+        lstvMaterialsInStock.Items.Clear();
+        data = myDB.SelectIngredient(cbMaterialsInStock.SelectedIndex, INSTOCK);
+        ListViewItem sub;
+        for (i = 0; i < data[0].Count; i++)
+        {
+            sub = new ListViewItem(data[0][i]);
+            sub.SubItems.Add(data[1][i]);
+            sub.SubItems.Add(int.Parse(data[2][i]).ToIngredientUnitString());
+            lstvMaterialsInStock.Items.Add(sub);
+        }
+    }
+
+    private void IngredientOutOfStockUpdate()
     {
         int i;
         lstvMaterialsOutOfStock.Items.Clear();
         List<string>[] data = new List<string>[4];
         if (cbMaterialsOutOfStock.SelectedIndex == 0)
-        {
-            data = myDB.SelecteIngredient();
-        }
-        else
-        {
-            data = myDB.SelectIngredient(cbMaterialsOutOfStock.SelectedIndex, 0);
-        }
+        data = myDB.SelectIngredient(cbMaterialsOutOfStock.SelectedIndex, OUTOFSTOCK);
         ListViewItem sub;
         for (i = 0; i < data[0].Count; i++)
         {
-            int quantity = int.Parse(data[2][i]);
-            if (quantity == 0)
-            {
-                sub = new ListViewItem(data[1][i]);
-                lstvMaterialsOutOfStock.Items.Add(sub);
-            }
+            sub = new ListViewItem(data[0][i]);
+            lstvMaterialsOutOfStock.Items.Add(sub);
+        }
+    }
+
+    private void RecipeInStockUpdate()
+    {
+        int i;
+        List<string>[] data = new List<string>[3];
+        data = myDB.SelectRecipe(cbRecipeCanMake.SelectedIndex, INSTOCK);
+        lstvRecipeCanMake.Items.Clear();
+        ListViewItem sub;
+        for (i = 0; i < data[0].Count; i++)
+        {
+            sub = new ListViewItem(data[0][i]);
+            sub.SubItems.Add(data[1][i]);
+            sub.SubItems.Add(int.Parse(data[2][i]).ToRecipeUnitString());
+            lstvRecipeCanMake.Items.Add(sub);
+        }
+
+    }
+
+    private void RecipeOutOfStockUpdate()
+    {
+        int i;
+        List<string>[] data = new List<string>[3];
+        data = myDB.SelectRecipe(cbRecipeCannotMake.SelectedIndex, OUTOFSTOCK);
+        lstvRecipeCannotMake.Items.Clear();
+        ListViewItem sub;
+        for (i = 0; i < data[0].Count; i++)
+        {
+            sub = new ListViewItem(data[0][i]);
+            sub.SubItems.Add(data[1][i]);
+            sub.SubItems.Add(int.Parse(data[2][i]).ToRecipeUnitString());
+            lstvRecipeCannotMake.Items.Add(sub);
         }
     }
 
     private void cbInstockIndexChange(object sender, EventArgs s)
     {
-        InStockUpdate();
+        IngredientInStockUpdate();
     }
 
     private void cbOutOfStockIndexChange(object sender, EventArgs s)
     {
-        OutOfStockUpdate();
+        IngredientOutOfStockUpdate();
+    }
+
+    private void cbRecipeCanMake_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        RecipeInStockUpdate();
+    }
+
+    private void cbRecipeCannotMake_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        RecipeOutOfStockUpdate();
+    }
+
+    private void AboutMenuClick(object sender, EventArgs e)
+    {
+        frmAbout about = new frmAbout();
+        about.ShowDialog();
+    }
+
+    private void RestoreDatabaseClick(object sender, EventArgs e)
+    {
+        
     }
 }

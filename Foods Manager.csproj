@@ -52,6 +52,12 @@
   <ItemGroup>
     <Compile Include="AdjustmentIngredient.cs" />
     <Compile Include="clsConvert.cs" />
+    <Compile Include="frmAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCreateDB.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmIngredient.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -69,6 +75,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="frmAbout.resx">
+      <DependentUpon>frmAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCreateDB.resx">
+      <DependentUpon>frmCreateDB.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmIngredient.resx">
       <DependentUpon>frmIngredient.cs</DependentUpon>
     </EmbeddedResource>
@@ -82,6 +94,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\aliveplex-program-logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

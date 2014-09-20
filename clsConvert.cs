@@ -1,8 +1,9 @@
 ﻿using System;
+
 namespace FoodsManager
 {
     public enum IngredientType { Flavoring = 1, Meat, Vegetable, Fruit };
-    public enum IngredientUnit { Fong = 10, Gram, Ton, Hua, Luk, Mud, Greb}
+    public enum IngredientUnit { Fong = 10, Gram, Ton, Hua, Luk, Mud, Greb };
 
     /// <summary>
     /// This class use to collect all extension method
@@ -15,7 +16,7 @@ namespace FoodsManager
         /// </summary>
         /// <param name="unit">The number that indicate unit string</param>
         /// <returns>Unit name in string format</returns>
-        public static string ToUnitString(this int unit)
+        public static string ToIngredientUnitString(this int unit)
         {
             switch (unit)
             {
@@ -33,6 +34,25 @@ namespace FoodsManager
                     return "มัด";
                 default:
                     return "กลีบ";
+            }
+        }
+
+        public static string ToRecipeUnitString(this int unit)
+        {
+            switch (unit)
+            {
+                case 1:
+                    return "จาน";
+                case 2:
+                    return "ชาม";
+                case 3:
+                    return "ถ้วย";
+                case 4:
+                    return "ไม้";
+                case 5:
+                    return "ถุง";
+                default:
+                    return "รหัสหน่วยผิดพลาด";
             }
         }
     }
