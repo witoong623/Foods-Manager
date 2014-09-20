@@ -24,8 +24,6 @@ public class frmRecipe : Form
     private Button btnCancel;
     private Button btnAddNewIngredient;
     private DBConnector myDB = new DBConnector();
-    private System.ComponentModel.BackgroundWorker recipeBackground;
-    private AdjustmentIngredient updateQuantity;
     private ComboBox cbIngredientName;
     private GroupBox gbRecipeUnit;
     private RadioButton rdbBag;
@@ -34,6 +32,7 @@ public class frmRecipe : Form
     private RadioButton rdbBowl;
     private RadioButton rdbPlate;
     private StatusStrip MainStatusStrip;
+    private string currentName;
 
     #region windows code
     private void InitializeComponent()
@@ -56,7 +55,6 @@ public class frmRecipe : Form
             this.rdbMeatDish = new System.Windows.Forms.RadioButton();
             this.btnSubmit = new System.Windows.Forms.Button();
             this.btnAddNewIngredient = new System.Windows.Forms.Button();
-            this.recipeBackground = new System.ComponentModel.BackgroundWorker();
             this.cbIngredientName = new System.Windows.Forms.ComboBox();
             this.gbRecipeUnit = new System.Windows.Forms.GroupBox();
             this.rdbBag = new System.Windows.Forms.RadioButton();
@@ -239,11 +237,6 @@ public class frmRecipe : Form
             this.btnAddNewIngredient.Visible = false;
             this.btnAddNewIngredient.Click += new System.EventHandler(this.btnAddEmptyTextbox);
             // 
-            // recipeBackground
-            // 
-            this.recipeBackground.DoWork += new System.ComponentModel.DoWorkEventHandler(this.recipeBackground_DoWork);
-            this.recipeBackground.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.recipeBackground_RunWorkerCompleted);
-            // 
             // cbIngredientName
             // 
             this.cbIngredientName.FormattingEnabled = true;
@@ -365,11 +358,11 @@ public class frmRecipe : Form
         }
     }
 
-    public bool BackgoundWorkerComplete
+    public string CurrentName
     {
         get
         {
-            return recipeBackground.IsBusy;
+            return currentName;
         }
     }
 
@@ -433,7 +426,7 @@ public class frmRecipe : Form
     private void btnAddIngredient_Click(object sender, EventArgs e)
     {
         ListViewItem ListCollection;
-        int dummy;
+        int quantity;
         bool flag;
 
         if (cbIngredientName.SelectedItem == null)
@@ -450,9 +443,9 @@ public class frmRecipe : Form
             return;
         }
 
-        flag = int.TryParse(txtQuantity.Text, out dummy);
+        flag = int.TryParse(txtQuantity.Text, out quantity);
         
-        if (flag == false)
+        if (!flag)
         {
             MessageBox.Show("กรุณาป้อนจำนวนเป็นตัวเลข");
             txtQuantity.Select();
@@ -511,8 +504,7 @@ public class frmRecipe : Form
         flag = myDB.InsertRecipe(txtFoodName.Text, CheckedToTypeID(), ingredient, CheckedToUnitID());
         if (flag)
         {
-            updateQuantity = new AdjustmentIngredient(txtFoodName.Text);
-            recipeBackground.RunWorkerAsync(updateQuantity);
+            currentName = txtFoodName.Text;
             Close();
         }
     }
@@ -587,16 +579,5 @@ public class frmRecipe : Form
     private void CloseForm(object sender, EventArgs e)
     {
         Close();
-    }
-
-    private void recipeBackground_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
-    {
-        AdjustmentIngredient myUpdate = e.Argument as AdjustmentIngredient;
-        myUpdate.UpdateRecipeQuantity();
-    }
-
-    private void recipeBackground_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
-    {
-        MainStatusStrip.Items[0].Text = "Update Sucessesfully";
     }
 }

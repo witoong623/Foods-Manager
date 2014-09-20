@@ -35,13 +35,16 @@ public class frmMain : Form
     private GroupBox gbMaterialsHave;
     private StatusStrip stsStatusBar;
     private ToolStripStatusLabel tssDBconnectStatus;
-    private DBConnector myDB = new DBConnector();
     private ColumnHeader columnHeader9;
     private MenuStrip menuStrip1;
     private ToolStripMenuItem mnMenu;
     private ToolStripMenuItem smnSelectOrCreateDB;
     private ToolStripMenuItem mnHelp;
+    private System.ComponentModel.BackgroundWorker myBackgroundWorker;
     private ToolStripMenuItem smnAbout;
+
+    private DBConnector myDB = new DBConnector();
+    private AdjustmentIngredient RecipeUpdateQuantity;
 
     #region windows component
     private void InitializeComponent()
@@ -76,6 +79,7 @@ public class frmMain : Form
             this.smnSelectOrCreateDB = new System.Windows.Forms.ToolStripMenuItem();
             this.mnHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.smnAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.myBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.gbFoodsCanMake.SuspendLayout();
             this.gbFoodsCannotMake.SuspendLayout();
             this.gbMaterialsHave.SuspendLayout();
@@ -372,6 +376,11 @@ public class frmMain : Form
             this.smnAbout.Text = "เกี่ยวกับ";
             this.smnAbout.Click += new System.EventHandler(this.AboutMenuClick);
             // 
+            // myBackgroundWorker
+            // 
+            this.myBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.recipeBackground_DoWork);
+            this.myBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.recipeBackground_RunWorkerCompleted);
+            // 
             // frmMain
             // 
             this.ClientSize = new System.Drawing.Size(1064, 358);
@@ -427,10 +436,8 @@ public class frmMain : Form
     {
         frmRecipe myRecipe = new frmRecipe(ADD, stsStatusBar);
         myRecipe.ShowDialog();
-        if (!myRecipe.BackgoundWorkerComplete)
-        {
-            RecipeUpdate();
-        }
+        RecipeUpdateQuantity = new AdjustmentIngredient(myRecipe.CurrentName);
+        myBackgroundWorker.RunWorkerAsync(RecipeUpdateQuantity);
     }
 
     /// <summary>
@@ -607,6 +614,19 @@ public class frmMain : Form
 
     private void RestoreDatabaseClick(object sender, EventArgs e)
     {
-        
+        frmCreateDB createdatabase = new frmCreateDB();
+    }
+
+    private void recipeBackground_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+    {
+        AdjustmentIngredient myUpdate = e.Argument as AdjustmentIngredient;
+        myUpdate.UpdateRecipeQuantity();
+    }
+
+    private void recipeBackground_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+    {
+        tssDBconnectStatus.Text = "Update Sucessesfully";
+        stsStatusBar.Refresh();
+        RecipeUpdate();
     }
 }
