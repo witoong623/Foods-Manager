@@ -420,19 +420,20 @@ public class frmIngredient : Form
     {
         string[] data;
         data = myDB.SelectSpecifiedIngredient(item);
-        txtIngredientName.Text = data[1];   //name
-        txtQuantity.Text = data[2]; //quantity
+        txtIngredientName.Text = data[1];
+        txtQuantity.Text = data[2];
         currentQuantity = int.Parse(data[2]);  
-        ToCheckedUnit(int.Parse(data[3])); //unit
-        TypeCheckedDisplay(int.Parse(data[0]));
-        txtIngredientName.ReadOnly = true;  //you cannot edit name
+        UnitIdToCheck(int.Parse(data[3]));
+        TypeIdToCheck(int.Parse(data[0]));
+        // You cannot edit name
+        txtIngredientName.ReadOnly = true;
     }
 
     /// <summary>
     /// To determine which radio button is checked. This method is call only when load exist ingredient
     /// </summary>
     /// <param name="unit">int  value of unit in database</param>
-    private void ToCheckedUnit(int unit)
+    private void UnitIdToCheck(int unit)
     {
         switch (unit)
         {
@@ -464,10 +465,10 @@ public class frmIngredient : Form
     }
 
     /// <summary>
-    /// To determine which radio button is checked.  This method is call only when load exist ingredient
+    /// Determine which radio button is checked.  This method is call only when load exist ingredient
     /// </summary>
     /// <param name="type">int  value of type in database</param>
-    private void TypeCheckedDisplay(int type)
+    private void TypeIdToCheck(int type)
     {
         switch (type)
         {

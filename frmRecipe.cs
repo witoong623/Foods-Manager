@@ -398,7 +398,8 @@ public class frmRecipe : Form
     private void AutoCompleteSource()
     {
         AutoCompleteStringCollection AutoCompleteCollection = new AutoCompleteStringCollection();
-        myDB.AssignAutoComplete(AutoCompleteCollection);
+
+        AutoCompleteCollection = myDB.AssignAutoComplete();
         cbIngredientName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
         cbIngredientName.AutoCompleteMode = AutoCompleteMode.Suggest;
         cbIngredientName.AutoCompleteCustomSource = AutoCompleteCollection;
@@ -573,6 +574,40 @@ public class frmRecipe : Form
         else
         {
             return 2;
+        }
+    }
+
+    private void TypeIdToCheck(int typeID)
+    {
+        if (typeID == 1)
+        {
+            rdbMeatDish.Checked = true;
+        }
+        else
+        {
+            rdbDessert.Checked = true;
+        }
+    }
+
+    private void UnitIdToCheck(int unitID)
+    {
+        switch (unitID)
+        {
+            case 1:
+                rdbPlate.Checked = true;
+                break;
+            case 2:
+                rdbBowl.Checked = true;
+                break;
+            case 3:
+                rdbCup.Checked = true;
+                break;
+            case 4:
+                rdbRot.Checked = true;
+                break;
+            case 5:
+                rdbBag.Checked = true;
+                break;
         }
     }
 

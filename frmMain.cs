@@ -436,8 +436,11 @@ public class frmMain : Form
     {
         frmRecipe myRecipe = new frmRecipe(ADD, stsStatusBar);
         myRecipe.ShowDialog();
-        RecipeUpdateQuantity = new AdjustmentIngredient(myRecipe.CurrentName);
-        myBackgroundWorker.RunWorkerAsync(RecipeUpdateQuantity);
+        if (myRecipe.CurrentName != null)
+        {
+            RecipeUpdateQuantity = new AdjustmentIngredient(myRecipe.CurrentName);
+            myBackgroundWorker.RunWorkerAsync(RecipeUpdateQuantity);
+        }
     }
 
     /// <summary>

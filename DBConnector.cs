@@ -498,17 +498,14 @@ public class DBConnector
         return quantity;
     }
 
-    /// <summary>
-    /// Assign name of ingredient from database to AutoCompleteStringCollection
-    /// </summary>
-    /// <param name="autoCom">A collection of Autocomplete string</param>
-    public void AssignAutoComplete(AutoCompleteStringCollection autoCom)
+    public AutoCompleteStringCollection AssignAutoComplete()
     {
+        AutoCompleteStringCollection autoCom = new AutoCompleteStringCollection();
         try
         {
             string query = "SELECT ingredient_name FROM ingredient";
-
-            if (OpenConnection() == true)
+            
+            if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 MySqlDataReader dataReader = cmd.ExecuteReader();
@@ -518,16 +515,18 @@ public class DBConnector
                 }
                 dataReader.Close();
                 CloseConnection();
+                return autoCom;
             }
             else
             {
-                return;
+                return autoCom;
             }
         }
         catch (MySqlException ex)
         {
             MessageBox.Show(ex.Message);
         }
+        return autoCom;
     }
 
     public string[] AssignStringCollection(int typeID)
