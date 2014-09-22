@@ -142,72 +142,119 @@ public class DBConnector
             }
             return true;
         }
-        catch(MySqlException ex)
+        catch (MySqlException ex)
         {
             if (ex.Number == 1062)
             {
-                MessageBox.Show(name + "ถูกเพิ่มแล้ว","ข้อมูลซ้ำกัน");
+                MessageBox.Show(name + "ถูกเพิ่มแล้ว", "ข้อมูลซ้ำกัน");
             }
             return false;
-        }  
-    }
-
-    /// <summary>
-    /// Update ingredient but can't edit name
-    /// </summary>
-    /// <param name="type">Ingredient type</param>
-    /// <param name="name">Ingredient name</param>
-    /// <param name="initial">Ingredient initial quantity</param>
-    /// <param name="unit">Ingredient unit called</param>
-    public void Update(int type, string name, int initial, int unit)
-    {
-        string query = "UPDATE ingredient " +
-                        "SET type_id='" + type + "', ingredient_quantity='" + initial + "', unit_id='" + unit + "' " +
-                        "WHERE ingredient_name='" + name + "'";
-                        
-
-        //Open connection
-        if (OpenConnection())
-        {
-            // Create mysql command
-            MySqlCommand cmd = new MySqlCommand();
-            // Assign the query using CommandText
-            cmd.CommandText = query;
-            // Assign the connection using Connection
-            cmd.Connection = connection;
-
-            // Execute query
-            cmd.ExecuteNonQuery();
-
-            // Close connection
-            CloseConnection();
         }
     }
 
     /// <summary>
-    /// Update recipe quantity
+    /// Insert recipe to database
     /// </summary>
-    /// <param name="quantity">New quantity</param>
+    /// <param name="name">string name of recipe</param>
+    /// <param name="type">int type of recipe</param>
+    /// <param name="ingredient">List string name of ingredient and quantity to use in string format</param>
     /// <returns>True if sucesses otherwise false</returns>
-    public bool UpdateRecipeQuantity(string name, int quantity)
+    public bool InsertRecipe(string name, int type, List<string>[] ingredient, int unitID)
     {
         try
         {
-            string query = "UPDATE recipe SET quantity='" + quantity + "' WHERE recipe_name='" + name + "'";
-            if (OpenConnection())
+            List<string> ingredient_id = new List<string>();
+            int i;
+            string recipeID = "1";
+            string query = "INSERT INTO recipe (recipe_type_id, recipe_name, recipe_unit_id)" +
+                            "VALUES ('" + type + "', '" + name + "', '" + unitID + "')";
+
+            if (OpenConnection() == true)
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
+                // Insert name of food to recipe table
                 cmd.ExecuteNonQuery();
-                CloseConnection();
-                return true;
+
+                // Get recipe id after insert
+                query = "SELECT recipe_id FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
+                cmd.CommandText = query;
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    recipeID = dataReader.GetString("recipe_id");
+                }
+                dataReader.Close();
+
+                // Get ingredient id specify by name
+                for (i = 0; i < ingredient[0].Count; i++)
+                {
+                    query = "SELECT ingredient_id FROM ingredient WHERE ingredient_name='" + ingredient[0][i] + "' LIMIT 1";
+                    cmd.CommandText = query;
+                    dataReader = cmd.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        ingredient_id.Add(dataReader.GetString("ingredient_id"));
+                    }
+                    dataReader.Close();
+                }
+
+                // Insert ingredient of recipe to 3rd relation table(recipe_ingredient)
+                for (i = 0; i < ingredient[0].Count; i++)
+                {
+                    query = "INSERT INTO recipe_ingredient (recipe_id, ingredient_id, quantity)" +
+                            "VALUES('" + recipeID + "', '" + ingredient_id[i] + "', '" + ingredient[1][i] + "')";
+                    cmd.CommandText = query;
+                    cmd.ExecuteNonQuery();
+                }
             }
+            return true;
         }
         catch (MySqlException ex)
         {
             MessageBox.Show(ex.Message + ex.StackTrace);
             return false;
         }
-        return false;
+        finally
+        {
+            CloseConnection();
+        }
+    }
+
+    public string[] SelectSpecifiedIngredient(string name)
+    {
+        string query = "SELECT type_id,ingredient_name,ingredient_quantity,unit_id " +
+                        "FROM ingredient " +
+                        "WHERE ingredient_name='" + name + "'";
+
+        // Create a list to store the result
+        string[] list = new string[4];
+
+        // Open connection
+        if (OpenConnection())
+        {
+            // Create Command
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            // Create a data reader and Execute the command
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            // Read from database
+            dataReader.Read();
+            // Assign to list
+            // type_id
+            // ingreient_name
+            // ingredient_quantity
+            // unit_id
+            list[0] = dataReader.GetString(0);
+            list[1] = dataReader.GetString(1);
+            list[2] = dataReader.GetString(2);
+            list[3] = dataReader.GetString(3);
+            dataReader.Close();
+            CloseConnection();
+            return list;
+        }
+        else
+        {
+            return list;
+        }
     }
 
     /// <summary>
@@ -281,6 +328,173 @@ public class DBConnector
     }
 
     /// <summary>
+    /// Add ingredient name to AutoCompleteStringCollection that use in recipe form
+    /// </summary>
+    /// <returns>a AutoCompleteStringCollection that contain name of ingredient</returns>
+    public AutoCompleteStringCollection AddIngredientNameToAutoComplete()
+    {
+        AutoCompleteStringCollection autoCom = new AutoCompleteStringCollection();
+        try
+        {
+            string query = "SELECT ingredient_name FROM ingredient";
+
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    autoCom.Add(dataReader.GetString("ingredient_name"));
+                }
+                dataReader.Close();
+                CloseConnection();
+                return autoCom;
+            }
+            else
+            {
+                return autoCom;
+            }
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
+        return autoCom;
+    }
+
+    /// <summary>
+    /// Add ingredient name to an array of string that is added to ComboBox filter by type id
+    /// </summary>
+    /// <param name="typeID"></param>
+    /// <returns>an array of string that contain name of ingredient</returns>
+    public string[] AddIngredientNameToComboBoxCollection(int typeID)
+    {
+        int i;
+        string[] IngredientName;
+        string query;
+        List<string> list = new List<string>();
+
+        if (typeID == 0)
+        {
+            query = "SELECT ingredient_name FROM ingredient";
+        }
+        else
+        {
+            query = "SELECT ingredient_name FROM ingredient WHERE type_id = '" + typeID + "'";
+        }
+
+        if (OpenConnection())
+        {
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                list.Add(dataReader.GetString("ingredient_name"));
+            }
+            dataReader.Close();
+            CloseConnection();
+            IngredientName = new string[list.Count];
+
+            for (i = 0; i < IngredientName.Length; i++)
+            {
+                IngredientName[i] = list[i];
+            }
+
+            return IngredientName;
+        }
+        else
+        {
+            return IngredientName = null;
+        }
+    }
+
+    public List<string>[] SelectIngredientOfRecipe(string name)
+    {
+        int ID = SelectRecipeID(name);
+        string query = "SELECT ingredient.ingredient_name, quantity FROM recipe_ingredient WHERE recipe_id='" + ID + "'";
+        List<string>[] list = new List<string>[2];
+        list[0] = new List<string>();
+        list[1] = new List<string>();
+
+        if (OpenConnection())
+        {
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                list[0].Add(dataReader.GetString(0));
+                list[1].Add(dataReader.GetString(1));
+            }
+
+            return list;
+        }
+        else
+        {
+            return list;
+        }
+    }
+
+    /// <summary>
+    /// Update ingredient but can't edit name
+    /// </summary>
+    /// <param name="type">Ingredient type</param>
+    /// <param name="name">Ingredient name</param>
+    /// <param name="initial">Ingredient initial quantity</param>
+    /// <param name="unit">Ingredient unit called</param>
+    public void Update(int type, string name, int initial, int unit)
+    {
+        string query = "UPDATE ingredient " +
+                        "SET type_id='" + type + "', ingredient_quantity='" + initial + "', unit_id='" + unit + "' " +
+                        "WHERE ingredient_name='" + name + "'";
+                        
+
+        //Open connection
+        if (OpenConnection())
+        {
+            // Create mysql command
+            MySqlCommand cmd = new MySqlCommand();
+            // Assign the query using CommandText
+            cmd.CommandText = query;
+            // Assign the connection using Connection
+            cmd.Connection = connection;
+
+            // Execute query
+            cmd.ExecuteNonQuery();
+
+            // Close connection
+            CloseConnection();
+        }
+    }
+
+    /// <summary>
+    /// Update recipe quantity
+    /// </summary>
+    /// <param name="quantity">New quantity</param>
+    /// <returns>True if sucesses otherwise false</returns>
+    public bool UpdateRecipeQuantity(string name, int quantity)
+    {
+        try
+        {
+            string query = "UPDATE recipe SET quantity='" + quantity + "' WHERE recipe_name='" + name + "'";
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+                CloseConnection();
+                return true;
+            }
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message + ex.StackTrace);
+            return false;
+        }
+        return false;
+    }
+
+    /// <summary>
     /// Select recipe name and quantity without filter anything
     /// </summary>
     /// <returns>List of recipe name and quantity</returns>
@@ -325,43 +539,6 @@ public class DBConnector
                 list[1].Add(dataReader.GetString("quantity"));
                 list[2].Add(dataReader.GetString("recipe_unit_id"));
             }
-            dataReader.Close();
-            CloseConnection();
-            return list;
-        }
-        else
-        {
-            return list;
-        }
-    }
-
-    public string[] SelectSpecifiedIngredient(string name)
-    {
-        string query = "SELECT type_id,ingredient_name,ingredient_quantity,unit_id " +
-                        "FROM ingredient " +
-                        "WHERE ingredient_name='" + name + "'";
-
-        // Create a list to store the result
-        string[] list = new string[4];
-
-        // Open connection
-        if (OpenConnection())
-        {
-            // Create Command
-            MySqlCommand cmd = new MySqlCommand(query, connection);
-            // Create a data reader and Execute the command
-            MySqlDataReader dataReader = cmd.ExecuteReader();
-            // Read from database
-            dataReader.Read();
-            // Assign to list
-            // type_id
-            // ingreient_name
-            // ingredient_quantity
-            // unit_id
-            list[0] = dataReader.GetString(0);
-            list[1] = dataReader.GetString(1);
-            list[2] = dataReader.GetString(2);
-            list[3] = dataReader.GetString(3);
             dataReader.Close();
             CloseConnection();
             return list;
@@ -498,150 +675,9 @@ public class DBConnector
         return quantity;
     }
 
-    public AutoCompleteStringCollection AssignAutoComplete()
-    {
-        AutoCompleteStringCollection autoCom = new AutoCompleteStringCollection();
-        try
-        {
-            string query = "SELECT ingredient_name FROM ingredient";
-            
-            if (OpenConnection())
-            {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                MySqlDataReader dataReader = cmd.ExecuteReader();
-                while (dataReader.Read())
-                {
-                    autoCom.Add(dataReader.GetString("ingredient_name"));
-                }
-                dataReader.Close();
-                CloseConnection();
-                return autoCom;
-            }
-            else
-            {
-                return autoCom;
-            }
-        }
-        catch (MySqlException ex)
-        {
-            MessageBox.Show(ex.Message);
-        }
-        return autoCom;
-    }
-
-    public string[] AssignStringCollection(int typeID)
-    {
-        int i;
-        string[] IngredientName;
-        string query;
-        List<string> list = new List<string>();
-
-        if (typeID == 0)
-        {
-            query = "SELECT ingredient_name FROM ingredient";
-        }
-        else
-        {
-            query = "SELECT ingredient_name FROM ingredient WHERE type_id = '" + typeID + "'";
-        }
-
-        if (OpenConnection())
-        {
-            MySqlCommand cmd = new MySqlCommand(query, connection);
-            MySqlDataReader dataReader = cmd.ExecuteReader();
-
-            while (dataReader.Read())
-            {
-                list.Add(dataReader.GetString("ingredient_name"));
-            }
-            dataReader.Close();
-            CloseConnection();
-            IngredientName = new string[list.Count];
-
-            for (i = 0; i <IngredientName.Length; i++)
-            {
-                IngredientName[i] = list[i];
-            }
-
-            return IngredientName;
-        }
-        else
-        {
-            return IngredientName = null;
-        }
-    }
-
     public bool SelectSpecifiedRecipe(string name)
     {
         return true;
-    }
-
-    /// <summary>
-    /// Insert recipe to database
-    /// </summary>
-    /// <param name="name">string name of recipe</param>
-    /// <param name="type">int type of recipe</param>
-    /// <param name="ingredient">List string name of ingredient and quantity to use in string format</param>
-    /// <returns>True if sucesses otherwise false</returns>
-    public bool InsertRecipe(string name, int type, List<string>[] ingredient, int unitID)
-    {
-        try
-        {
-            List<string> ingredient_id = new List<string>();
-            int i;
-            string recipeID = "1";
-            string query = "INSERT INTO recipe (recipe_type_id, recipe_name, recipe_unit_id)" +
-                            "VALUES ('" + type + "', '" + name + "', '" + unitID + "')";
-
-            if (OpenConnection() == true)
-            {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                // Insert name of food to recipe table
-                cmd.ExecuteNonQuery();
-
-                // Get recipe id after insert
-                query = "SELECT recipe_id FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
-                cmd.CommandText = query;
-                MySqlDataReader dataReader = cmd.ExecuteReader();
-                while (dataReader.Read())
-                {
-                    recipeID = dataReader.GetString("recipe_id");
-                }
-                dataReader.Close();
-
-                // Get ingredient id specify by name
-                for (i = 0; i < ingredient[0].Count; i++)
-                {
-                    query = "SELECT ingredient_id FROM ingredient WHERE ingredient_name='" + ingredient[0][i] + "' LIMIT 1";
-                    cmd.CommandText = query;
-                    dataReader = cmd.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        ingredient_id.Add(dataReader.GetString("ingredient_id"));
-                    }
-                    dataReader.Close();
-                }
-
-                // Insert ingredient of recipe to 3rd relation table(recipe_ingredient)
-                for (i = 0; i < ingredient[0].Count; i++)
-                {
-                    query = "INSERT INTO recipe_ingredient (recipe_id, ingredient_id, quantity)" +
-                            "VALUES('" + recipeID + "', '" + ingredient_id[i] + "', '" + ingredient[1][i] + "')";
-                    cmd.CommandText = query;
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            return true;
-        }
-        catch (MySqlException ex)
-        {
-            MessageBox.Show(ex.Message + ex.StackTrace);
-            return false;
-        }
-        finally
-        {
-            CloseConnection();
-        }
     }
 }
 

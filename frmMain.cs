@@ -125,6 +125,7 @@ public class frmMain : Form
             this.lstvRecipeCanMake.TabIndex = 4;
             this.lstvRecipeCanMake.UseCompatibleStateImageBehavior = false;
             this.lstvRecipeCanMake.View = System.Windows.Forms.View.Details;
+            this.lstvRecipeCanMake.DoubleClick += new System.EventHandler(this.Recipe_Selected_DoubleClick);
             // 
             // columnHeader1
             // 
@@ -434,7 +435,7 @@ public class frmMain : Form
 
     private void btnAddMenu_Click(object sender, EventArgs e)
     {
-        frmRecipe myRecipe = new frmRecipe(ADD, stsStatusBar);
+        frmRecipe myRecipe = new frmRecipe(ADD);
         myRecipe.ShowDialog();
         if (myRecipe.CurrentName != null)
         {
@@ -461,6 +462,15 @@ public class frmMain : Form
             frmIngredient myEdit = new frmIngredient(lstvMaterialsOutOfStock.SelectedItems[0].Text);
             myEdit.ShowDialog();
             IngredientInStockUpdate();
+        }
+    }
+
+    private void Recipe_Selected_DoubleClick(object sender, EventArgs e)
+    {
+        if (lstvRecipeCanMake.SelectedItems.Count > 0)
+        {
+            frmRecipe myRecipe = new frmRecipe(lstvRecipeCanMake.SelectedItems[0].Text);
+            myRecipe.ShowDialog();
         }
     }
 
@@ -617,7 +627,8 @@ public class frmMain : Form
 
     private void RestoreDatabaseClick(object sender, EventArgs e)
     {
-        frmCreateDB createdatabase = new frmCreateDB();
+        frmCreateDB CreateDatabase = new frmCreateDB();
+        CreateDatabase.ShowDialog();
     }
 
     private void recipeBackground_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)

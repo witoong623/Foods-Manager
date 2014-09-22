@@ -145,7 +145,7 @@ public class frmRecipe : Form
             this.cbIngredientType.Name = "cbIngredientType";
             this.cbIngredientType.Size = new System.Drawing.Size(121, 21);
             this.cbIngredientType.TabIndex = 6;
-            this.cbIngredientType.SelectedIndexChanged += new System.EventHandler(this.AddIngredientNameItemCollection);
+            this.cbIngredientType.SelectedIndexChanged += new System.EventHandler(this.AddIngredientNameToComboBox);
             // 
             // label4
             // 
@@ -348,13 +348,17 @@ public class frmRecipe : Form
         AutoCompleteSource();
     }
 
-    public frmRecipe(string call, StatusStrip mainStatus) : this()
+    public frmRecipe(string call) : this()
     {
         cbIngredientType.SelectedIndex = 0;
-        MainStatusStrip = mainStatus;
         if (call == null)
         {
             AdditionFormDisplay();
+        }
+        else
+        {
+            EditorFormDisplay();
+            LoadRecipeToDisplay(call);
         }
     }
 
@@ -399,7 +403,7 @@ public class frmRecipe : Form
     {
         AutoCompleteStringCollection AutoCompleteCollection = new AutoCompleteStringCollection();
 
-        AutoCompleteCollection = myDB.AssignAutoComplete();
+        AutoCompleteCollection = myDB.AddIngredientNameToAutoComplete();
         cbIngredientName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
         cbIngredientName.AutoCompleteMode = AutoCompleteMode.Suggest;
         cbIngredientName.AutoCompleteCustomSource = AutoCompleteCollection;
@@ -410,13 +414,18 @@ public class frmRecipe : Form
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void AddIngredientNameItemCollection(object sender, EventArgs e)
+    private void AddIngredientNameToComboBox(object sender, EventArgs e)
     {
         string[] collection;
 
         cbIngredientName.Items.Clear();
-        collection = myDB.AssignStringCollection(cbIngredientType.SelectedIndex);
+        collection = myDB.AddIngredientNameToComboBoxCollection(cbIngredientType.SelectedIndex);
         cbIngredientName.Items.AddRange(collection);
+    }
+
+    private void LoadRecipeToDisplay(string name)
+    {
+        List<string>[] data = myDB.SelectIngredientOfRecipe(name);
     }
 
     /// <summary>
