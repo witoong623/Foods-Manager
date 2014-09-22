@@ -167,7 +167,7 @@ public class DBConnector
             int i;
             string recipeID = "1";
             string query = "INSERT INTO recipe (recipe_type_id, recipe_name, recipe_unit_id)" +
-                            "VALUES ('" + type + "', '" + name + "', '" + unitID + "')";
+                           "VALUES ('" + type + "', '" + name + "', '" + unitID + "')";
 
             if (OpenConnection() == true)
             {
@@ -412,7 +412,8 @@ public class DBConnector
     public List<string>[] SelectIngredientOfRecipe(string name)
     {
         int ID = SelectRecipeID(name);
-        string query = "SELECT ingredient.ingredient_name, quantity FROM recipe_ingredient WHERE recipe_id='" + ID + "'";
+        string query = "SELECT ingredient_id, (SELECT ingredient_name FROM ingredient WHERE ingredient_id=ri.ingredient_id), quantity " +
+                       "FROM recipe_ingredient ri WHERE recipe_id='" + ID + "'";
         List<string>[] list = new List<string>[2];
         list[0] = new List<string>();
         list[1] = new List<string>();
@@ -424,8 +425,8 @@ public class DBConnector
 
             while (dataReader.Read())
             {
-                list[0].Add(dataReader.GetString(0));
-                list[1].Add(dataReader.GetString(1));
+                list[0].Add(dataReader.GetString(1));
+                list[1].Add(dataReader.GetString(2));
             }
 
             return list;

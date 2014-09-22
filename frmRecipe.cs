@@ -426,6 +426,15 @@ public class frmRecipe : Form
     private void LoadRecipeToDisplay(string name)
     {
         List<string>[] data = myDB.SelectIngredientOfRecipe(name);
+
+        txtFoodName.Text = name;
+        ListViewItem sub;
+        for (int i = 0; i < data[0].Count; i++)
+        {
+            sub = new ListViewItem(data[0][i]);
+            sub.SubItems.Add(data[1][i]);
+            lstvIngredientTable.Items.Add(sub);
+        }
     }
 
     /// <summary>
