@@ -409,6 +409,11 @@ public class DBConnector
         }
     }
 
+    /// <summary>
+    /// Select ingredient of a recipe filter by name
+    /// </summary>
+    /// <param name="name">name of recipe</param>
+    /// <returns>ingredient of a recipe</returns>
     public List<string>[] SelectIngredientOfRecipe(string name)
     {
         int ID = SelectRecipeID(name);
@@ -429,6 +434,8 @@ public class DBConnector
                 list[1].Add(dataReader.GetString(2));
             }
 
+            dataReader.Close();
+            CloseConnection();
             return list;
         }
         else
@@ -437,6 +444,33 @@ public class DBConnector
         }
     }
 
+    public List<string> SelectRecipeDetail(string name)
+    {
+        int ID = SelectRecipeID(name);
+        string query = "SELECT recipe_type_id, quantity, recipe_unit_id FROM recipe WHERE recipe_name='" + name + "'";
+        List<string> list = new List<string>();
+
+        if (OpenConnection())
+        {
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                list.Add(dataReader.GetString("recipe_type_id"));
+                list.Add(dataReader.GetString("quantity"));
+                list.Add(dataReader.GetString("recipe_unit_id"));
+            }
+
+            dataReader.Close();
+            CloseConnection();
+            return list;
+        }
+        else
+        {
+            return list;
+        }
+    }
     /// <summary>
     /// Update ingredient but can't edit name
     /// </summary>

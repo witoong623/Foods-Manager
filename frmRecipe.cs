@@ -32,6 +32,14 @@ public class frmRecipe : Form
     private RadioButton rdbBowl;
     private RadioButton rdbPlate;
     private StatusStrip MainStatusStrip;
+    private GroupBox gbDecrease;
+    private RadioButton rdbCustomMakeQuantity;
+    private RadioButton rdb2ea;
+    private RadioButton rdb1ea;
+    private TextBox txtCustomMakeQuantity;
+    private Button btnMakeFood;
+    private Label lblCurrentQuantityCanMake;
+    private Label lblUnitString;
     private string currentName;
 
     #region windows code
@@ -313,7 +321,7 @@ public class frmRecipe : Form
             // 
             // frmRecipe
             // 
-            this.ClientSize = new System.Drawing.Size(537, 433);
+            this.ClientSize = new System.Drawing.Size(537, 434);
             this.Controls.Add(this.gbRecipeUnit);
             this.Controls.Add(this.cbIngredientName);
             this.Controls.Add(this.btnAddNewIngredient);
@@ -394,8 +402,118 @@ public class frmRecipe : Form
         btnAddIngredient.Text = "แก้ไขวัตถุดิบ";
         btnCancel.Text = "ลบสูตรอาหาร";
         btnAddNewIngredient.Visible = true;
+        AddNewControlToEditForm();
+        rdb1ea.Checked = true;
     }
 
+    #region new control in editor form
+    /// <summary>
+    /// Contruct new control items to form
+    /// </summary>
+    private void AddNewControlToEditForm()
+    {
+        this.Height = 535;
+
+        this.gbDecrease = new System.Windows.Forms.GroupBox();
+        this.lblUnitString = new System.Windows.Forms.Label();
+        this.txtCustomMakeQuantity = new System.Windows.Forms.TextBox();
+        this.btnMakeFood = new System.Windows.Forms.Button();
+        this.rdbCustomMakeQuantity = new System.Windows.Forms.RadioButton();
+        this.rdb2ea = new System.Windows.Forms.RadioButton();
+        this.rdb1ea = new System.Windows.Forms.RadioButton();
+        this.lblCurrentQuantityCanMake = new System.Windows.Forms.Label();
+        this.gbDecrease.SuspendLayout();
+
+        // 
+        // lblUnitString
+        // 
+        this.lblUnitString.AutoSize = true;
+        this.lblUnitString.Location = new System.Drawing.Point(338, 28);
+        this.lblUnitString.Name = "lblUnitString";
+        this.lblUnitString.Size = new System.Drawing.Size(0, 13);
+        this.lblUnitString.TabIndex = 20;
+        // 
+        // txtCustomMakeQuantity
+        // 
+        this.txtCustomMakeQuantity.Location = new System.Drawing.Point(269, 25);
+        this.txtCustomMakeQuantity.Name = "txtCustomMakeQuantity";
+        this.txtCustomMakeQuantity.Size = new System.Drawing.Size(63, 20);
+        this.txtCustomMakeQuantity.TabIndex = 21;
+        // 
+        // btnMakeFood
+        // 
+        this.btnMakeFood.Location = new System.Drawing.Point(406, 23);
+        this.btnMakeFood.Name = "button1";
+        this.btnMakeFood.Size = new System.Drawing.Size(75, 23);
+        this.btnMakeFood.TabIndex = 20;
+        this.btnMakeFood.Text = "ทำอาหารนี้";
+        this.btnMakeFood.UseVisualStyleBackColor = true;
+        // 
+        // rdbCustomMakeQuantity
+        // 
+        this.rdbCustomMakeQuantity.AutoSize = true;
+        this.rdbCustomMakeQuantity.Location = new System.Drawing.Point(188, 26);
+        this.rdbCustomMakeQuantity.Name = "rdbCustomMakeQuantity";
+        this.rdbCustomMakeQuantity.Size = new System.Drawing.Size(75, 17);
+        this.rdbCustomMakeQuantity.TabIndex = 2;
+        this.rdbCustomMakeQuantity.TabStop = true;
+        this.rdbCustomMakeQuantity.Text = "กำหนดเอง";
+        this.rdbCustomMakeQuantity.UseVisualStyleBackColor = true;
+        this.rdbCustomMakeQuantity.CheckedChanged += new System.EventHandler(this.rdbQuantity_CheckedChange);
+        // 
+        // rdb2ea
+        // 
+        this.rdb2ea.AutoSize = true;
+        this.rdb2ea.Location = new System.Drawing.Point(99, 26);
+        this.rdb2ea.Name = "rdb2ea";
+        this.rdb2ea.Size = new System.Drawing.Size(34, 17);
+        this.rdb2ea.TabIndex = 1;
+        this.rdb2ea.TabStop = true;
+        this.rdb2ea.Text = "2 ";
+        this.rdb2ea.UseVisualStyleBackColor = true;
+        this.rdb2ea.CheckedChanged += new System.EventHandler(this.rdbQuantity_CheckedChange);
+        // 
+        // rdb1ea
+        // 
+        this.rdb1ea.AutoSize = true;
+        this.rdb1ea.Location = new System.Drawing.Point(18, 26);
+        this.rdb1ea.Name = "rdb1ea";
+        this.rdb1ea.Size = new System.Drawing.Size(34, 17);
+        this.rdb1ea.TabIndex = 0;
+        this.rdb1ea.TabStop = true;
+        this.rdb1ea.Text = "1 ";
+        this.rdb1ea.UseVisualStyleBackColor = true;
+        this.rdb1ea.CheckedChanged += new System.EventHandler(this.rdbQuantity_CheckedChange);
+        // 
+        // lblCurrentQuantityCanMake
+        // 
+        this.lblCurrentQuantityCanMake.AutoSize = true;
+        this.lblCurrentQuantityCanMake.Location = new System.Drawing.Point(118, 400);
+        this.lblCurrentQuantityCanMake.Name = "lblCurrentQuantityCanMake";
+        this.lblCurrentQuantityCanMake.Size = new System.Drawing.Size(101, 13);
+        this.lblCurrentQuantityCanMake.TabIndex = 19;
+        this.lblCurrentQuantityCanMake.Text = "ปริมาณที่ทำได้ขณะนี้";
+
+        // Add control items to group box
+        this.gbDecrease.Controls.Add(this.lblUnitString);
+        this.gbDecrease.Controls.Add(this.txtCustomMakeQuantity);
+        this.gbDecrease.Controls.Add(this.btnMakeFood);
+        this.gbDecrease.Controls.Add(this.rdbCustomMakeQuantity);
+        this.gbDecrease.Controls.Add(this.rdb2ea);
+        this.gbDecrease.Controls.Add(this.rdb1ea);
+        this.gbDecrease.Location = new System.Drawing.Point(15, 424);
+        this.gbDecrease.Name = "gbDecrease";
+        this.gbDecrease.Size = new System.Drawing.Size(495, 60);
+        this.gbDecrease.TabIndex = 18;
+        this.gbDecrease.TabStop = false;
+        this.gbDecrease.Text = "ทำอาหาร";
+
+        this.Controls.Add(gbDecrease);
+        this.Controls.Add(this.lblCurrentQuantityCanMake);
+        this.gbDecrease.ResumeLayout(false);
+        this.gbDecrease.PerformLayout();
+    }
+    #endregion new control in editor form
     /// <summary>
     /// Get information from database and add to autostring collection
     /// </summary>
@@ -425,14 +543,20 @@ public class frmRecipe : Form
 
     private void LoadRecipeToDisplay(string name)
     {
-        List<string>[] data = myDB.SelectIngredientOfRecipe(name);
+        int i;
+        List<string> RecipeDetail = myDB.SelectRecipeDetail(name);
+        List<string>[] IngredientOfRecipe = myDB.SelectIngredientOfRecipe(name);
 
         txtFoodName.Text = name;
+        lblUnitString.Text = UnitIDToString(int.Parse(RecipeDetail[2]));
+        lblCurrentQuantityCanMake.Text += " " + RecipeDetail[1] + " " + lblUnitString.Text;
+        rdb1ea.Text += lblUnitString.Text;
+        rdb2ea.Text += lblUnitString.Text;
         ListViewItem sub;
-        for (int i = 0; i < data[0].Count; i++)
+        for (i = 0; i < IngredientOfRecipe[0].Count; i++)
         {
-            sub = new ListViewItem(data[0][i]);
-            sub.SubItems.Add(data[1][i]);
+            sub = new ListViewItem(IngredientOfRecipe[0][i]);
+            sub.SubItems.Add(IngredientOfRecipe[1][i]);
             lstvIngredientTable.Items.Add(sub);
         }
     }
@@ -559,6 +683,18 @@ public class frmRecipe : Form
         btnAddIngredient.Text = "เพิ่มวัตถุดิบ";
     }
 
+    private void rdbQuantity_CheckedChange(object sender, EventArgs e)
+    {
+        if (rdbCustomMakeQuantity.Checked)
+        {
+            txtCustomMakeQuantity.Enabled = true;
+        }
+        else
+        {
+            txtCustomMakeQuantity.Enabled = false;
+        }
+    }
+
     private int CheckedToUnitID()
     {
         if (rdbPlate.Checked)
@@ -626,6 +762,25 @@ public class frmRecipe : Form
             case 5:
                 rdbBag.Checked = true;
                 break;
+        }
+    }
+
+    private string UnitIDToString(int typeID)
+    {
+        switch (typeID)
+        {
+            case 1:
+                return "จาน";
+            case 2:
+                return "ชาม";
+            case 3:
+                return "ถ้วย";
+            case 4:
+                return "ไม้";
+            case 5:
+                return "ถุง";
+            default :
+                return "หน่วยผิด";
         }
     }
 
