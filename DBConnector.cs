@@ -617,7 +617,7 @@ public class DBConnector
     /// Delete ingredient from database
     /// </summary>
     /// <param name="name">string name of ingredient</param>
-    public void Delete(string name)
+    public void DeleteIngredient(string name)
     {
         try
         {
@@ -633,6 +633,17 @@ public class DBConnector
         catch(MySqlException ex)
         {
             MessageBox.Show(ex.Message);
+        }
+    }
+
+    public void DeleteRecipe(string name)
+    {
+        string query = "DELETE FROM recipe WHERE recipe_name=" + name;
+
+        if (OpenConnection())
+        {
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            cmd.ExecuteScalar();
         }
     }
 

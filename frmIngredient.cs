@@ -544,7 +544,7 @@ public class frmIngredient : Form
         }
         if (cbDelete.Checked)
         {
-            myDB.Delete(txtIngredientName.Text);
+            myDB.DeleteIngredient(txtIngredientName.Text);
         }
         else
         {

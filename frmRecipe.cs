@@ -40,6 +40,8 @@ public class frmRecipe : Form
     private Button btnMakeFood;
     private Label lblCurrentQuantityCanMake;
     private Label lblUnitString;
+    private CheckBox cbDeleteRecipe;
+
     private string currentName;
 
     #region windows code
@@ -70,6 +72,7 @@ public class frmRecipe : Form
             this.rdbCup = new System.Windows.Forms.RadioButton();
             this.rdbBowl = new System.Windows.Forms.RadioButton();
             this.rdbPlate = new System.Windows.Forms.RadioButton();
+            
             this.gbRecipeType.SuspendLayout();
             this.gbRecipeUnit.SuspendLayout();
             this.SuspendLayout();
@@ -400,10 +403,13 @@ public class frmRecipe : Form
     {
         this.Text = "แก้ไขสูตรอาหาร";
         btnAddIngredient.Text = "แก้ไขวัตถุดิบ";
+        btnSubmit.Text = "แก้ไขสูตร";
         btnCancel.Text = "ลบสูตรอาหาร";
         btnAddNewIngredient.Visible = true;
         AddNewControlToEditForm();
         rdb1ea.Checked = true;
+        btnSubmit.Click += new EventHandler(btnEditRecipe_Click);
+        btnCancel.Click += new EventHandler(CloseForm);
     }
 
     #region new control in editor form
@@ -422,6 +428,8 @@ public class frmRecipe : Form
         this.rdb2ea = new System.Windows.Forms.RadioButton();
         this.rdb1ea = new System.Windows.Forms.RadioButton();
         this.lblCurrentQuantityCanMake = new System.Windows.Forms.Label();
+        this.cbDeleteRecipe = new System.Windows.Forms.CheckBox();
+
         this.gbDecrease.SuspendLayout();
 
         // 
@@ -493,6 +501,16 @@ public class frmRecipe : Form
         this.lblCurrentQuantityCanMake.Size = new System.Drawing.Size(101, 13);
         this.lblCurrentQuantityCanMake.TabIndex = 19;
         this.lblCurrentQuantityCanMake.Text = "ปริมาณที่ทำได้ขณะนี้";
+        // 
+        // cbDeleteRecipe
+        // 
+        this.cbDeleteRecipe.AutoSize = true;
+        this.cbDeleteRecipe.Location = new System.Drawing.Point(73, 57);
+        this.cbDeleteRecipe.Name = "cbDeleteRecipe";
+        this.cbDeleteRecipe.Size = new System.Drawing.Size(66, 17);
+        this.cbDeleteRecipe.TabIndex = 12;
+        this.cbDeleteRecipe.Text = "ลบสูตรนี้";
+        this.cbDeleteRecipe.UseVisualStyleBackColor = true;
 
         // Add control items to group box
         this.gbDecrease.Controls.Add(this.lblUnitString);
@@ -507,6 +525,7 @@ public class frmRecipe : Form
         this.gbDecrease.TabIndex = 18;
         this.gbDecrease.TabStop = false;
         this.gbDecrease.Text = "ทำอาหาร";
+        this.gbRecipeType.Controls.Add(this.cbDeleteRecipe);
 
         this.Controls.Add(gbDecrease);
         this.Controls.Add(this.lblCurrentQuantityCanMake);
@@ -668,6 +687,27 @@ public class frmRecipe : Form
                 ListViewItem SelectedDelete = lstvIngredientTable.SelectedItems[i];
                 lstvIngredientTable.Items[SelectedDelete.Index].Remove();
             }
+        }
+    }
+
+    private void btnEditRecipe_Click(object sender, EventArgs e)
+    {
+        if (cbDeleteRecipe.Checked)
+        {
+            DialogResult dr = MessageBox.Show("ต้องกดจะลบสูตรนี้ใช่หรือไม่","ยืนยันการลบ",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+            if (dr == DialogResult.OK)
+            {
+                myDB.DeleteRecipe(txtFoodName.Text);
+                return;
+            }
+            else
+            {
+                return;
+            }
+        }
+        else
+        {
+
         }
     }
 

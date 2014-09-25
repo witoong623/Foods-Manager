@@ -418,10 +418,15 @@ public class frmMain : Form
         InitializeComponent();
         if (DBConnectStatus())
         {
+            EnableForm();
             cbMaterialsInStock.SelectedIndex = 0;
             cbMaterialsOutOfStock.SelectedIndex = 0;
             cbRecipeCanMake.SelectedIndex = 0;
             cbRecipeCannotMake.SelectedIndex = 0;
+        }
+        else
+        {
+            DisableForm();
         }
     }
 
