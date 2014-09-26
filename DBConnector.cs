@@ -504,11 +504,11 @@ public class DBConnector
     }
 
     /// <summary>
-    /// Update recipe quantity
+    /// Update recipe quantity, This method isn't process method
     /// </summary>
     /// <param name="quantity">New quantity</param>
     /// <returns>True if sucesses otherwise false</returns>
-    public bool UpdateRecipeQuantity(string name, int quantity)
+    public bool UpdateDatabaseRecipeQuantity(string name, int quantity)
     {
         try
         {
@@ -527,6 +527,64 @@ public class DBConnector
             return false;
         }
         return false;
+    }
+
+    public bool UpdateIngredientOfRecipe(string name, List<string>[] ingredient)
+    {
+        try
+        {
+            List<string> ingredient_id = new List<string>();
+            int i;
+            string recipeID = "1";
+            string query = query = "SELECT recipe_id FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
+
+            if (OpenConnection() == true)
+            {
+                // Get recipe id after insert
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    recipeID = dataReader.GetString("recipe_id");
+                }
+                dataReader.Close();
+
+                // Get ingredient id specify by name
+                for (i = 0; i < ingredient[0].Count; i++)
+                {
+                    query = "SELECT ingredient_id FROM ingredient WHERE ingredient_name='" + ingredient[0][i] + "' LIMIT 1";
+                    cmd.CommandText = query;
+                    dataReader = cmd.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        ingredient_id.Add(dataReader.GetString("ingredient_id"));
+                    }
+                    dataReader.Close();
+                }
+
+                // Delete all ingredient from recipe_ingredient(3rd relationship)
+                query = "DELETE FROM recipe_ingredient WHERE recipe_id='" + recipeID + "'";
+
+                // Insert ingredient of recipe to 3rd relation table(recipe_ingredient)
+                for (i = 0; i < ingredient[0].Count; i++)
+                {
+                    query = "INSERT INTO recipe_ingredient (recipe_id, ingredient_id, quantity)" +
+                            "VALUES('" + recipeID + "', '" + ingredient_id[i] + "', '" + ingredient[1][i] + "')";
+                    cmd.CommandText = query;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            return true;
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message + ex.StackTrace);
+            return false;
+        }
+        finally
+        {
+            CloseConnection();
+        }
     }
 
     /// <summary>
@@ -636,14 +694,26 @@ public class DBConnector
         }
     }
 
+    /// <summary>
+    /// Delete recipe from recipe table
+    /// </summary>
+    /// <param name="name">name of recipe</param>
     public void DeleteRecipe(string name)
     {
-        string query = "DELETE FROM recipe WHERE recipe_name=" + name;
-
-        if (OpenConnection())
+        try
         {
-            MySqlCommand cmd = new MySqlCommand(query, connection);
-            cmd.ExecuteScalar();
+            string query = "DELETE FROM recipe WHERE recipe_name='" + name + "'";
+
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+                CloseConnection();
+            }
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message, "พบข้อผิดพลาดในการลบ", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -652,11 +722,12 @@ public class DBConnector
     /// </summary>
     /// <param name="name">name of recipe</param>
     /// <returns>Require and current ingredient quantity</returns>
-    public List<int>[] GetIngredientByRecipe(string name)
+    public List<int>[] SelectCurrentRequireIngredient(string name)
     {
-        List<int>[] RawData = new List<int>[2];
+        List<int>[] RawData = new List<int>[3];
         RawData[0] = new List<int>();
         RawData[1] = new List<int>();
+        RawData[3] = new List<int>();
         int recipeID = SelectRecipeID(name);
 
         string query = "SELECT ingredient_id, quantity, (SELECT ingredient_quantity FROM ingredient WHERE ingredient_id=ri.ingredient_id)" +
@@ -669,6 +740,7 @@ public class DBConnector
             {
                 RawData[0].Add(dataReader.GetInt32(1));
                 RawData[1].Add(dataReader.GetInt32(2));
+                RawData[2].Add(dataReader.GetInt32(0));
             }
             dataReader.Close();
             CloseConnection();

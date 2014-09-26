@@ -33,18 +33,21 @@ public class AdjustmentIngredient
     /// <returns>True if sucesses otherwise false</returns>
     public bool UpdateRecipeQuantity()
     {
-        int CurrentQuantity = myDB.GetCurrentQuantity(recipeName);
-        List<int>[] IngredientQuantity = myDB.GetIngredientByRecipe(recipeName);
+        int CurrentQuantity;
+        List<int>[] IngredientQuantity = myDB.SelectCurrentRequireIngredient(recipeName);
 
-        for (var i = 0; i < IngredientQuantity[0].Count; i++)
+        // The initial value for current quantity to value of the first ingredient
+        CurrentQuantity = IngredientQuantity[1][0] / IngredientQuantity[0][0];
+
+        for (var i = 1; i < IngredientQuantity[0].Count; i++)
         {
             int processQuantity = IngredientQuantity[1][i] / IngredientQuantity[0][i];
-            if (processQuantity > CurrentQuantity)
+            if (processQuantity < CurrentQuantity)
             {
                 CurrentQuantity = processQuantity;
             }
         }
-        if (myDB.UpdateRecipeQuantity(recipeName, CurrentQuantity))
+        if (myDB.UpdateDatabaseRecipeQuantity(recipeName, CurrentQuantity))
         {
             return true;
         }
@@ -53,5 +56,10 @@ public class AdjustmentIngredient
             MessageBox.Show("Cannot update value in database");
             return false;
         }
+    }
+
+    public bool UpdateManyIngredient(string name, int quantity)
+    {
+
     }
 }

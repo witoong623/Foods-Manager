@@ -7,9 +7,11 @@ using System.IO;
 using FoodsManager;
 public class frmMain : Form
 {
-    private const string ADD = null;
     private const int INSTOCK = 1;
     private const int OUTOFSTOCK = 0;
+    private const int ADD = 1;
+    private const int EDIT = 2;
+    private const int DELETE = 3;
 
     private GroupBox gbFoodsCanMake;
     private GroupBox gbFoodsCannotMake;
@@ -234,6 +236,7 @@ public class frmMain : Form
             this.columnHeader6,
             this.columnHeader7,
             this.columnHeader8});
+            this.lstvMaterialsInStock.Cursor = System.Windows.Forms.Cursors.Default;
             this.lstvMaterialsInStock.FullRowSelect = true;
             this.lstvMaterialsInStock.GridLines = true;
             this.lstvMaterialsInStock.Location = new System.Drawing.Point(6, 20);
@@ -440,7 +443,8 @@ public class frmMain : Form
 
     private void btnAddMenu_Click(object sender, EventArgs e)
     {
-        frmRecipe myRecipe = new frmRecipe(ADD);
+        // Pass null to indicate that this is form for add a new item
+        frmRecipe myRecipe = new frmRecipe(null);
         myRecipe.ShowDialog();
         if (myRecipe.CurrentName != null)
         {
@@ -472,10 +476,21 @@ public class frmMain : Form
 
     private void Recipe_Selected_DoubleClick(object sender, EventArgs e)
     {
+        frmRecipe myRecipe;
         if (lstvRecipeCanMake.SelectedItems.Count > 0)
         {
-            frmRecipe myRecipe = new frmRecipe(lstvRecipeCanMake.SelectedItems[0].Text);
+            myRecipe = new frmRecipe(lstvRecipeCanMake.SelectedItems[0].Text);
             myRecipe.ShowDialog();
+        }
+        else
+        {
+            myRecipe = null;
+            return;
+        }
+
+        if (myRecipe.PreviousTask == DELETE)
+        {
+            RecipeUpdate();
         }
     }
 
@@ -486,7 +501,8 @@ public class frmMain : Form
     /// <param name="e"></param>
     private void btnAddMaterial_Click(object sender, EventArgs e)
     {
-        frmIngredient myIngredient = new frmIngredient(ADD);
+        // Pass null to indicate that this is form for add a new item
+        frmIngredient myIngredient = new frmIngredient(null);
         myIngredient.ShowDialog();
         IngredientUpdate();
     }
@@ -533,6 +549,9 @@ public class frmMain : Form
         IngredientOutOfStockUpdate();
     }
 
+    /// <summary>
+    /// Reload both case of recipe to display in recipe ListView
+    /// </summary>
     private void RecipeUpdate()
     {
         RecipeInStockUpdate();
