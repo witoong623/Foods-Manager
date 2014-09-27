@@ -170,4 +170,22 @@ public class AdjustmentIngredient
             UpdateRelateRecipe(ListOfRelateRecipe, FirstIndex + 1);
         }
     }
+
+    public string GetNotEnoughIngredient(string RecipeName)
+    {
+        int processQuantity;
+        string NotEnoughIngredient = null;
+        List<int>[] IngredientQuantity = myDB.SelectCurrentRequireIngredient(RecipeName);
+
+        for (var i = 0; i < IngredientQuantity[0].Count; i++)
+        {
+            processQuantity = IngredientQuantity[2][i] - IngredientQuantity[1][i];
+            if (processQuantity < 0)
+            {
+                NotEnoughIngredient += myDB.SelectIngredientName(IngredientQuantity[0][i]);
+            }
+        }
+
+        return NotEnoughIngredient;
+    }
 }

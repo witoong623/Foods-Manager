@@ -111,7 +111,7 @@ public class frmMain : Form
             this.btnAddRecipe.TabIndex = 6;
             this.btnAddRecipe.Text = "เพิ่มเมนูอาหาร";
             this.btnAddRecipe.UseVisualStyleBackColor = true;
-            this.btnAddRecipe.Click += new System.EventHandler(this.btnAddMenu_Click);
+            this.btnAddRecipe.Click += new System.EventHandler(this.btnAddRecipe_Click);
             // 
             // lstvRecipeCanMake
             // 
@@ -437,15 +437,16 @@ public class frmMain : Form
         Application.Run(main);
     }
 
-    private void btnAddMenu_Click(object sender, EventArgs e)
+    private void btnAddRecipe_Click(object sender, EventArgs e)
     {
         // Pass null to indicate that this is form for add a new item
         frmRecipe myRecipe = new frmRecipe(null);
         myRecipe.ShowDialog();
-        if (myRecipe.CurrentName != null)
+        if (myRecipe.CurrentName.Length != 0)
         {
             RecipeUpdateQuantity = new AdjustmentIngredient(myRecipe.CurrentName);
             RecipeUpdateQuantity.UpdateRecipeQuantity();
+            RecipeUpdate();
         }
     }
 
@@ -640,15 +641,17 @@ public class frmMain : Form
     private void RecipeOutOfStockUpdate()
     {
         int i;
+        ListViewItem sub;
         List<string>[] data = new List<string>[3];
+        AdjustmentIngredient myUpdate = new AdjustmentIngredient();
+
         data = myDB.SelectRecipe(cbRecipeCannotMake.SelectedIndex, OUTOFSTOCK);
         lstvRecipeCannotMake.Items.Clear();
-        ListViewItem sub;
+        
         for (i = 0; i < data[0].Count; i++)
         {
             sub = new ListViewItem(data[0][i]);
-            sub.SubItems.Add(data[1][i]);
-            sub.SubItems.Add(int.Parse(data[2][i]).ToRecipeUnitString());
+            sub.SubItems.Add(myUpdate.GetNotEnoughIngredient(data[0][i]));
             lstvRecipeCannotMake.Items.Add(sub);
         }
     }

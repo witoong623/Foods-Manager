@@ -122,23 +122,14 @@ public class DBConnector
     {
         try
         {
-            string query;
-
-            query = "INSERT INTO ingredient (type_id, ingredient_name," +
+            string query = "INSERT INTO ingredient (type_id, ingredient_name," +
                     " ingredient_quantity, unit_id) VALUES('" + type + "', '" +
                     name + "', '" + initial + "', '" + unit + "')";
 
-            // Open connection
             if (OpenConnection())
             {
-                // Create command and assign the query and connection from the constructor
                 MySqlCommand cmd = new MySqlCommand(query, connection);
-
-                // Execute command
                 cmd.ExecuteNonQuery();
-
-                // Close connection
-                CloseConnection();
             }
             return true;
         }
@@ -146,9 +137,13 @@ public class DBConnector
         {
             if (ex.Number == 1062)
             {
-                MessageBox.Show(name + "ถูกเพิ่มแล้ว", "ข้อมูลซ้ำกัน");
+                MessageBox.Show(name + "ถูกเพิ่มแล้ว", "ข้อมูลซ้ำกัน", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return false;
+        }
+        finally
+        {
+            CloseConnection();
         }
     }
 
@@ -211,7 +206,10 @@ public class DBConnector
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message + ex.StackTrace);
+            if (ex.Number == 1062)
+            {
+                MessageBox.Show(name + "ถูกเพิ่มแล้ว", "ข้อมูลซ้ำกัน", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return false;
         }
         finally
@@ -858,12 +856,22 @@ public class DBConnector
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 cmd.ExecuteNonQuery();
-                CloseConnection();
             }
         }
         catch(MySqlException ex)
         {
-            MessageBox.Show(ex.Message);
+            if (ex.Number == 1451)
+            {
+                MessageBox.Show("กรุณาลบสูตรที่ใช้วัตถุดิบนี้ออกให้หมดก่อน");
+            }
+            else
+            {
+                MessageBox.Show(ex.Message, "พบข้อผิดพลาด");
+            }
+        }
+        finally
+        {
+            CloseConnection();
         }
     }
 
@@ -951,8 +959,29 @@ public class DBConnector
         return RawData;
     }
 
+    public string SelectIngredientName(int ID)
+    {
+        string IngredientName = null;
+        string query = "SELECT ingredient_name FROM ingredient WHERE ingredient_id='" + ID + "' LIMIT 1";
+
+        if (OpenConnection())
+        {
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                IngredientName = dataReader.GetString("ingredient_name");
+            }
+
+            dataReader.Close();
+            CloseConnection();
+        }
+        return IngredientName;
+    }
+
     /// <summary>
-    /// Select recipe's id only one value
+    /// Select a recipe id
     /// </summary>
     /// <param name="name">recipe id</param>
     /// <returns>recipe_id from recipe table</returns>
@@ -978,7 +1007,7 @@ public class DBConnector
     /// Get current quantity of recipe from recipe table by name
     /// </summary>
     /// <param name="name">name of recipe</param>
-    /// <returns></returns>
+    /// <returns>a current quantity</returns>
     public int GetCurrentQuantity(string name)
     {
         int quantity = 0;

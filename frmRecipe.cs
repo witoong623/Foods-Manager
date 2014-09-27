@@ -50,7 +50,7 @@ public class frmRecipe : Form
 
     private int currentMadeQuantity;
     private int previousTask;
-    private string currentName;
+    private string currentName = "";
 
     #region windows code
     private void InitializeComponent()
@@ -665,7 +665,6 @@ public class frmRecipe : Form
             }
         }
 
-
         ListCollection = new ListViewItem(cbIngredientName.Text);
         ListCollection.SubItems.Add(txtQuantity.Text);
         lstvIngredientTable.Items.Add(ListCollection);
@@ -678,12 +677,11 @@ public class frmRecipe : Form
     /// <param name="e"></param>
     private void AddRecipe(object sender, EventArgs e)
     {
+        int i;
         List<string>[] ingredient = new List<string>[2];
         ingredient[0] = new List<string>();
         ingredient[1] = new List<string>();
-        int i;
-        bool flag;
-
+        
         if (txtFoodName.Text.Length == 0)
         {
             MessageBox.Show("กรุณาใส่ชื่อสูตรอาหาร");
@@ -705,8 +703,7 @@ public class frmRecipe : Form
             ingredient[1].Add(subitem.SubItems[1].Text);
         }
 
-        flag = myDB.InsertRecipe(txtFoodName.Text, CheckedToTypeID(), ingredient, CheckedToUnitID());
-        if (flag)
+        if (myDB.InsertRecipe(txtFoodName.Text, CheckedToTypeID(), ingredient, CheckedToUnitID()))
         {
             currentName = txtFoodName.Text;
             Close();
