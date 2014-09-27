@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using FoodsManager;
+
 public class frmMain : Form
 {
     private const int INSTOCK = 1;
@@ -12,6 +13,7 @@ public class frmMain : Form
     private const int ADD = 1;
     private const int EDIT = 2;
     private const int DELETE = 3;
+    private const int MADE = 4;
 
     private GroupBox gbFoodsCanMake;
     private GroupBox gbFoodsCannotMake;
@@ -42,7 +44,6 @@ public class frmMain : Form
     private ToolStripMenuItem mnMenu;
     private ToolStripMenuItem smnSelectOrCreateDB;
     private ToolStripMenuItem mnHelp;
-    private System.ComponentModel.BackgroundWorker myBackgroundWorker;
     private ToolStripMenuItem smnAbout;
 
     private DBConnector myDB = new DBConnector();
@@ -81,7 +82,6 @@ public class frmMain : Form
             this.smnSelectOrCreateDB = new System.Windows.Forms.ToolStripMenuItem();
             this.mnHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.smnAbout = new System.Windows.Forms.ToolStripMenuItem();
-            this.myBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.gbFoodsCanMake.SuspendLayout();
             this.gbFoodsCannotMake.SuspendLayout();
             this.gbMaterialsHave.SuspendLayout();
@@ -182,6 +182,7 @@ public class frmMain : Form
             this.lstvRecipeCannotMake.TabIndex = 5;
             this.lstvRecipeCannotMake.UseCompatibleStateImageBehavior = false;
             this.lstvRecipeCannotMake.View = System.Windows.Forms.View.Details;
+            this.lstvRecipeCannotMake.DoubleClick += new System.EventHandler(this.Recipe_Selected_DoubleClick);
             // 
             // columnHeader4
             // 
@@ -380,11 +381,6 @@ public class frmMain : Form
             this.smnAbout.Text = "เกี่ยวกับ";
             this.smnAbout.Click += new System.EventHandler(this.AboutMenuClick);
             // 
-            // myBackgroundWorker
-            // 
-            this.myBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.recipeBackground_DoWork);
-            this.myBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.recipeBackground_RunWorkerCompleted);
-            // 
             // frmMain
             // 
             this.ClientSize = new System.Drawing.Size(1064, 358);
@@ -449,7 +445,7 @@ public class frmMain : Form
         if (myRecipe.CurrentName != null)
         {
             RecipeUpdateQuantity = new AdjustmentIngredient(myRecipe.CurrentName);
-            myBackgroundWorker.RunWorkerAsync(RecipeUpdateQuantity);
+            RecipeUpdateQuantity.UpdateRecipeQuantity();
         }
     }
 
@@ -464,13 +460,29 @@ public class frmMain : Form
         {
             frmIngredient myEdit = new frmIngredient(lstvMaterialsInStock.SelectedItems[0].Text);
             myEdit.ShowDialog();
-            IngredientInStockUpdate();
+
+            if (myEdit.PreviousTask == EDIT)
+            {
+                RecipeUpdateQuantity = new AdjustmentIngredient();
+                RecipeUpdateQuantity.UpdateOneRalateIngredient(myDB.SelectOneIngredientID(myEdit.CurrentName));
+            }
+
+            IngredientUpdate();
+            RecipeUpdate();
         }
         else
         {
             frmIngredient myEdit = new frmIngredient(lstvMaterialsOutOfStock.SelectedItems[0].Text);
             myEdit.ShowDialog();
-            IngredientInStockUpdate();
+
+            if (myEdit.PreviousTask == EDIT)
+            {
+                RecipeUpdateQuantity = new AdjustmentIngredient();
+                RecipeUpdateQuantity.UpdateOneRalateIngredient(myDB.SelectOneIngredientID(myEdit.CurrentName));
+            }
+
+            IngredientUpdate();
+            RecipeUpdate();
         }
     }
 
@@ -484,13 +496,31 @@ public class frmMain : Form
         }
         else
         {
-            myRecipe = null;
-            return;
+            myRecipe = new frmRecipe(lstvRecipeCannotMake.SelectedItems[0].Text);
+            myRecipe.ShowDialog();
         }
 
         if (myRecipe.PreviousTask == DELETE)
         {
             RecipeUpdate();
+        }
+        else if (myRecipe.PreviousTask == EDIT)
+        {
+            RecipeUpdateQuantity = new AdjustmentIngredient(myRecipe.CurrentName);
+            tssDBconnectStatus.Text = "Database is updating";
+            RecipeUpdateQuantity.UpdateRecipeQuantity();
+            RecipeUpdate();
+            IngredientUpdate();
+            tssDBconnectStatus.Text = "Database is updated";
+        }
+        else if (myRecipe.PreviousTask == MADE)
+        {
+            RecipeUpdateQuantity = new AdjustmentIngredient(myRecipe.CurrentName, myRecipe.CurrentMadeQuantity);
+            tssDBconnectStatus.Text = "Database is updating";
+            RecipeUpdateQuantity.UpdateManyIngredient();
+            RecipeUpdate();
+            IngredientUpdate();
+            tssDBconnectStatus.Text = "Database is updated";
         }
     }
 
@@ -653,18 +683,5 @@ public class frmMain : Form
     {
         frmCreateDB CreateDatabase = new frmCreateDB();
         CreateDatabase.ShowDialog();
-    }
-
-    private void recipeBackground_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
-    {
-        AdjustmentIngredient myUpdate = e.Argument as AdjustmentIngredient;
-        myUpdate.UpdateRecipeQuantity();
-    }
-
-    private void recipeBackground_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
-    {
-        tssDBconnectStatus.Text = "Update Sucessesfully";
-        stsStatusBar.Refresh();
-        RecipeUpdate();
     }
 }

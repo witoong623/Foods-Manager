@@ -169,7 +169,7 @@ public class DBConnector
             string query = "INSERT INTO recipe (recipe_type_id, recipe_name, recipe_unit_id)" +
                            "VALUES ('" + type + "', '" + name + "', '" + unitID + "')";
 
-            if (OpenConnection() == true)
+            if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 // Insert name of food to recipe table
@@ -262,7 +262,7 @@ public class DBConnector
     /// </summary>
     /// <param name="typeID">Ingredient type</param>
     /// <param name="quantity">Ingredient quantity</param>
-    /// <returns></returns>
+    /// <returns>ingredient name and quantity</returns>
     public List<string>[] SelectIngredient(int typeID, int quantity)
     {
         string query;
@@ -471,6 +471,115 @@ public class DBConnector
             return list;
         }
     }
+
+    /// <summary>
+    /// Select recipe that use specified ingredient
+    /// </summary>
+    /// <param name="IngredientID">List of ingredient id</param>
+    /// <returns>List of recipe id</returns>
+    public List<int> QualifyRelateRecipe(List<int> IngredientID)
+    {
+        List<int> List = new List<int>();
+        try
+        {
+            int i;
+            string query;
+
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = connection;
+
+                for (i = 0; i < IngredientID.Count; i++)
+                {
+                    query = "SELECT recipe_id FROM recipe_ingredient WHERE ingredient_id='" + IngredientID[i] + "'";
+                    cmd.CommandText = query;
+                    MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        List.Add(dataReader.GetInt32("recipe_id"));
+                    }
+
+                    dataReader.Close();
+                }
+
+                CloseConnection();
+                return List;
+            }
+            else
+            {
+                return List;
+            }
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message);
+            return List;
+        }
+    }
+
+    /// <summary>
+    /// Select recipe that use specified ingredient
+    /// </summary>
+    /// <param name="ID">ID of ingredient</param>
+    /// <returns>List of recipe id</returns>
+    public List<int> QualifyRelateRecipe(int ID)
+    {
+        List<int> List = new List<int>();
+        try
+        {
+            string query = "SELECT recipe_id FROM recipe_ingredient WHERE ingredient_id='" + ID + "'";
+
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    List.Add(dataReader.GetInt32("recipe_id"));
+                }
+
+                dataReader.Close();
+
+                CloseConnection();
+                return List;
+            }
+            else
+            {
+                return List;
+            }
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message);
+            return List;
+        }
+    }
+
+    public int SelectOneIngredientID(string name)
+    {
+        int ID = 0;
+        string query = "SELECT ingredient_id FROM ingredient WHERE ingredient_name='" + name + "' LIMIT 1";
+
+        if (OpenConnection())
+        {
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                ID = dataReader.GetInt32("ingredient_id");
+            }
+
+            dataReader.Close();
+            CloseConnection();
+            return ID;
+        }
+        return ID;
+    }
+
     /// <summary>
     /// Update ingredient but can't edit name
     /// </summary>
@@ -506,6 +615,7 @@ public class DBConnector
     /// <summary>
     /// Update recipe quantity, This method isn't process method
     /// </summary>
+    /// <param name="name">name of recipe</param>
     /// <param name="quantity">New quantity</param>
     /// <returns>True if sucesses otherwise false</returns>
     public bool UpdateDatabaseRecipeQuantity(string name, int quantity)
@@ -529,7 +639,70 @@ public class DBConnector
         return false;
     }
 
-    public bool UpdateIngredientOfRecipe(string name, List<string>[] ingredient)
+    /// <summary>
+    /// Update recipe quantity, This method isn't process method
+    /// </summary>
+    /// <param name="ID">ID of recipe</param>
+    /// <param name="quantity">New quantity</param>
+    /// <returns>True if sucesses otherwise false</returns>
+    public bool UpdateDatabaseRecipeQuantity(int ID, int quantity)
+    {
+        try
+        {
+            string query = "UPDATE recipe SET quantity='" + quantity + "' WHERE recipe_id='" + ID + "'";
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+                CloseConnection();
+                return true;
+            }
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message + ex.StackTrace);
+            return false;
+        }
+        return false;
+    }
+
+    public bool UpdateManyIngredientQuantity(List<int>[] NewQuantity)
+    {
+        int i;
+        string query;
+        try
+        {
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = connection;
+                for (i = 0; i < NewQuantity[0].Count; i++)
+                {
+                    query = "UPDATE ingredient SET ingredient_quantity='" + NewQuantity[2][i] + 
+                            "' WHERE ingredient_id='" + NewQuantity[0][i] + "'";
+                    cmd.CommandText = query;
+                    cmd.ExecuteNonQuery();
+                }
+                CloseConnection();
+                return true;
+            }
+            return false;
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message);
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Edit ingredient of recipe by delete all of ingredient of recipe in recipe_ingredient and add
+    /// entire ingredient of recipe to recipe_ingredient again
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="ingredient"></param>
+    /// <returns>true if sucesses otherwise false</returns>
+    public bool EditIngredientOfRecipe(string name, List<string>[] ingredient)
     {
         try
         {
@@ -718,16 +891,16 @@ public class DBConnector
     }
 
     /// <summary>
-    /// Get require and current ingredient quantity
+    /// Get require and current ingredient quantity of a recipe
     /// </summary>
     /// <param name="name">name of recipe</param>
-    /// <returns>Require and current ingredient quantity</returns>
+    /// <returns>index 0 = ingredient_id, 1 = require, 2 = current</returns>
     public List<int>[] SelectCurrentRequireIngredient(string name)
     {
         List<int>[] RawData = new List<int>[3];
         RawData[0] = new List<int>();
         RawData[1] = new List<int>();
-        RawData[3] = new List<int>();
+        RawData[2] = new List<int>();
         int recipeID = SelectRecipeID(name);
 
         string query = "SELECT ingredient_id, quantity, (SELECT ingredient_quantity FROM ingredient WHERE ingredient_id=ri.ingredient_id)" +
@@ -738,9 +911,39 @@ public class DBConnector
             MySqlDataReader dataReader = cmd.ExecuteReader();
             while (dataReader.Read())
             {
-                RawData[0].Add(dataReader.GetInt32(1));
-                RawData[1].Add(dataReader.GetInt32(2));
-                RawData[2].Add(dataReader.GetInt32(0));
+                RawData[0].Add(dataReader.GetInt32(0));
+                RawData[1].Add(dataReader.GetInt32(1));
+                RawData[2].Add(dataReader.GetInt32(2));
+            }
+            dataReader.Close();
+            CloseConnection();
+        }
+        return RawData;
+    }
+
+    /// <summary>
+    /// Get require and current ingredient quantity of a recipe
+    /// </summary>
+    /// <param name="ID">ID of recipe</param>
+    /// <returns>index 0 = ingredient_id, 1 = require, 2 = current</returns>
+    public List<int>[] SelectCurrentRequireIngredient(int ID)
+    {
+        List<int>[] RawData = new List<int>[3];
+        RawData[0] = new List<int>();
+        RawData[1] = new List<int>();
+        RawData[2] = new List<int>();
+
+        string query = "SELECT ingredient_id, quantity, (SELECT ingredient_quantity FROM ingredient WHERE ingredient_id=ri.ingredient_id)" +
+        "FROM recipe_ingredient ri WHERE recipe_id='" + ID + "'";
+        if (OpenConnection())
+        {
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            while (dataReader.Read())
+            {
+                RawData[0].Add(dataReader.GetInt32(0));
+                RawData[1].Add(dataReader.GetInt32(1));
+                RawData[2].Add(dataReader.GetInt32(2));
             }
             dataReader.Close();
             CloseConnection();

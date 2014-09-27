@@ -9,6 +9,7 @@ public class frmRecipe : Form
     private const int ADD = 1;
     private const int EDIT = 2;
     private const int DELETE = 3;
+    private const int MADE = 4;
 
     private ListView lstvIngredientTable;
     private ColumnHeader columnHeader1;
@@ -44,11 +45,12 @@ public class frmRecipe : Form
     private Label lblCurrentQuantityCanMake;
     private Label lblUnitString;
     private CheckBox cbDeleteRecipe;
-
-    private string currentName;
     private Button btnCancel;
     private Button btnSubmit;
+
+    private int currentMadeQuantity;
     private int previousTask;
+    private string currentName;
 
     #region windows code
     private void InitializeComponent()
@@ -386,11 +388,20 @@ public class frmRecipe : Form
             return currentName;
         }
     }
+
     public int PreviousTask
     {
         get
         {
             return previousTask;
+        }
+    }
+
+    public int CurrentMadeQuantity
+    {
+        get
+        {
+            return currentMadeQuantity;
         }
     }
 
@@ -747,12 +758,42 @@ public class frmRecipe : Form
                 ingredient[0].Add(subitem.SubItems[0].Text);
                 ingredient[1].Add(subitem.SubItems[1].Text);
             }
+
+
+            if (myDB.EditIngredientOfRecipe(txtFoodName.Text, ingredient))
+            {
+                previousTask = EDIT;
+                currentName = txtFoodName.Text;
+                Close();
+            }
         }
     }
 
     private void btnMakeFood_Click(object sender, EventArgs e)
     {
-
+        if ((MessageBox.Show("ต้องการจะทำอาหารนี้ใช่หรือไม่", "ยืนยันการทำอาหาร", MessageBoxButtons.YesNo, 
+                              MessageBoxIcon.Question) == DialogResult.Yes))
+        {
+            if (rdb1ea.Checked)
+            {
+                currentMadeQuantity = 1;
+            }
+            else if (rdb2ea.Checked)
+            {
+                currentMadeQuantity = 2;
+            }
+            else
+            {
+                currentMadeQuantity = int.Parse(txtCustomMakeQuantity.Text);
+            }
+            currentName = txtFoodName.Text;
+            previousTask = MADE;
+            Close();
+        }
+        else
+        {
+            return;
+        }
     }
 
     /// <summary>

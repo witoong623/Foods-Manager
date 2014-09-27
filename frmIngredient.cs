@@ -6,6 +6,10 @@ using System.Windows.Forms;
 /// </summary>
 public class frmIngredient : Form
 {
+    private const int ADD = 1;
+    private const int EDIT = 2;
+    private const int DELETE = 3;
+
     private Label label1;
     private Label lblQuantity;
     private TextBox txtQuantity;
@@ -30,6 +34,8 @@ public class frmIngredient : Form
     private RadioButton rdbGrain;
 
     private int currentQuantity;
+    private int previousTask;
+    private string currentName;
 
     #region windows code
     private void InitializeComponent()
@@ -486,6 +492,22 @@ public class frmIngredient : Form
                 break;
         }
     }
+
+    public int PreviousTask
+    {
+        get
+        {
+            return previousTask;
+        }
+    }
+
+    public string CurrentName
+    {
+        get
+        {
+            return currentName;
+        }
+    }
     #endregion Helper method
 
     /// <summary>
@@ -542,6 +564,7 @@ public class frmIngredient : Form
             MessageBox.Show("คูณไม่สามารถปรับลดปริมาณของวัตถุดิบ\nให้ต่ำกว่าเดิมได้", "ข้อมูลผิดพลาด");
             return;
         }
+
         if (cbDelete.Checked)
         {
             myDB.DeleteIngredient(txtIngredientName.Text);
@@ -549,6 +572,8 @@ public class frmIngredient : Form
         else
         {
             myDB.Update(TypeSelected(), txtIngredientName.Text, quantity, UnitSelected());
+            currentName = txtIngredientName.Text;
+            previousTask = EDIT;
         }
         Close();
     }
