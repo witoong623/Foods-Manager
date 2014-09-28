@@ -155,13 +155,21 @@ namespace FileManage
             {
                 if (File.Exists(FileIO))
                 {
+                    int i;
                     string temp;
                     string[] tempArray = new string[5];
                     sr = new StreamReader(FileIO);
 
-                    for (var i = 0; (i < 5) && ((temp = sr.ReadLine()) != null); i++)
+                    for (i = 0; (i < 5) && ((temp = sr.ReadLine()) != null); i++)
                     {
                         tempArray[i] = temp;
+                    }
+
+                    if (i != 5)
+                    {
+                        MessageBox.Show("ข้อมูลในการเชื่อมต่อไม่ครบถ้วย\nกรุณากรอกใหม่ให้ครบถ้วน", "ข้อมูลไม่ครบถ้วน", MessageBoxButtons.OK,
+                                            MessageBoxIcon.Error);
+                        return false;
                     }
 
                     server = tempArray[0];
