@@ -51,7 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdjustmentIngredient.cs" />
-    <Compile Include="clsConvert.cs" />
+    <Compile Include="clsHelper.cs" />
     <Compile Include="frmAbout.cs">
       <SubType>Form</SubType>
     </Compile>
