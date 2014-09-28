@@ -20,6 +20,11 @@ public class frmCreateDB : Form
     private TextBox txtDatabase;
     private Label label5;
 
+    clsBuildConnectionString build = new clsBuildConnectionString("sqldetail.txt");
+    private RadioButton rdbConnectionString;
+    private RadioButton rdbBoth;
+    private RadioButton rdbDatabase;
+
     private string FilePath;
 
     #region windows component
@@ -38,6 +43,9 @@ public class frmCreateDB : Form
             this.btnClose = new System.Windows.Forms.Button();
             this.txtDatabase = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.rdbConnectionString = new System.Windows.Forms.RadioButton();
+            this.rdbBoth = new System.Windows.Forms.RadioButton();
+            this.rdbDatabase = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
             // 
             // label1
@@ -86,12 +94,13 @@ public class frmCreateDB : Form
             this.txtSqlFilePath.Location = new System.Drawing.Point(88, 22);
             this.txtSqlFilePath.Name = "txtSqlFilePath";
             this.txtSqlFilePath.ReadOnly = true;
-            this.txtSqlFilePath.Size = new System.Drawing.Size(179, 20);
+            this.txtSqlFilePath.Size = new System.Drawing.Size(212, 20);
             this.txtSqlFilePath.TabIndex = 4;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(273, 21);
+            this.button1.Enabled = false;
+            this.button1.Location = new System.Drawing.Point(306, 21);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 5;
@@ -103,27 +112,27 @@ public class frmCreateDB : Form
             // 
             this.txtSqlUsername.Location = new System.Drawing.Point(88, 57);
             this.txtSqlUsername.Name = "txtSqlUsername";
-            this.txtSqlUsername.Size = new System.Drawing.Size(179, 20);
+            this.txtSqlUsername.Size = new System.Drawing.Size(212, 20);
             this.txtSqlUsername.TabIndex = 6;
             // 
             // txtSqlPassword
             // 
             this.txtSqlPassword.Location = new System.Drawing.Point(88, 92);
             this.txtSqlPassword.Name = "txtSqlPassword";
-            this.txtSqlPassword.Size = new System.Drawing.Size(179, 20);
+            this.txtSqlPassword.Size = new System.Drawing.Size(212, 20);
             this.txtSqlPassword.TabIndex = 7;
             // 
             // txtSqlServer
             // 
             this.txtSqlServer.Location = new System.Drawing.Point(88, 127);
             this.txtSqlServer.Name = "txtSqlServer";
-            this.txtSqlServer.Size = new System.Drawing.Size(179, 20);
+            this.txtSqlServer.Size = new System.Drawing.Size(212, 20);
             this.txtSqlServer.TabIndex = 8;
             this.txtSqlServer.Text = "localhost";
             // 
             // btnSubmit
             // 
-            this.btnSubmit.Location = new System.Drawing.Point(88, 197);
+            this.btnSubmit.Location = new System.Drawing.Point(88, 216);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(75, 23);
             this.btnSubmit.TabIndex = 9;
@@ -133,7 +142,7 @@ public class frmCreateDB : Form
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(192, 197);
+            this.btnClose.Location = new System.Drawing.Point(192, 216);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 10;
@@ -145,7 +154,7 @@ public class frmCreateDB : Form
             // 
             this.txtDatabase.Location = new System.Drawing.Point(88, 162);
             this.txtDatabase.Name = "txtDatabase";
-            this.txtDatabase.Size = new System.Drawing.Size(179, 20);
+            this.txtDatabase.Size = new System.Drawing.Size(212, 20);
             this.txtDatabase.TabIndex = 11;
             this.txtDatabase.Text = "food_manager";
             // 
@@ -159,9 +168,44 @@ public class frmCreateDB : Form
             this.label5.TabIndex = 12;
             this.label5.Text = "ชื่อฐานข้อมูล";
             // 
+            // rdbConnectionString
+            // 
+            this.rdbConnectionString.AutoSize = true;
+            this.rdbConnectionString.Checked = true;
+            this.rdbConnectionString.Location = new System.Drawing.Point(71, 193);
+            this.rdbConnectionString.Name = "rdbConnectionString";
+            this.rdbConnectionString.Size = new System.Drawing.Size(78, 17);
+            this.rdbConnectionString.TabIndex = 13;
+            this.rdbConnectionString.TabStop = true;
+            this.rdbConnectionString.Text = "เพิ่มชื่อผู้ใช้";
+            this.rdbConnectionString.UseVisualStyleBackColor = true;
+            // 
+            // rdbBoth
+            // 
+            this.rdbBoth.AutoSize = true;
+            this.rdbBoth.Location = new System.Drawing.Point(155, 193);
+            this.rdbBoth.Name = "rdbBoth";
+            this.rdbBoth.Size = new System.Drawing.Size(92, 17);
+            this.rdbBoth.TabIndex = 14;
+            this.rdbBoth.Text = "เพิ่มทั้ง 2 อย่าง";
+            this.rdbBoth.UseVisualStyleBackColor = true;
+            // 
+            // rdbDatabase
+            // 
+            this.rdbDatabase.AutoSize = true;
+            this.rdbDatabase.Location = new System.Drawing.Point(253, 193);
+            this.rdbDatabase.Name = "rdbDatabase";
+            this.rdbDatabase.Size = new System.Drawing.Size(89, 17);
+            this.rdbDatabase.TabIndex = 15;
+            this.rdbDatabase.Text = "เพิ่มฐานข้อมูล";
+            this.rdbDatabase.UseVisualStyleBackColor = true;
+            // 
             // frmCreateDB
             // 
-            this.ClientSize = new System.Drawing.Size(360, 251);
+            this.ClientSize = new System.Drawing.Size(391, 251);
+            this.Controls.Add(this.rdbDatabase);
+            this.Controls.Add(this.rdbBoth);
+            this.Controls.Add(this.rdbConnectionString);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.txtDatabase);
             this.Controls.Add(this.btnClose);
@@ -208,12 +252,22 @@ public class frmCreateDB : Form
             psi.FileName = "mysql";
             psi.RedirectStandardInput = true;
             psi.RedirectStandardOutput = false;
+            psi.Arguments = string.Format(@"-u{0} -p{1} -h{2} {3}", 
+                build.Username, build.Password, build.Server, build.Database);
+            psi.UseShellExecute = false;
 
+            Process process = Process.Start(psi);
+            process.StandardInput.WriteLine(input);
+            process.StandardInput.Close();
+            process.WaitForExit();
+            process.Close();
+
+            MessageBox.Show("เพิ่มฐานข้อมูลสำเร็จ", "เพิ่มฐานข้อมูล", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return true;
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.Message, "พบข้อผิดพลาด", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(ex.Message + "\n" + ex.StackTrace , "พบข้อผิดพลาด", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return false;
         }
     }
@@ -229,6 +283,7 @@ public class frmCreateDB : Form
         if (openFile.ShowDialog() == DialogResult.OK)
         {
             txtSqlFilePath.Text = openFile.FileName;
+            FilePath = openFile.FileName;
         }
     }
 
@@ -239,15 +294,43 @@ public class frmCreateDB : Form
 
     private void btnSubmit_Click(object sender, EventArgs e)
     {
-        if (txtSqlFilePath.Text.Length != 0)
+        if ((txtSqlFilePath.Text.Length != 0) && rdbBoth.Checked)
         {
-            if (!CreateDB())
+            if (WriteConnectionString() && CreateDB())
             {
-
+                Close();
+            }
+            else
+            {
+                return;
             }
         }
+        else if (rdbConnectionString.Checked)
+        {
+            if (WriteConnectionString())
+            {
+                Close();
+            }
+            else
+            {
+                return;
+            }
+        }
+        else
+        {
+            if (CreateDB())
+            {
+                Close();
+            }
+            else
+            {
+                return;
+            }
+        }
+    }
 
-        clsBuildConnectionString build = new clsBuildConnectionString("sqldetail.txt");
+    private bool WriteConnectionString()
+    {
         build.Server = txtSqlServer.Text;
         build.Database = txtDatabase.Text;
         build.Username = txtSqlUsername.Text;
@@ -256,7 +339,11 @@ public class frmCreateDB : Form
         if (build.WriteConnectionStringData())
         {
             MessageBox.Show("เขียนข้อมูลการเชื่อมต่อสำเร็จ", "การทำงานสำเร็จ", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            Close();
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 }
