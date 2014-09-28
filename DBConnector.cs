@@ -20,22 +20,6 @@ public class DBConnector
     private static string password;
     private static string charset;
 
-    public bool TestConnection
-    {
-        get
-        {
-            if (OpenConnection())
-            {
-                CloseConnection();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
-
     /// <summary>
     /// To Initialize about DB information such as server database id etc.
     /// </summary>
@@ -108,6 +92,22 @@ public class DBConnector
         {
             MessageBox.Show(ex.Message);
             return false;
+        }
+    }
+
+    public bool TestConnection
+    {
+        get
+        {
+            if (OpenConnection())
+            {
+                CloseConnection();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 
