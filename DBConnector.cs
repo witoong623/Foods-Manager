@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using FoodsManager;
+using FileManage;
 
 /// <summary>
 /// To Connect and perform task concern to DB
@@ -30,15 +31,15 @@ public class DBConnector
 
     public void Initialize()
     {
-        server = "localhost";
-        database = "food_manager";
-        uid = "root";
-        password = "root";
-        charset = "utf8";
-        string ConnectionString;
-        ConnectionString = "SERVER=" + server + ";" + "DATABASE=" + database + ";" +
-        "UID=" + uid + ";" + "PASSWORD=" + password + ";" + "CHARSET=" + charset + ";";
-        connection = new MySqlConnection(ConnectionString);
+        clsBuildConnectionString build = new clsBuildConnectionString("sqldetail.txt");
+        if (build.BuildConnectionString())
+        {
+            connection = new MySqlConnection(build.ConnectionString);
+        }
+        else
+        {
+            return;
+        }
     }
 
     /// <summary>
@@ -73,6 +74,10 @@ public class DBConnector
                     MessageBox.Show(ex.Message);
                     break;
             }
+            return false;
+        }
+        catch (NullReferenceException)
+        {
             return false;
         }
     }

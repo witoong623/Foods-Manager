@@ -78,7 +78,6 @@ namespace FileManage
         public clsBuildConnectionString(string fileName)
         {
             FileIO = fileName;
-            BuildConnectionString();
         }
 
         public string ConnectionString
