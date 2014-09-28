@@ -2,7 +2,7 @@
 using System.Data;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using FoodsManager;
+using FoodsManagerExtension;
 
 public class frmRecipe : Form
 {

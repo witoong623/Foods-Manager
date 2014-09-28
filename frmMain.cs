@@ -4,7 +4,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using FoodsManager;
+using FoodsManagerExtension;
 
 public class frmMain : Form
 {

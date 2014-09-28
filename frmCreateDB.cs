@@ -192,7 +192,7 @@ public class frmCreateDB : Form
         txtSqlUsername.Select();
     }
 
-    private void CreateDB()
+    private bool CreateDB()
     {
         try
         {
@@ -208,10 +208,13 @@ public class frmCreateDB : Form
             psi.FileName = "mysql";
             psi.RedirectStandardInput = true;
             psi.RedirectStandardOutput = false;
+
+            return true;
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.Message);
+            MessageBox.Show(ex.Message, "พบข้อผิดพลาด", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return false;
         }
     }
 
@@ -236,19 +239,24 @@ public class frmCreateDB : Form
 
     private void btnSubmit_Click(object sender, EventArgs e)
     {
-        if (txtSqlFilePath.Text.Length == 0)
+        if (txtSqlFilePath.Text.Length != 0)
         {
-            clsBuildConnectionString build = new clsBuildConnectionString("sqldetail.txt");
-            build.Server = txtSqlServer.Text;
-            build.Database = txtDatabase.Text;
-            build.Username = txtSqlUsername.Text;
-            build.Password = txtSqlPassword.Text;
-            build.Charset = "utf8";
-            if (build.WriteConnectionStringData())
+            if (!CreateDB())
             {
-                MessageBox.Show("เขียนข้อมูลการเชื่อมต่อสำเร็จ", "การทำงานสำเร็จ", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                Close();
+
             }
+        }
+
+        clsBuildConnectionString build = new clsBuildConnectionString("sqldetail.txt");
+        build.Server = txtSqlServer.Text;
+        build.Database = txtDatabase.Text;
+        build.Username = txtSqlUsername.Text;
+        build.Password = txtSqlPassword.Text;
+        build.Charset = "utf8";
+        if (build.WriteConnectionStringData())
+        {
+            MessageBox.Show("เขียนข้อมูลการเชื่อมต่อสำเร็จ", "การทำงานสำเร็จ", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Close();
         }
     }
 }
