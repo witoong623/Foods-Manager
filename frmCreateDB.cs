@@ -1,7 +1,8 @@
 ﻿using System;
-using System.IO;
 using System.Windows.Forms;
+using System.IO;
 using System.Diagnostics;
+using FileManage;
 
 public class frmCreateDB : Form
 {
@@ -13,9 +14,11 @@ public class frmCreateDB : Form
     private Label label4;
     private TextBox txtSqlUsername;
     private TextBox txtSqlPassword;
-    private TextBox txtSqlHost;
-    private Button button2;
-    private Button button3;
+    private TextBox txtSqlServer;
+    private Button btnSubmit;
+    private Button btnClose;
+    private TextBox txtDatabase;
+    private Label label5;
 
     private string FilePath;
 
@@ -30,9 +33,11 @@ public class frmCreateDB : Form
             this.button1 = new System.Windows.Forms.Button();
             this.txtSqlUsername = new System.Windows.Forms.TextBox();
             this.txtSqlPassword = new System.Windows.Forms.TextBox();
-            this.txtSqlHost = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.txtSqlServer = new System.Windows.Forms.TextBox();
+            this.btnSubmit = new System.Windows.Forms.Button();
+            this.btnClose = new System.Windows.Forms.Button();
+            this.txtDatabase = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -80,18 +85,19 @@ public class frmCreateDB : Form
             // 
             this.txtSqlFilePath.Location = new System.Drawing.Point(88, 22);
             this.txtSqlFilePath.Name = "txtSqlFilePath";
+            this.txtSqlFilePath.ReadOnly = true;
             this.txtSqlFilePath.Size = new System.Drawing.Size(179, 20);
             this.txtSqlFilePath.TabIndex = 4;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(273, 23);
+            this.button1.Location = new System.Drawing.Point(273, 21);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 5;
             this.button1.Text = "เลือกไฟล์";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.btnOpenSqlFile);
             // 
             // txtSqlUsername
             // 
@@ -107,37 +113,60 @@ public class frmCreateDB : Form
             this.txtSqlPassword.Size = new System.Drawing.Size(179, 20);
             this.txtSqlPassword.TabIndex = 7;
             // 
-            // txtSqlHost
+            // txtSqlServer
             // 
-            this.txtSqlHost.Location = new System.Drawing.Point(88, 127);
-            this.txtSqlHost.Name = "txtSqlHost";
-            this.txtSqlHost.Size = new System.Drawing.Size(179, 20);
-            this.txtSqlHost.TabIndex = 8;
+            this.txtSqlServer.Location = new System.Drawing.Point(88, 127);
+            this.txtSqlServer.Name = "txtSqlServer";
+            this.txtSqlServer.Size = new System.Drawing.Size(179, 20);
+            this.txtSqlServer.TabIndex = 8;
+            this.txtSqlServer.Text = "localhost";
             // 
-            // button2
+            // btnSubmit
             // 
-            this.button2.Location = new System.Drawing.Point(88, 164);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 9;
-            this.button2.Text = "ตกลง";
-            this.button2.UseVisualStyleBackColor = true;
+            this.btnSubmit.Location = new System.Drawing.Point(88, 197);
+            this.btnSubmit.Name = "btnSubmit";
+            this.btnSubmit.Size = new System.Drawing.Size(75, 23);
+            this.btnSubmit.TabIndex = 9;
+            this.btnSubmit.Text = "ตกลง";
+            this.btnSubmit.UseVisualStyleBackColor = true;
+            this.btnSubmit.Click += new System.EventHandler(this.btnSubmit_Click);
             // 
-            // button3
+            // btnClose
             // 
-            this.button3.Location = new System.Drawing.Point(192, 164);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 10;
-            this.button3.Text = "ยกเลิก";
-            this.button3.UseVisualStyleBackColor = true;
+            this.btnClose.Location = new System.Drawing.Point(192, 197);
+            this.btnClose.Name = "btnClose";
+            this.btnClose.Size = new System.Drawing.Size(75, 23);
+            this.btnClose.TabIndex = 10;
+            this.btnClose.Text = "ยกเลิก";
+            this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            // 
+            // txtDatabase
+            // 
+            this.txtDatabase.Location = new System.Drawing.Point(88, 162);
+            this.txtDatabase.Name = "txtDatabase";
+            this.txtDatabase.Size = new System.Drawing.Size(179, 20);
+            this.txtDatabase.TabIndex = 11;
+            this.txtDatabase.Text = "food_manager";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label5.Location = new System.Drawing.Point(12, 165);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(64, 13);
+            this.label5.TabIndex = 12;
+            this.label5.Text = "ชื่อฐานข้อมูล";
             // 
             // frmCreateDB
             // 
-            this.ClientSize = new System.Drawing.Size(360, 209);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.txtSqlHost);
+            this.ClientSize = new System.Drawing.Size(360, 251);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.txtDatabase);
+            this.Controls.Add(this.btnClose);
+            this.Controls.Add(this.btnSubmit);
+            this.Controls.Add(this.txtSqlServer);
             this.Controls.Add(this.txtSqlPassword);
             this.Controls.Add(this.txtSqlUsername);
             this.Controls.Add(this.button1);
@@ -160,6 +189,7 @@ public class frmCreateDB : Form
     public frmCreateDB()
     {
         InitializeComponent();
+        txtSqlUsername.Select();
     }
 
     private void CreateDB()
@@ -185,7 +215,7 @@ public class frmCreateDB : Form
         }
     }
 
-    private void button1_Click(object sender, EventArgs e)
+    private void btnOpenSqlFile(object sender, EventArgs e)
     {
         OpenFileDialog openFile = new OpenFileDialog();
         openFile.Title = "เลือกไฟล์ฐานข้อมูล";
@@ -196,6 +226,29 @@ public class frmCreateDB : Form
         if (openFile.ShowDialog() == DialogResult.OK)
         {
             txtSqlFilePath.Text = openFile.FileName;
+        }
+    }
+
+    private void btnClose_Click(object sender, EventArgs e)
+    {
+        Close();
+    }
+
+    private void btnSubmit_Click(object sender, EventArgs e)
+    {
+        if (txtSqlFilePath.Text.Length == 0)
+        {
+            clsBuildConnectionString build = new clsBuildConnectionString("sqldetail.txt");
+            build.Server = txtSqlServer.Text;
+            build.Database = txtDatabase.Text;
+            build.Username = txtSqlUsername.Text;
+            build.Password = txtSqlPassword.Text;
+            build.Charset = "utf8";
+            if (build.WriteConnectionStringData())
+            {
+                MessageBox.Show("เขียนข้อมูลการเชื่อมต่อสำเร็จ", "การทำงานสำเร็จ", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Close();
+            }
         }
     }
 }

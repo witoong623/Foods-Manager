@@ -164,6 +164,8 @@ namespace FileManage
                         tempArray[i] = temp;
                     }
 
+                    sr.Close();
+
                     if (i != 5)
                     {
                         MessageBox.Show("ข้อมูลในการเชื่อมต่อไม่ครบถ้วย\nกรุณากรอกใหม่ให้ครบถ้วน", "ข้อมูลไม่ครบถ้วน", MessageBoxButtons.OK,
@@ -183,7 +185,7 @@ namespace FileManage
                 }
                 else
                 {
-                    MessageBox.Show("ไม่พบไฟล์ " + FileIO + "ภายใน root directory\nกรุณาตรวจสอบชื่อไฟล์ หรือ สร้างไฟล์นี้ก่อน",
+                    MessageBox.Show("ไม่พบไฟล์ " + FileIO + " ภายใน root directory\nกรุณาตรวจสอบชื่อไฟล์ หรือ สร้างไฟล์นี้ก่อน",
                                     "ไม่พบไฟล์", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }

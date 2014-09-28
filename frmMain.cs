@@ -46,7 +46,7 @@ public class frmMain : Form
     private ToolStripMenuItem mnHelp;
     private ToolStripMenuItem smnAbout;
 
-    private DBConnector myDB = new DBConnector();
+    private DBConnector myDB;
     private AdjustmentIngredient RecipeUpdateQuantity;
 
     #region windows component
@@ -415,18 +415,7 @@ public class frmMain : Form
     public frmMain()
     {
         InitializeComponent();
-        if (DBConnectStatus())
-        {
-            EnableForm();
-            cbMaterialsInStock.SelectedIndex = 0;
-            cbMaterialsOutOfStock.SelectedIndex = 0;
-            cbRecipeCanMake.SelectedIndex = 0;
-            cbRecipeCannotMake.SelectedIndex = 0;
-        }
-        else
-        {
-            DisableForm();
-        }
+        DBConnectStatus();
     }
 
     [STAThread]
@@ -544,14 +533,21 @@ public class frmMain : Form
     /// <returns>True if connected otherwise false</returns>
     private bool DBConnectStatus()
     {
+        myDB = new DBConnector();
         if (myDB.TestConnection)
         {
+            EnableForm();
+            cbMaterialsInStock.SelectedIndex = 0;
+            cbMaterialsOutOfStock.SelectedIndex = 0;
+            cbRecipeCanMake.SelectedIndex = 0;
+            cbRecipeCannotMake.SelectedIndex = 0;
             tssDBconnectStatus.Text = "Connected to database";
             stsStatusBar.Refresh();
             return true;
         }
         else
         {
+            DisableForm();
             tssDBconnectStatus.Text = "Cannot connect to database";
             stsStatusBar.Refresh();
             return false;
@@ -686,5 +682,6 @@ public class frmMain : Form
     {
         frmCreateDB CreateDatabase = new frmCreateDB();
         CreateDatabase.ShowDialog();
+        DBConnectStatus();
     }
 }

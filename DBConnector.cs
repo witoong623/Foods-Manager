@@ -36,10 +36,6 @@ public class DBConnector
         {
             connection = new MySqlConnection(build.ConnectionString);
         }
-        else
-        {
-            return;
-        }
     }
 
     /// <summary>
@@ -64,7 +60,7 @@ public class DBConnector
             switch (ex.Number)
             {
                 case 0:
-                    MessageBox.Show("Cannot connect to server.  Contact administrator");
+                    MessageBox.Show(ex.Message, "Error number : " + ex.Number, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     break;
 
                 case 1045:
