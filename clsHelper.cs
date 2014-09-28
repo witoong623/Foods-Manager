@@ -62,7 +62,7 @@ namespace FoodsManager
 namespace FileManage
 {
     [Serializable]
-    class ConnectionString
+    class clsBuildConnectionString
     {
         private string FileIO;
         private string server;
@@ -75,7 +75,7 @@ namespace FileManage
         private StreamReader sr;
         private StreamWriter sw;
 
-        public ConnectionString(string fileName)
+        public clsBuildConnectionString(string fileName)
         {
             FileIO = fileName;
             BuildConnectionString();
@@ -192,6 +192,28 @@ namespace FileManage
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "พบข้อผิดพลาด", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public bool WriteConnectionStringData()
+        {
+            try
+            {
+                sw = new StreamWriter(FileIO);
+
+                sw.WriteLine(server);
+                sw.WriteLine(database);
+                sw.WriteLine(username);
+                sw.WriteLine(password);
+                sw.WriteLine(charset);
+
+                sw.Close();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "พบข้อผิดพลาดในการเขียนไฟล์", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
