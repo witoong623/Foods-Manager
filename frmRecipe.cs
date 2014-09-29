@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using FoodsManagerExtension;
 
+/// <summary>
+/// คลาสแสดงฟอร์มและทำงานอื่นๆ ที่เกี่ยวข้องกับการอัพเดทการแสดงผลของฟอร์มนี้ทั้งหมด
+/// </summary>
 public class frmRecipe : Form
 {
     private const int ADD = 1;
