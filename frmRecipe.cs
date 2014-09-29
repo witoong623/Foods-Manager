@@ -326,7 +326,6 @@ public class frmRecipe : Form
             this.btnSubmit.Size = new System.Drawing.Size(75, 23);
             this.btnSubmit.TabIndex = 11;
             this.btnSubmit.UseVisualStyleBackColor = true;
-            this.btnSubmit.Click += new System.EventHandler(this.btnSubmit_Click);
             // 
             // frmRecipe
             // 
@@ -404,6 +403,176 @@ public class frmRecipe : Form
             return currentMadeQuantity;
         }
     }
+
+    #region event handler
+
+    /// <summary>
+    /// Add a new recipe to recipe and ingredient of recipe to recipe_ingredient table
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void AddRecipe(object sender, EventArgs e)
+    {
+        int i;
+        List<string>[] ingredient = new List<string>[2];
+        ingredient[0] = new List<string>();
+        ingredient[1] = new List<string>();
+
+        if (txtFoodName.Text.Length == 0)
+        {
+            MessageBox.Show("กรุณาใส่ชื่อสูตรอาหาร");
+            txtFoodName.Select();
+            return;
+        }
+
+        if (lstvIngredientTable.Items.Count == 0)
+        {
+            MessageBox.Show("กรุณาเพิ่มวัตถุดิบ\nลงไปในรายการทางด้านซ้าย");
+            cbIngredientName.Select();
+            return;
+        }
+
+        for (i = 0; i < lstvIngredientTable.Items.Count; i++)
+        {
+            ListViewItem subitem = lstvIngredientTable.Items[i];
+            ingredient[0].Add(subitem.SubItems[0].Text);
+            ingredient[1].Add(subitem.SubItems[1].Text);
+        }
+
+        if (myDB.InsertRecipe(txtFoodName.Text, CheckedToTypeID(), ingredient, CheckedToUnitID()))
+        {
+            currentName = txtFoodName.Text;
+            Close();
+        }
+    }
+
+    /// <summary>
+    /// Add item Collection to ingredient name Combobox
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void AddIngredientNameToComboBox(object sender, EventArgs e)
+    {
+        string[] collection;
+
+        cbIngredientName.Items.Clear();
+        collection = myDB.AddIngredientNameToComboBoxCollection(cbIngredientType.SelectedIndex);
+        cbIngredientName.Items.AddRange(collection);
+    }
+
+    /// <summary>
+    /// Add ingredient to List View
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void btnAddIngredient_Click(object sender, EventArgs e)
+    {
+        ListViewItem ListCollection;
+        int quantity;
+        bool flag;
+
+        if (cbIngredientName.Text.Length == 0)
+        {
+            MessageBox.Show("กรุณาใส่ชื่อวัตถุดิบ");
+            cbIngredientName.Select();
+            return;
+        }
+
+        if (txtQuantity.Text.Length == 0)
+        {
+            MessageBox.Show("กรุณาใส่ปริมาณที่ต้องใช้");
+            txtQuantity.Select();
+            return;
+        }
+
+        flag = int.TryParse(txtQuantity.Text, out quantity);
+
+        if (!flag)
+        {
+            MessageBox.Show("กรุณาป้อนจำนวนเป็นตัวเลข");
+            txtQuantity.Select();
+            return;
+        }
+
+        for (int i = 0; i < lstvIngredientTable.Items.Count; i++)
+        {
+            if (lstvIngredientTable.Items[i].SubItems[0].Text.Equals(cbIngredientName.Text))
+            {
+                MessageBox.Show("มีวัตถุดิบนี้อยู่แล้ว");
+                return;
+            }
+        }
+
+        ListCollection = new ListViewItem(cbIngredientName.Text);
+        ListCollection.SubItems.Add(txtQuantity.Text);
+        lstvIngredientTable.Items.Add(ListCollection);
+    }
+
+    private void btnEditRecipe_Click(object sender, EventArgs e)
+    {
+        if (cbDeleteRecipe.Checked)
+        {
+            DialogResult dr = MessageBox.Show("ต้องกดจะลบสูตร" + txtFoodName.Text + "นี้ใช่หรือไม่",
+                                              "ยืนยันการลบ", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dr == DialogResult.Yes)
+            {
+                myDB.DeleteRecipe(txtFoodName.Text);
+                previousTask = DELETE;
+                Close();
+            }
+        }
+        else
+        {
+            int i;
+            List<string>[] ingredient = new List<string>[2];
+            ingredient[0] = new List<string>();
+            ingredient[1] = new List<string>();
+
+            for (i = 0; i < lstvIngredientTable.Items.Count; i++)
+            {
+                ListViewItem subitem = lstvIngredientTable.Items[i];
+                ingredient[0].Add(subitem.SubItems[0].Text);
+                ingredient[1].Add(subitem.SubItems[1].Text);
+            }
+
+
+            if (myDB.EditIngredientOfRecipe(txtFoodName.Text, ingredient))
+            {
+                previousTask = EDIT;
+                currentName = txtFoodName.Text;
+                Close();
+            }
+        }
+    }
+
+    private void btnMakeFood_Click(object sender, EventArgs e)
+    {
+        if ((MessageBox.Show("ต้องการจะทำอาหารนี้ใช่หรือไม่", "ยืนยันการทำอาหาร", MessageBoxButtons.YesNo,
+                              MessageBoxIcon.Question) == DialogResult.Yes))
+        {
+            if (rdb1ea.Checked)
+            {
+                currentMadeQuantity = 1;
+            }
+            else if (rdb2ea.Checked)
+            {
+                currentMadeQuantity = 2;
+            }
+            else
+            {
+                currentMadeQuantity = int.Parse(txtCustomMakeQuantity.Text);
+            }
+            currentName = txtFoodName.Text;
+            previousTask = MADE;
+            Close();
+        }
+        else
+        {
+            return;
+        }
+    }
+
+    #endregion
 
     /// <summary>
     /// Display Addition form mode
@@ -559,6 +728,7 @@ public class frmRecipe : Form
         this.gbDecrease.PerformLayout();
     }
     #endregion new control in editor form
+
     /// <summary>
     /// Get information from database and add to autostring collection
     /// </summary>
@@ -570,20 +740,6 @@ public class frmRecipe : Form
         cbIngredientName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
         cbIngredientName.AutoCompleteMode = AutoCompleteMode.Suggest;
         cbIngredientName.AutoCompleteCustomSource = AutoCompleteCollection;
-    }
-
-    /// <summary>
-    /// Add item Collection to ingredient name Combobox
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void AddIngredientNameToComboBox(object sender, EventArgs e)
-    {
-        string[] collection;
-
-        cbIngredientName.Items.Clear();
-        collection = myDB.AddIngredientNameToComboBoxCollection(cbIngredientType.SelectedIndex);
-        cbIngredientName.Items.AddRange(collection);
     }
 
     /// <summary>
@@ -623,94 +779,6 @@ public class frmRecipe : Form
     }
 
     /// <summary>
-    /// Add ingredient to List View
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void btnAddIngredient_Click(object sender, EventArgs e)
-    {
-        ListViewItem ListCollection;
-        int quantity;
-        bool flag;
-
-        if (cbIngredientName.Text.Length == 0)
-        {
-            MessageBox.Show("กรุณาใส่ชื่อวัตถุดิบ");
-            cbIngredientName.Select();
-            return;
-        }
-
-        if (txtQuantity.Text.Length == 0)
-        {
-            MessageBox.Show("กรุณาใส่ปริมาณที่ต้องใช้");
-            txtQuantity.Select();
-            return;
-        }
-
-        flag = int.TryParse(txtQuantity.Text, out quantity);
-        
-        if (!flag)
-        {
-            MessageBox.Show("กรุณาป้อนจำนวนเป็นตัวเลข");
-            txtQuantity.Select();
-            return;
-        }
-
-        for (int i = 0; i < lstvIngredientTable.Items.Count; i++)
-        {
-            if (lstvIngredientTable.Items[i].SubItems[0].Text.Equals(cbIngredientName.Text))
-            {
-                MessageBox.Show("มีวัตถุดิบนี้อยู่แล้ว");
-                return;
-            }
-        }
-
-        ListCollection = new ListViewItem(cbIngredientName.Text);
-        ListCollection.SubItems.Add(txtQuantity.Text);
-        lstvIngredientTable.Items.Add(ListCollection);
-    }
-
-    /// <summary>
-    /// Add a new recipe to recipe and ingredient of recipe to recipe_ingredient table
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void AddRecipe(object sender, EventArgs e)
-    {
-        int i;
-        List<string>[] ingredient = new List<string>[2];
-        ingredient[0] = new List<string>();
-        ingredient[1] = new List<string>();
-        
-        if (txtFoodName.Text.Length == 0)
-        {
-            MessageBox.Show("กรุณาใส่ชื่อสูตรอาหาร");
-            txtFoodName.Select();
-            return;
-        }
-
-        if (lstvIngredientTable.Items.Count == 0)
-        {
-            MessageBox.Show("กรุณาเพิ่มวัตถุดิบ\nลงไปในรายการทางด้านซ้าย");
-            cbIngredientName.Select();
-            return;
-        }
-
-        for (i = 0; i < lstvIngredientTable.Items.Count; i++)
-        {
-            ListViewItem subitem = lstvIngredientTable.Items[i];
-            ingredient[0].Add(subitem.SubItems[0].Text);
-            ingredient[1].Add(subitem.SubItems[1].Text);
-        }
-
-        if (myDB.InsertRecipe(txtFoodName.Text, CheckedToTypeID(), ingredient, CheckedToUnitID()))
-        {
-            currentName = txtFoodName.Text;
-            Close();
-        }
-    }
-
-    /// <summary>
     /// Delete ingredient from List View
     /// </summary>
     /// <param name="sender"></param>
@@ -726,70 +794,6 @@ public class frmRecipe : Form
                 ListViewItem SelectedDelete = lstvIngredientTable.SelectedItems[i];
                 lstvIngredientTable.Items[SelectedDelete.Index].Remove();
             }
-        }
-    }
-
-    private void btnEditRecipe_Click(object sender, EventArgs e)
-    {
-        if (cbDeleteRecipe.Checked)
-        {
-            DialogResult dr = MessageBox.Show("ต้องกดจะลบสูตร" + txtFoodName.Text + "นี้ใช่หรือไม่", 
-                                              "ยืนยันการลบ", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dr == DialogResult.Yes)
-            {
-                myDB.DeleteRecipe(txtFoodName.Text);
-                previousTask = DELETE;
-                Close();
-            }
-        }
-        else
-        {
-            int i;
-            List<string>[] ingredient = new List<string>[2];
-            ingredient[0] = new List<string>();
-            ingredient[1] = new List<string>();
-
-            for (i = 0; i < lstvIngredientTable.Items.Count; i++)
-            {
-                ListViewItem subitem = lstvIngredientTable.Items[i];
-                ingredient[0].Add(subitem.SubItems[0].Text);
-                ingredient[1].Add(subitem.SubItems[1].Text);
-            }
-
-
-            if (myDB.EditIngredientOfRecipe(txtFoodName.Text, ingredient))
-            {
-                previousTask = EDIT;
-                currentName = txtFoodName.Text;
-                Close();
-            }
-        }
-    }
-
-    private void btnMakeFood_Click(object sender, EventArgs e)
-    {
-        if ((MessageBox.Show("ต้องการจะทำอาหารนี้ใช่หรือไม่", "ยืนยันการทำอาหาร", MessageBoxButtons.YesNo, 
-                              MessageBoxIcon.Question) == DialogResult.Yes))
-        {
-            if (rdb1ea.Checked)
-            {
-                currentMadeQuantity = 1;
-            }
-            else if (rdb2ea.Checked)
-            {
-                currentMadeQuantity = 2;
-            }
-            else
-            {
-                currentMadeQuantity = int.Parse(txtCustomMakeQuantity.Text);
-            }
-            currentName = txtFoodName.Text;
-            previousTask = MADE;
-            Close();
-        }
-        else
-        {
-            return;
         }
     }
 
@@ -909,10 +913,5 @@ public class frmRecipe : Form
     private void CloseForm(object sender, EventArgs e)
     {
         Close();
-    }
-
-    private void btnSubmit_Click(object sender, EventArgs e)
-    {
-
     }
 }
