@@ -426,6 +426,13 @@ public class frmMain : Form
         Application.Run(main);
     }
 
+    #region event handler method
+
+    /// <summary>
+    /// ปุ่มเปิดฟอร์มเพิ่มสูตรอาหาร
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void btnAddRecipe_Click(object sender, EventArgs e)
     {
         // Pass null to indicate that this is form for add a new item
@@ -440,42 +447,23 @@ public class frmMain : Form
     }
 
     /// <summary>
-    /// Double event on selected list view to edit or delete ingredient
+    /// ปุ่มเปิดฟอร์มเพิ่มวัตถุดิบ
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void Meterial_Selected_DoubleClick(object sender, EventArgs e)
+    private void btnAddMaterial_Click(object sender, EventArgs e)
     {
-        if (lstvMaterialsInStock.SelectedItems.Count > 0)
-        {
-            frmIngredient myEdit = new frmIngredient(lstvMaterialsInStock.SelectedItems[0].Text);
-            myEdit.ShowDialog();
-
-            if (myEdit.PreviousTask == EDIT)
-            {
-                RecipeUpdateQuantity = new AdjustmentIngredient();
-                RecipeUpdateQuantity.UpdateOneRalateIngredient(myDB.SelectOneIngredientID(myEdit.CurrentName));
-            }
-
-            IngredientUpdate();
-            RecipeUpdate();
-        }
-        else
-        {
-            frmIngredient myEdit = new frmIngredient(lstvMaterialsOutOfStock.SelectedItems[0].Text);
-            myEdit.ShowDialog();
-
-            if (myEdit.PreviousTask == EDIT)
-            {
-                RecipeUpdateQuantity = new AdjustmentIngredient();
-                RecipeUpdateQuantity.UpdateOneRalateIngredient(myDB.SelectOneIngredientID(myEdit.CurrentName));
-            }
-
-            IngredientUpdate();
-            RecipeUpdate();
-        }
+        // Pass null to indicate that this is form for add a new item
+        frmIngredient myIngredient = new frmIngredient(null);
+        myIngredient.ShowDialog();
+        IngredientUpdate();
     }
 
+    /// <summary>
+    /// อีเว้นท์เกิดขึ้นเมื่อเราดับเบิลคลิกที่ลิสต์แถวใดแถวหนึ่งในส่วนของสูตรเพื่อเปิดหน้าแก้ไขหรือทำอาหารขึ้นมา
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void Recipe_Selected_DoubleClick(object sender, EventArgs e)
     {
         frmRecipe myRecipe;
@@ -515,17 +503,75 @@ public class frmMain : Form
     }
 
     /// <summary>
-    /// Click event to add new ingredient
+    /// อีเว้นท์เกิดขึ้นเมื่อเราดับเบิลคลิกที่ลิสต์แถวใดแถวหนึ่งในส่วนของวัตถุดิบเพื่อเปิดหน้าแก้ไขหรือเพิ่มวัตถุดิบขึ้นมา
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void btnAddMaterial_Click(object sender, EventArgs e)
+    private void Meterial_Selected_DoubleClick(object sender, EventArgs e)
     {
-        // Pass null to indicate that this is form for add a new item
-        frmIngredient myIngredient = new frmIngredient(null);
-        myIngredient.ShowDialog();
-        IngredientUpdate();
+        if (lstvMaterialsInStock.SelectedItems.Count > 0)
+        {
+            frmIngredient myEdit = new frmIngredient(lstvMaterialsInStock.SelectedItems[0].Text);
+            myEdit.ShowDialog();
+
+            if (myEdit.PreviousTask == EDIT)
+            {
+                RecipeUpdateQuantity = new AdjustmentIngredient();
+                RecipeUpdateQuantity.UpdateOneRalateIngredient(myDB.SelectOneIngredientID(myEdit.CurrentName));
+            }
+
+            IngredientUpdate();
+            RecipeUpdate();
+        }
+        else
+        {
+            frmIngredient myEdit = new frmIngredient(lstvMaterialsOutOfStock.SelectedItems[0].Text);
+            myEdit.ShowDialog();
+
+            if (myEdit.PreviousTask == EDIT)
+            {
+                RecipeUpdateQuantity = new AdjustmentIngredient();
+                RecipeUpdateQuantity.UpdateOneRalateIngredient(myDB.SelectOneIngredientID(myEdit.CurrentName));
+            }
+
+            IngredientUpdate();
+            RecipeUpdate();
+        }
     }
+
+    private void cbInstockIndexChange(object sender, EventArgs s)
+    {
+        IngredientInStockUpdate();
+    }
+
+    private void cbOutOfStockIndexChange(object sender, EventArgs s)
+    {
+        IngredientOutOfStockUpdate();
+    }
+
+    private void cbRecipeCanMake_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        RecipeInStockUpdate();
+    }
+
+    private void cbRecipeCannotMake_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        RecipeOutOfStockUpdate();
+    }
+
+    private void AboutMenuClick(object sender, EventArgs e)
+    {
+        frmAbout about = new frmAbout();
+        about.ShowDialog();
+    }
+
+    private void RestoreDatabaseClick(object sender, EventArgs e)
+    {
+        frmCreateDB CreateDatabase = new frmCreateDB();
+        CreateDatabase.ShowDialog();
+        DBConnectStatus();
+    }
+    #endregion event handler method
 
     /// <summary>
     /// Get connection status by call ConnectDB.ConnectStstus and update status bar
@@ -650,38 +696,5 @@ public class frmMain : Form
             sub.SubItems.Add(myUpdate.GetNotEnoughIngredient(data[0][i]));
             lstvRecipeCannotMake.Items.Add(sub);
         }
-    }
-
-    private void cbInstockIndexChange(object sender, EventArgs s)
-    {
-        IngredientInStockUpdate();
-    }
-
-    private void cbOutOfStockIndexChange(object sender, EventArgs s)
-    {
-        IngredientOutOfStockUpdate();
-    }
-
-    private void cbRecipeCanMake_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        RecipeInStockUpdate();
-    }
-
-    private void cbRecipeCannotMake_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        RecipeOutOfStockUpdate();
-    }
-
-    private void AboutMenuClick(object sender, EventArgs e)
-    {
-        frmAbout about = new frmAbout();
-        about.ShowDialog();
-    }
-
-    private void RestoreDatabaseClick(object sender, EventArgs e)
-    {
-        frmCreateDB CreateDatabase = new frmCreateDB();
-        CreateDatabase.ShowDialog();
-        DBConnectStatus();
     }
 }
