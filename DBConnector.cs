@@ -91,7 +91,7 @@ public class DBConnector
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message);
+            MessageBox.Show(ex.Message, "Error : " + ex.Number, MessageBoxButtons.OK, MessageBoxIcon.Error);
             return false;
         }
     }
