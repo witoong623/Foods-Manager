@@ -183,7 +183,6 @@ public class frmCreateDB : Form
             // rdbBoth
             // 
             this.rdbBoth.AutoSize = true;
-            this.rdbBoth.Enabled = false;
             this.rdbBoth.Location = new System.Drawing.Point(155, 193);
             this.rdbBoth.Name = "rdbBoth";
             this.rdbBoth.Size = new System.Drawing.Size(92, 17);
@@ -194,7 +193,6 @@ public class frmCreateDB : Form
             // rdbDatabase
             // 
             this.rdbDatabase.AutoSize = true;
-            this.rdbDatabase.Enabled = false;
             this.rdbDatabase.Location = new System.Drawing.Point(253, 193);
             this.rdbDatabase.Name = "rdbDatabase";
             this.rdbDatabase.Size = new System.Drawing.Size(89, 17);
