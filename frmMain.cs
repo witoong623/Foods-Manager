@@ -52,6 +52,7 @@ public class frmMain : Form
     #region windows component
     private void InitializeComponent()
     {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.gbFoodsCanMake = new System.Windows.Forms.GroupBox();
             this.btnAddRecipe = new System.Windows.Forms.Button();
             this.lstvRecipeCanMake = new System.Windows.Forms.ListView();
@@ -390,6 +391,7 @@ public class frmMain : Form
             this.Controls.Add(this.gbMaterialsHave);
             this.Controls.Add(this.gbFoodsCannotMake);
             this.Controls.Add(this.gbFoodsCanMake);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -411,7 +413,6 @@ public class frmMain : Form
     /// <summary>
     /// Construct windows component and check if program ready to use
     /// </summary>
-    
     public frmMain()
     {
         InitializeComponent();

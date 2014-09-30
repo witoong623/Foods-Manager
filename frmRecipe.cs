@@ -51,7 +51,8 @@ public class frmRecipe : Form
     private Button btnCancel;
     private Button btnSubmit;
 
-    private int currentMadeQuantity;
+    private int MakeQuantity;
+    private int CanMakeQuantity;
     private int previousTask;
     private string currentName = "";
 
@@ -403,7 +404,7 @@ public class frmRecipe : Form
     {
         get
         {
-            return currentMadeQuantity;
+            return MakeQuantity;
         }
     }
 
@@ -543,6 +544,7 @@ public class frmRecipe : Form
             {
                 previousTask = EDIT;
                 currentName = txtFoodName.Text;
+                MessageBox.Show("แก้ไขสูตรสำเร็จ");
                 Close();
             }
         }
@@ -555,16 +557,24 @@ public class frmRecipe : Form
         {
             if (rdb1ea.Checked)
             {
-                currentMadeQuantity = 1;
+                MakeQuantity = 1;
             }
             else if (rdb2ea.Checked)
             {
-                currentMadeQuantity = 2;
+                MakeQuantity = 2;
             }
             else
             {
-                currentMadeQuantity = int.Parse(txtCustomMakeQuantity.Text);
+                MakeQuantity = int.Parse(txtCustomMakeQuantity.Text);
             }
+
+            if (MakeQuantity > CanMakeQuantity)
+            {
+                MessageBox.Show("ไม่สามารถทำอาหารนี้ได้ตามจำนวนที่ต้องการ\nปริมาณที่สามารถทำได้สูงสุดคือ " + CanMakeQuantity,
+                    "ไม่สามารถทำอาหารได้", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             currentName = txtFoodName.Text;
             previousTask = MADE;
             Close();
@@ -755,12 +765,19 @@ public class frmRecipe : Form
         List<string> RecipeDetail = myDB.SelectRecipeDetail(name);
         List<string>[] IngredientOfRecipe = myDB.SelectIngredientOfRecipe(name);
 
+        CanMakeQuantity = int.Parse(RecipeDetail[1]);
         txtFoodName.Text = name;
         lblUnitString.Text = UnitIDToString(int.Parse(RecipeDetail[2]));
-        UnitIdToCheck(int.Parse(RecipeDetail[2]));
+        UnitIDToCheck(int.Parse(RecipeDetail[2]));
         lblCurrentQuantityCanMake.Text += " " + RecipeDetail[1] + " " + lblUnitString.Text;
         rdb1ea.Text += lblUnitString.Text;
         rdb2ea.Text += lblUnitString.Text;
+
+        if (CanMakeQuantity == 0)
+        {
+            btnMakeFood.Enabled = false;
+        }
+
         ListViewItem sub;
         for (i = 0; i < IngredientOfRecipe[0].Count; i++)
         {
@@ -872,7 +889,7 @@ public class frmRecipe : Form
         }
     }
 
-    private void UnitIdToCheck(int unitID)
+    private void UnitIDToCheck(int unitID)
     {
         switch (unitID)
         {

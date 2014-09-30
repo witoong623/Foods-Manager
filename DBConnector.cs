@@ -727,6 +727,7 @@ public class DBConnector
                     query = "SELECT ingredient_id FROM ingredient WHERE ingredient_name='" + ingredient[0][i] + "' LIMIT 1";
                     cmd.CommandText = query;
                     dataReader = cmd.ExecuteReader();
+
                     while (dataReader.Read())
                     {
                         ingredient_id.Add(dataReader.GetString("ingredient_id"));
@@ -736,6 +737,8 @@ public class DBConnector
 
                 // Delete all ingredient from recipe_ingredient(3rd relationship)
                 query = "DELETE FROM recipe_ingredient WHERE recipe_id='" + recipeID + "'";
+                cmd.CommandText = query;
+                cmd.ExecuteNonQuery();
 
                 // Insert ingredient of recipe to 3rd relation table(recipe_ingredient)
                 for (i = 0; i < ingredient[0].Count; i++)
@@ -750,7 +753,7 @@ public class DBConnector
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message + ex.StackTrace);
+            MessageBox.Show(ex.Message + ex.StackTrace, "Error number : " + ex.Number.ToString());
             return false;
         }
         finally
