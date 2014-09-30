@@ -48,6 +48,7 @@ public class frmRecipe : Form
 
     private int MakeQuantity;
     private int CanMakeQuantity;
+    private int CurrentSelectedIndex = -1;
     private Task previousTask;
     private string currentName = "";
 
@@ -58,6 +59,7 @@ public class frmRecipe : Form
             this.lstvIngredientTable = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label1 = new System.Windows.Forms.Label();
             this.txtFoodName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -80,7 +82,6 @@ public class frmRecipe : Form
             this.rdbPlate = new System.Windows.Forms.RadioButton();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnSubmit = new System.Windows.Forms.Button();
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.gbRecipeType.SuspendLayout();
             this.gbRecipeUnit.SuspendLayout();
             this.SuspendLayout();
@@ -99,6 +100,7 @@ public class frmRecipe : Form
             this.lstvIngredientTable.TabIndex = 0;
             this.lstvIngredientTable.UseCompatibleStateImageBehavior = false;
             this.lstvIngredientTable.View = System.Windows.Forms.View.Details;
+            this.lstvIngredientTable.Click += new System.EventHandler(this.SelectedListViewChange);
             // 
             // columnHeader1
             // 
@@ -109,6 +111,11 @@ public class frmRecipe : Form
             // 
             this.columnHeader2.Text = "ปริมาณที่ใช้";
             this.columnHeader2.Width = 70;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "หน่วย";
+            this.columnHeader3.Width = 50;
             // 
             // label1
             // 
@@ -329,11 +336,6 @@ public class frmRecipe : Form
             this.btnSubmit.TabIndex = 11;
             this.btnSubmit.UseVisualStyleBackColor = true;
             // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "หน่วย";
-            this.columnHeader3.Width = 50;
-            // 
             // frmRecipe
             // 
             this.ClientSize = new System.Drawing.Size(537, 434);
@@ -502,19 +504,31 @@ public class frmRecipe : Form
             return;
         }
 
-        for (int i = 0; i < lstvIngredientTable.Items.Count; i++)
+        if (CurrentSelectedIndex < 0)
         {
-            if (lstvIngredientTable.Items[i].SubItems[0].Text.Equals(cbIngredientName.Text))
+            for (int i = 0; i < lstvIngredientTable.Items.Count; i++)
             {
-                MessageBox.Show("มีวัตถุดิบนี้อยู่แล้ว");
-                return;
+                if (lstvIngredientTable.Items[i].SubItems[0].Text.Equals(cbIngredientName.Text))
+                {
+                    MessageBox.Show("มีวัตถุดิบนี้อยู่แล้ว");
+                    return;
+                }
             }
+
+            ListCollection = new ListViewItem(cbIngredientName.Text);
+            ListCollection.SubItems.Add(txtQuantity.Text);
+            ListCollection.SubItems.Add(myDB.SelectIngredientUnitID(cbIngredientName.Text).ToIngredientUnitString());
+            lstvIngredientTable.Items.Add(ListCollection);
+        }
+        else
+        {
+            ListCollection = new ListViewItem(cbIngredientName.Text);
+            ListCollection.SubItems.Add(txtQuantity.Text);
+            ListCollection.SubItems.Add(myDB.SelectIngredientUnitID(cbIngredientName.Text).ToIngredientUnitString());
+            lstvIngredientTable.Items[CurrentSelectedIndex] = ListCollection;
         }
 
-        ListCollection = new ListViewItem(cbIngredientName.Text);
-        ListCollection.SubItems.Add(txtQuantity.Text);
-        ListCollection.SubItems.Add(myDB.SelectIngredientUnitID(cbIngredientName.Text).ToIngredientUnitString());
-        lstvIngredientTable.Items.Add(ListCollection);
+        
     }
 
     private void btnEditRecipe_Click(object sender, EventArgs e)
@@ -607,6 +621,15 @@ public class frmRecipe : Form
                 lstvIngredientTable.Items[SelectedDelete.Index].Remove();
             }
         }
+    }
+
+    private void SelectedListViewChange(object sender, EventArgs e)
+    {
+        ListViewItem SelectedItem = lstvIngredientTable.SelectedItems[0];
+
+        CurrentSelectedIndex = lstvIngredientTable.SelectedIndices[0];
+        cbIngredientName.Text = SelectedItem.SubItems[0].Text;
+        txtQuantity.Text = SelectedItem.SubItems[1].Text;
     }
 
     #endregion event handler
@@ -939,5 +962,10 @@ public class frmRecipe : Form
     private void CloseForm(object sender, EventArgs e)
     {
         Close();
+    }
+
+    private void SelectedListViewChange(object sender, ListViewItemSelectionChangedEventArgs e)
+    {
+
     }
 }
