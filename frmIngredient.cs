@@ -40,6 +40,7 @@ public class frmIngredient : Form
     #region windows code
     private void InitializeComponent()
     {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmIngredient));
             this.label1 = new System.Windows.Forms.Label();
             this.txtIngredientName = new System.Windows.Forms.TextBox();
             this.lblQuantity = new System.Windows.Forms.Label();
@@ -112,7 +113,6 @@ public class frmIngredient : Form
             this.gbUnit.TabIndex = 4;
             this.gbUnit.TabStop = false;
             this.gbUnit.Text = "หน่วย";
-            this.gbUnit.Enter += new System.EventHandler(this.gbUnit_Enter);
             // 
             // rdbGrain
             // 
@@ -289,6 +289,7 @@ public class frmIngredient : Form
             this.Controls.Add(this.lblQuantity);
             this.Controls.Add(this.txtIngredientName);
             this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmIngredient";
@@ -582,10 +583,5 @@ public class frmIngredient : Form
     private void btnClose_Click(object sender, EventArgs e)
     {
         Close();
-    }
-
-    private void gbUnit_Enter(object sender, EventArgs e)
-    {
-
     }
 }
