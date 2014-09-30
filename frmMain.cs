@@ -351,7 +351,6 @@ public class frmMain : Form
             this.menuStrip1.Size = new System.Drawing.Size(1064, 24);
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip1_ItemClicked);
             // 
             // mnMenu
             // 
@@ -397,7 +396,6 @@ public class frmMain : Form
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Food Manager";
-            this.Load += new System.EventHandler(this.frmMain_Load);
             this.gbFoodsCanMake.ResumeLayout(false);
             this.gbFoodsCannotMake.ResumeLayout(false);
             this.gbMaterialsHave.ResumeLayout(false);
@@ -641,13 +639,14 @@ public class frmMain : Form
         List<string>[] data = new List<string>[4];
 
         data = myDB.SelectIngredient(cbMaterialsInStock.SelectedIndex, INSTOCK);
+        lstvMaterialsInStock.Items.Clear();
 
         if (data[0].Count == 0)
         {
             return;
         }
 
-        lstvMaterialsInStock.Items.Clear();
+        
         ListViewItem sub;
         for (i = 0; i < data[0].Count; i++)
         {
@@ -664,13 +663,13 @@ public class frmMain : Form
         List<string>[] data = new List<string>[4];
 
         data = myDB.SelectIngredient(cbMaterialsOutOfStock.SelectedIndex, OUTOFSTOCK);
+        lstvMaterialsOutOfStock.Items.Clear();
 
         if (data[0].Count == 0)
         {
             return;
         }
 
-        lstvMaterialsOutOfStock.Items.Clear();
         ListViewItem sub;
         for (i = 0; i < data[0].Count; i++)
         {
@@ -712,15 +711,5 @@ public class frmMain : Form
             sub.SubItems.Add(myUpdate.GetNotEnoughIngredient(data[0][i]));
             lstvRecipeCannotMake.Items.Add(sub);
         }
-    }
-
-    private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-    {
-
-    }
-
-    private void frmMain_Load(object sender, EventArgs e)
-    {
-
     }
 }

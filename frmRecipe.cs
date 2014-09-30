@@ -34,7 +34,6 @@ public class frmRecipe : Form
     private RadioButton rdbCup;
     private RadioButton rdbBowl;
     private RadioButton rdbPlate;
-    private StatusStrip MainStatusStrip;
     private GroupBox gbDecrease;
     private RadioButton rdbCustomMakeQuantity;
     private RadioButton rdb2ea;
@@ -592,7 +591,7 @@ public class frmRecipe : Form
     }
 
     /// <summary>
-    /// (ลบส่วนผสมจาก List View) Delete ingredient from List View
+    /// ลบวัตถุดิบออกจาก List view ผ่านการคลิก
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -825,7 +824,7 @@ public class frmRecipe : Form
     }
 
     /// <summary>
-    /// (ล้างกล่องข้อความเพื่อเตรียมรับข้อมูลจากผู้ใช้) Clear Textbox for ready to get data from user
+    /// ล้างกล่องข้อความเพื่อเตรียมรับข้อมูลจากผู้ใช้ใหม่
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
