@@ -59,6 +59,7 @@ public class frmRecipe : Form
     #region windows code
     private void InitializeComponent()
     {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmRecipe));
             this.lstvIngredientTable = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -350,6 +351,7 @@ public class frmRecipe : Form
             this.Controls.Add(this.txtFoodName);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lstvIngredientTable);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmRecipe";
