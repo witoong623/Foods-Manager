@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 
 /// <summary>
-/// This class use to display window form and manage about ingredint
+/// คลาสสำหรับแสดงฟอร์มและทำการอัพจัดข้อมูลก่อนการเขียนข้อมูลลงฐานข้อมูล
 /// </summary>
 public class frmIngredient : Form
 {
@@ -40,13 +40,11 @@ public class frmIngredient : Form
     #region windows code
     private void InitializeComponent()
     {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmIngredient));
             this.label1 = new System.Windows.Forms.Label();
             this.txtIngredientName = new System.Windows.Forms.TextBox();
             this.lblQuantity = new System.Windows.Forms.Label();
             this.txtQuantity = new System.Windows.Forms.TextBox();
             this.gbUnit = new System.Windows.Forms.GroupBox();
-            this.rdbGrain = new System.Windows.Forms.RadioButton();
             this.rdbGreb = new System.Windows.Forms.RadioButton();
             this.rdbMud = new System.Windows.Forms.RadioButton();
             this.rdbLuk = new System.Windows.Forms.RadioButton();
@@ -62,6 +60,7 @@ public class frmIngredient : Form
             this.btnSubmit = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.cbDelete = new System.Windows.Forms.CheckBox();
+            this.rdbGrain = new System.Windows.Forms.RadioButton();
             this.gbUnit.SuspendLayout();
             this.gbType.SuspendLayout();
             this.SuspendLayout();
@@ -113,17 +112,6 @@ public class frmIngredient : Form
             this.gbUnit.TabIndex = 4;
             this.gbUnit.TabStop = false;
             this.gbUnit.Text = "หน่วย";
-            // 
-            // rdbGrain
-            // 
-            this.rdbGrain.AutoSize = true;
-            this.rdbGrain.Location = new System.Drawing.Point(175, 42);
-            this.rdbGrain.Name = "rdbGrain";
-            this.rdbGrain.Size = new System.Drawing.Size(44, 17);
-            this.rdbGrain.TabIndex = 10;
-            this.rdbGrain.TabStop = true;
-            this.rdbGrain.Text = "เม็ด";
-            this.rdbGrain.UseVisualStyleBackColor = true;
             // 
             // rdbGreb
             // 
@@ -277,6 +265,17 @@ public class frmIngredient : Form
             this.cbDelete.UseVisualStyleBackColor = true;
             this.cbDelete.Visible = false;
             // 
+            // rdbGrain
+            // 
+            this.rdbGrain.AutoSize = true;
+            this.rdbGrain.Location = new System.Drawing.Point(175, 42);
+            this.rdbGrain.Name = "rdbGrain";
+            this.rdbGrain.Size = new System.Drawing.Size(44, 17);
+            this.rdbGrain.TabIndex = 10;
+            this.rdbGrain.TabStop = true;
+            this.rdbGrain.Text = "เม็ด";
+            this.rdbGrain.UseVisualStyleBackColor = true;
+            // 
             // frmIngredient
             // 
             this.ClientSize = new System.Drawing.Size(284, 317);
@@ -289,7 +288,6 @@ public class frmIngredient : Form
             this.Controls.Add(this.lblQuantity);
             this.Controls.Add(this.txtIngredientName);
             this.Controls.Add(this.label1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmIngredient";
