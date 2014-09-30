@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 
 /// <summary>
-/// This class use to display window form and manage about ingredint
+/// คลาสสำหรับแสดงฟอร์มและทำการอัพจัดข้อมูลก่อนการเขียนข้อมูลลงฐานข้อมูล
 /// </summary>
 public class frmIngredient : Form
 {
