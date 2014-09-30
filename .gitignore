@@ -5,7 +5,6 @@
 *.suo
 *.user
 *.sln.docstates
-Foods Manager.csproj
 
 # Build results
 [Dd]ebug/
