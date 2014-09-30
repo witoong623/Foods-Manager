@@ -640,8 +640,14 @@ public class frmMain : Form
         int i;
         List<string>[] data = new List<string>[4];
 
-        lstvMaterialsInStock.Items.Clear();
         data = myDB.SelectIngredient(cbMaterialsInStock.SelectedIndex, INSTOCK);
+
+        if (data[0].Count == 0)
+        {
+            return;
+        }
+
+        lstvMaterialsInStock.Items.Clear();
         ListViewItem sub;
         for (i = 0; i < data[0].Count; i++)
         {
@@ -655,10 +661,16 @@ public class frmMain : Form
     private void IngredientOutOfStockUpdate()
     {
         int i;
-        lstvMaterialsOutOfStock.Items.Clear();
         List<string>[] data = new List<string>[4];
-        if (cbMaterialsOutOfStock.SelectedIndex == 0)
+
         data = myDB.SelectIngredient(cbMaterialsOutOfStock.SelectedIndex, OUTOFSTOCK);
+
+        if (data[0].Count == 0)
+        {
+            return;
+        }
+
+        lstvMaterialsOutOfStock.Items.Clear();
         ListViewItem sub;
         for (i = 0; i < data[0].Count; i++)
         {

@@ -327,10 +327,10 @@ public class frmIngredient : Form
     //============== Helper Method ==================
     #region Helper method
     /// <summary>
-    /// To determine what type of ingredient is checked
+    /// เปลี่ยนปุ่มประเภทอาหารที่ถูกติกเป็นไอดี
     /// </summary>
-    /// <returns>ID that indicate what type is to insert to database</returns>
-    private int TypeSelected()
+    /// <returns>ไอดีของประเภทอาหาร</returns>
+    private int CheckedToTypeID()
     {
         if (rdbMeat.Checked)
         {
@@ -510,7 +510,7 @@ public class frmIngredient : Form
     #endregion Helper method
 
     /// <summary>
-    /// เพิ่มปุ่มผ่านการตรวจสอบข้อมูลก่อนเพิ่มข้อมูลในฐานข้อมูล (Add button validated data before add to database)
+    /// อีเว้นท์ของปุ่มสำหรับเพิ่มวัตถุดิบสู่ฐานข้อมูล
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -536,7 +536,7 @@ public class frmIngredient : Form
             return;
         }
 
-        if (myDB.InsertIngredient(TypeSelected(), txtIngredientName.Text, quantity, UnitSelected()))
+        if (myDB.InsertIngredient(CheckedToTypeID(), txtIngredientName.Text, quantity, UnitSelected()))
         {
             previousTask = Task.Add;
             Close();
@@ -551,7 +551,7 @@ public class frmIngredient : Form
     }
 
     /// <summary>
-    /// เพิ่มวัตถุดิบ หรือ ลบจากฐานข้อมูล เท่านั้น
+    /// อีเว้นของปุ่มสำหรับแก้ไขวัตถุดิบหรือลบวัตถุดิบออกจากฐานข้อมูล
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -571,7 +571,7 @@ public class frmIngredient : Form
         }
         else
         {
-            myDB.Update(TypeSelected(), txtIngredientName.Text, quantity, UnitSelected());
+            myDB.Update(CheckedToTypeID(), txtIngredientName.Text, quantity, UnitSelected());
             currentName = txtIngredientName.Text;
             previousTask = Task.Edit;
         }

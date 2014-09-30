@@ -591,7 +591,26 @@ public class frmRecipe : Form
         }
     }
 
-    #endregion
+    /// <summary>
+    /// (ลบส่วนผสมจาก List View) Delete ingredient from List View
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void btnDeleteIngredient_Click(object sender, EventArgs e)
+    {
+        int i;
+
+        if (lstvIngredientTable.SelectedItems.Count > 0)
+        {
+            for (i = lstvIngredientTable.SelectedItems.Count - 1; i >= 0; i--)
+            {
+                ListViewItem SelectedDelete = lstvIngredientTable.SelectedItems[i];
+                lstvIngredientTable.Items[SelectedDelete.Index].Remove();
+            }
+        }
+    }
+
+    #endregion event handler
 
     /// <summary>
     /// (การแสดงผล การเพิ่มจาก โหมด) Display Addition form mode
@@ -802,25 +821,6 @@ public class frmRecipe : Form
         else
         {
             rdbMeatDish.Enabled = false;
-        }
-    }
-
-    /// <summary>
-    /// (ลบส่วนผสมจาก List View) Delete ingredient from List View
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void btnDeleteIngredient_Click(object sender, EventArgs e)
-    {
-        int i;
-
-        if (lstvIngredientTable.SelectedItems.Count > 0)
-        {
-            for (i = lstvIngredientTable.SelectedItems.Count - 1; i >= 0; i--)
-            {
-                ListViewItem SelectedDelete = lstvIngredientTable.SelectedItems[i];
-                lstvIngredientTable.Items[SelectedDelete.Index].Remove();
-            }
         }
     }
 
