@@ -356,6 +356,7 @@ public class frmRecipe : Form
             this.MinimizeBox = false;
             this.Name = "frmRecipe";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Load += new System.EventHandler(this.frmRecipe_Load);
             this.gbRecipeType.ResumeLayout(false);
             this.gbRecipeType.PerformLayout();
             this.gbRecipeUnit.ResumeLayout(false);
@@ -590,7 +591,7 @@ public class frmRecipe : Form
     #endregion
 
     /// <summary>
-    /// Display Addition form mode
+    /// (การแสดงผล การเพิ่มจาก โหมด) Display Addition form mode
     /// </summary>
     private void AdditionFormDisplay()
     {
@@ -605,7 +606,7 @@ public class frmRecipe : Form
     }
 
     /// <summary>
-    /// Display Editor form mode
+    /// (การแสดงผล การแก้ไขจากโหมด) Display Editor form mode
     /// </summary>
     private void EditorFormDisplay()
     {
@@ -745,7 +746,7 @@ public class frmRecipe : Form
     #endregion new control in editor form
 
     /// <summary>
-    /// Get information from database and add to autostring collection
+    /// (รับข้อมูลจากฐานข้อมูล และ เพิ่มชุดเก็บข้อมูล) Get information from database and add to autostring collection
     /// </summary>
     private void AutoCompleteSource()
     {
@@ -758,7 +759,7 @@ public class frmRecipe : Form
     }
 
     /// <summary>
-    /// Load recipe detail with ingredient of recipe and assign to form
+    /// (โหลดรายละเอียดของสูตรกับส่วนผสม และกำหนดรูปแบบ) Load recipe detail with ingredient of recipe and assign to form
     /// </summary>
     /// <param name="name">name of recipe</param>
     private void LoadRecipeToDisplay(string name)
@@ -801,7 +802,7 @@ public class frmRecipe : Form
     }
 
     /// <summary>
-    /// Delete ingredient from List View
+    /// (ลบส่วนผสมจาก List View) Delete ingredient from List View
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -820,7 +821,7 @@ public class frmRecipe : Form
     }
 
     /// <summary>
-    /// Clear Textbox for ready to get data from user
+    /// (ล้างกล่องข้อความเพื่อเตรียมรับข้อมูลจากผู้ใช้) Clear Textbox for ready to get data from user
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -935,5 +936,10 @@ public class frmRecipe : Form
     private void CloseForm(object sender, EventArgs e)
     {
         Close();
+    }
+
+    private void frmRecipe_Load(object sender, EventArgs e)
+    {
+
     }
 }

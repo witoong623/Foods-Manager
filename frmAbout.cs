@@ -69,6 +69,7 @@ public class frmAbout : Form
             this.Name = "frmAbout";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "เกี่ยวกับ";
+            this.Load += new System.EventHandler(this.frmAbout_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -83,6 +84,11 @@ public class frmAbout : Form
     private void btnClose_Click(object sender, EventArgs e)
     {
         Close();
+    }
+
+    private void frmAbout_Load(object sender, EventArgs e)
+    {
+
     }
     
 }

@@ -45,6 +45,7 @@ public class frmIngredient : Form
             this.lblQuantity = new System.Windows.Forms.Label();
             this.txtQuantity = new System.Windows.Forms.TextBox();
             this.gbUnit = new System.Windows.Forms.GroupBox();
+            this.rdbGrain = new System.Windows.Forms.RadioButton();
             this.rdbGreb = new System.Windows.Forms.RadioButton();
             this.rdbMud = new System.Windows.Forms.RadioButton();
             this.rdbLuk = new System.Windows.Forms.RadioButton();
@@ -60,7 +61,6 @@ public class frmIngredient : Form
             this.btnSubmit = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.cbDelete = new System.Windows.Forms.CheckBox();
-            this.rdbGrain = new System.Windows.Forms.RadioButton();
             this.gbUnit.SuspendLayout();
             this.gbType.SuspendLayout();
             this.SuspendLayout();
@@ -112,6 +112,18 @@ public class frmIngredient : Form
             this.gbUnit.TabIndex = 4;
             this.gbUnit.TabStop = false;
             this.gbUnit.Text = "หน่วย";
+            this.gbUnit.Enter += new System.EventHandler(this.gbUnit_Enter);
+            // 
+            // rdbGrain
+            // 
+            this.rdbGrain.AutoSize = true;
+            this.rdbGrain.Location = new System.Drawing.Point(175, 42);
+            this.rdbGrain.Name = "rdbGrain";
+            this.rdbGrain.Size = new System.Drawing.Size(44, 17);
+            this.rdbGrain.TabIndex = 10;
+            this.rdbGrain.TabStop = true;
+            this.rdbGrain.Text = "เม็ด";
+            this.rdbGrain.UseVisualStyleBackColor = true;
             // 
             // rdbGreb
             // 
@@ -265,17 +277,6 @@ public class frmIngredient : Form
             this.cbDelete.UseVisualStyleBackColor = true;
             this.cbDelete.Visible = false;
             // 
-            // rdbGrain
-            // 
-            this.rdbGrain.AutoSize = true;
-            this.rdbGrain.Location = new System.Drawing.Point(175, 42);
-            this.rdbGrain.Name = "rdbGrain";
-            this.rdbGrain.Size = new System.Drawing.Size(44, 17);
-            this.rdbGrain.TabIndex = 10;
-            this.rdbGrain.TabStop = true;
-            this.rdbGrain.Text = "เม็ด";
-            this.rdbGrain.UseVisualStyleBackColor = true;
-            // 
             // frmIngredient
             // 
             this.ClientSize = new System.Drawing.Size(284, 317);
@@ -310,7 +311,7 @@ public class frmIngredient : Form
     /// <summary>
     /// Constructor use to build form that correspond to task
     /// </summary>
-    /// <param name="item">name of ingredient or null to add ingredient</param>
+    /// <param name="item">ชื่อของส่วนผสม หรือ ส่วนผสมที่ต้องการเพิ่ม</param>
     public frmIngredient(string item) : this()
     {
         if(item == null)
@@ -511,7 +512,7 @@ public class frmIngredient : Form
     #endregion Helper method
 
     /// <summary>
-    /// Add button validated data before add to database
+    /// เพิ่มปุ่มผ่านการตรวจสอบข้อมูลก่อนเพิ่มข้อมูลในฐานข้อมูล (Add button validated data before add to database)
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -551,7 +552,7 @@ public class frmIngredient : Form
     }
 
     /// <summary>
-    /// To only increase ingredient or delete from database
+    /// เพิ่มวัตถุดิบ หรือ ลบจากฐานข้อมูล เท่านั้น
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -581,5 +582,10 @@ public class frmIngredient : Form
     private void btnClose_Click(object sender, EventArgs e)
     {
         Close();
+    }
+
+    private void gbUnit_Enter(object sender, EventArgs e)
+    {
+
     }
 }

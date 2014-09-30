@@ -228,6 +228,7 @@ public class frmCreateDB : Form
             this.Name = "frmCreateDB";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "เชื่อมต่อฐานข้อมูล";
+            this.Load += new System.EventHandler(this.frmCreateDB_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -349,5 +350,10 @@ public class frmCreateDB : Form
         {
             return false;
         }
+    }
+
+    private void frmCreateDB_Load(object sender, EventArgs e)
+    {
+
     }
 }

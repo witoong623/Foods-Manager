@@ -351,19 +351,20 @@ public class frmMain : Form
             this.menuStrip1.Size = new System.Drawing.Size(1064, 24);
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
+            this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip1_ItemClicked);
             // 
             // mnMenu
             // 
             this.mnMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.smnSelectOrCreateDB});
             this.mnMenu.Name = "mnMenu";
-            this.mnMenu.Size = new System.Drawing.Size(36, 20);
+            this.mnMenu.Size = new System.Drawing.Size(39, 20);
             this.mnMenu.Text = "เมนู";
             // 
             // smnSelectOrCreateDB
             // 
             this.smnSelectOrCreateDB.Name = "smnSelectOrCreateDB";
-            this.smnSelectOrCreateDB.Size = new System.Drawing.Size(157, 22);
+            this.smnSelectOrCreateDB.Size = new System.Drawing.Size(163, 22);
             this.smnSelectOrCreateDB.Text = "เลือกไฟล์ฐานข้อมูล";
             this.smnSelectOrCreateDB.Click += new System.EventHandler(this.RestoreDatabaseClick);
             // 
@@ -372,13 +373,13 @@ public class frmMain : Form
             this.mnHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.smnAbout});
             this.mnHelp.Name = "mnHelp";
-            this.mnHelp.Size = new System.Drawing.Size(59, 20);
+            this.mnHelp.Size = new System.Drawing.Size(63, 20);
             this.mnHelp.Text = "ช่วยเหลือ";
             // 
             // smnAbout
             // 
             this.smnAbout.Name = "smnAbout";
-            this.smnAbout.Size = new System.Drawing.Size(109, 22);
+            this.smnAbout.Size = new System.Drawing.Size(113, 22);
             this.smnAbout.Text = "เกี่ยวกับ";
             this.smnAbout.Click += new System.EventHandler(this.AboutMenuClick);
             // 
@@ -396,6 +397,7 @@ public class frmMain : Form
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Food Manager";
+            this.Load += new System.EventHandler(this.frmMain_Load);
             this.gbFoodsCanMake.ResumeLayout(false);
             this.gbFoodsCannotMake.ResumeLayout(false);
             this.gbMaterialsHave.ResumeLayout(false);
@@ -624,7 +626,7 @@ public class frmMain : Form
     }
 
     /// <summary>
-    /// Reload both case of recipe to display in recipe ListView
+    /// (โหลดทั้งสองกรณีของสูตรที่แสดงผลใน ListView)Reload both case of recipe to display in recipe ListView
     /// </summary>
     private void RecipeUpdate()
     {
@@ -697,5 +699,15 @@ public class frmMain : Form
             sub.SubItems.Add(myUpdate.GetNotEnoughIngredient(data[0][i]));
             lstvRecipeCannotMake.Items.Add(sub);
         }
+    }
+
+    private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+    {
+
+    }
+
+    private void frmMain_Load(object sender, EventArgs e)
+    {
+
     }
 }
