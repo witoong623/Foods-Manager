@@ -54,6 +54,7 @@ public class frmRecipe : Form
     private int MakeQuantity;
     private int CanMakeQuantity;
     private int previousTask;
+    private ColumnHeader columnHeader3;
     private string currentName = "";
 
     #region windows code
@@ -85,6 +86,7 @@ public class frmRecipe : Form
             this.rdbPlate = new System.Windows.Forms.RadioButton();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnSubmit = new System.Windows.Forms.Button();
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.gbRecipeType.SuspendLayout();
             this.gbRecipeUnit.SuspendLayout();
             this.SuspendLayout();
@@ -93,7 +95,8 @@ public class frmRecipe : Form
             // 
             this.lstvIngredientTable.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
-            this.columnHeader2});
+            this.columnHeader2,
+            this.columnHeader3});
             this.lstvIngredientTable.FullRowSelect = true;
             this.lstvIngredientTable.GridLines = true;
             this.lstvIngredientTable.Location = new System.Drawing.Point(12, 50);
@@ -106,12 +109,12 @@ public class frmRecipe : Form
             // columnHeader1
             // 
             this.columnHeader1.Text = "ชื่อวัตถุดิบ";
-            this.columnHeader1.Width = 146;
+            this.columnHeader1.Width = 115;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "ปริมาณที่ใช้";
-            this.columnHeader2.Width = 88;
+            this.columnHeader2.Width = 70;
             // 
             // label1
             // 
@@ -332,6 +335,11 @@ public class frmRecipe : Form
             this.btnSubmit.TabIndex = 11;
             this.btnSubmit.UseVisualStyleBackColor = true;
             // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "หน่วย";
+            this.columnHeader3.Width = 50;
+            // 
             // frmRecipe
             // 
             this.ClientSize = new System.Drawing.Size(537, 434);
@@ -356,7 +364,6 @@ public class frmRecipe : Form
             this.MinimizeBox = false;
             this.Name = "frmRecipe";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Load += new System.EventHandler(this.frmRecipe_Load);
             this.gbRecipeType.ResumeLayout(false);
             this.gbRecipeType.PerformLayout();
             this.gbRecipeUnit.ResumeLayout(false);
@@ -512,6 +519,7 @@ public class frmRecipe : Form
 
         ListCollection = new ListViewItem(cbIngredientName.Text);
         ListCollection.SubItems.Add(txtQuantity.Text);
+        ListCollection.SubItems.Add(myDB.SelectIngredientUnitID(cbIngredientName.Text).ToIngredientUnitString());
         lstvIngredientTable.Items.Add(ListCollection);
     }
 
@@ -786,6 +794,7 @@ public class frmRecipe : Form
         {
             sub = new ListViewItem(IngredientOfRecipe[0][i]);
             sub.SubItems.Add(IngredientOfRecipe[1][i]);
+            sub.SubItems.Add(int.Parse(IngredientOfRecipe[2][i]).ToIngredientUnitString());
             lstvIngredientTable.Items.Add(sub);
         }
 
@@ -936,10 +945,5 @@ public class frmRecipe : Form
     private void CloseForm(object sender, EventArgs e)
     {
         Close();
-    }
-
-    private void frmRecipe_Load(object sender, EventArgs e)
-    {
-
     }
 }

@@ -416,11 +416,13 @@ public class DBConnector
     public List<string>[] SelectIngredientOfRecipe(string name)
     {
         int ID = SelectRecipeID(name);
-        string query = "SELECT ingredient_id, (SELECT ingredient_name FROM ingredient WHERE ingredient_id=ri.ingredient_id), quantity " +
+        string query = "SELECT ingredient_id, (SELECT ingredient_name FROM ingredient WHERE ingredient_id=ri.ingredient_id), " +
+                       "quantity, (SELECT unit_id FROM ingredient WHERE ingredient_id=ri.ingredient_id) " + 
                        "FROM recipe_ingredient ri WHERE recipe_id='" + ID + "'";
-        List<string>[] list = new List<string>[2];
+        List<string>[] list = new List<string>[3];
         list[0] = new List<string>();
         list[1] = new List<string>();
+        list[2] = new List<string>();
 
         if (OpenConnection())
         {
@@ -431,6 +433,7 @@ public class DBConnector
             {
                 list[0].Add(dataReader.GetString(1));
                 list[1].Add(dataReader.GetString(2));
+                list[2].Add(dataReader.GetString(3));
             }
 
             dataReader.Close();
@@ -468,6 +471,31 @@ public class DBConnector
         else
         {
             return list;
+        }
+    }
+
+    public int SelectIngredientUnitID(string name)
+    {
+        string query = "SELECT unit_id FROM ingredient WHERE ingredient_name='" + name + "' LIMIT 1";
+        int id = 10;
+
+        if (OpenConnection())
+        {
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                id = dataReader.GetInt32("unit_id");
+            }
+
+            dataReader.Close();
+            CloseConnection();
+            return id;
+        }
+        else
+        {
+            return id;
         }
     }
 
