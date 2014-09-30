@@ -14,12 +14,7 @@ public class DBConnector
     private const int INSTOCK = 1;
     private const int OUTOFSTOCK = 0;
 
-    private static MySqlConnection connection;
-    private static string server;
-    private static string database;
-    private static string uid;
-    private static string password;
-    private static string charset;
+    private MySqlConnection connection;
 
     /// <summary>
     /// To Initialize about DB information such as server database id etc.

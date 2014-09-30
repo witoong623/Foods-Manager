@@ -459,7 +459,10 @@ public class frmMain : Form
         // Pass null to indicate that this is form for add a new item
         frmIngredient myIngredient = new frmIngredient(null);
         myIngredient.ShowDialog();
-        IngredientUpdate();
+        if (myIngredient.PreviousTask == Task.Add)
+        {
+            IngredientUpdate();
+        }
     }
 
     /// <summary>
@@ -481,11 +484,11 @@ public class frmMain : Form
             myRecipe.ShowDialog();
         }
 
-        if (myRecipe.PreviousTask == DELETE)
+        if (myRecipe.PreviousTask == Task.Delete)
         {
             RecipeUpdate();
         }
-        else if (myRecipe.PreviousTask == EDIT)
+        else if (myRecipe.PreviousTask == Task.Edit)
         {
             RecipeUpdateQuantity = new AdjustmentIngredient(myRecipe.CurrentName);
             tssDBconnectStatus.Text = "Database is updating";
@@ -494,7 +497,7 @@ public class frmMain : Form
             IngredientUpdate();
             tssDBconnectStatus.Text = "Database is updated";
         }
-        else if (myRecipe.PreviousTask == MADE)
+        else if (myRecipe.PreviousTask == Task.Made)
         {
             RecipeUpdateQuantity = new AdjustmentIngredient(myRecipe.CurrentName, myRecipe.CurrentMadeQuantity);
             tssDBconnectStatus.Text = "Database is updating";
@@ -517,28 +520,26 @@ public class frmMain : Form
             frmIngredient myEdit = new frmIngredient(lstvMaterialsInStock.SelectedItems[0].Text);
             myEdit.ShowDialog();
 
-            if (myEdit.PreviousTask == EDIT)
+            if (myEdit.PreviousTask == Task.Edit)
             {
                 RecipeUpdateQuantity = new AdjustmentIngredient();
                 RecipeUpdateQuantity.UpdateOneRalateIngredient(myDB.SelectOneIngredientID(myEdit.CurrentName));
+                IngredientUpdate();
+                RecipeUpdate();
             }
-
-            IngredientUpdate();
-            RecipeUpdate();
         }
         else
         {
             frmIngredient myEdit = new frmIngredient(lstvMaterialsOutOfStock.SelectedItems[0].Text);
             myEdit.ShowDialog();
 
-            if (myEdit.PreviousTask == EDIT)
+            if (myEdit.PreviousTask == Task.Edit)
             {
                 RecipeUpdateQuantity = new AdjustmentIngredient();
                 RecipeUpdateQuantity.UpdateOneRalateIngredient(myDB.SelectOneIngredientID(myEdit.CurrentName));
+                IngredientUpdate();
+                RecipeUpdate();
             }
-
-            IngredientUpdate();
-            RecipeUpdate();
         }
     }
 

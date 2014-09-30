@@ -9,14 +9,10 @@ using FoodsManagerExtension;
 /// </summary>
 public class frmRecipe : Form
 {
-    private const int ADD = 1;
-    private const int EDIT = 2;
-    private const int DELETE = 3;
-    private const int MADE = 4;
-
     private ListView lstvIngredientTable;
     private ColumnHeader columnHeader1;
     private ColumnHeader columnHeader2;
+    private ColumnHeader columnHeader3;
     private Label label1;
     private TextBox txtFoodName;
     private Label label3;
@@ -53,8 +49,7 @@ public class frmRecipe : Form
 
     private int MakeQuantity;
     private int CanMakeQuantity;
-    private int previousTask;
-    private ColumnHeader columnHeader3;
+    private Task previousTask;
     private string currentName = "";
 
     #region windows code
@@ -402,7 +397,7 @@ public class frmRecipe : Form
         }
     }
 
-    public int PreviousTask
+    public Task PreviousTask
     {
         get
         {
@@ -532,7 +527,7 @@ public class frmRecipe : Form
             if (dr == DialogResult.Yes)
             {
                 myDB.DeleteRecipe(txtFoodName.Text);
-                previousTask = DELETE;
+                previousTask = Task.Delete;
                 Close();
             }
         }
@@ -553,7 +548,7 @@ public class frmRecipe : Form
 
             if (myDB.EditIngredientOfRecipe(txtFoodName.Text, ingredient))
             {
-                previousTask = EDIT;
+                previousTask = Task.Edit;
                 currentName = txtFoodName.Text;
                 MessageBox.Show("แก้ไขสูตรสำเร็จ");
                 Close();
@@ -587,7 +582,7 @@ public class frmRecipe : Form
             }
 
             currentName = txtFoodName.Text;
-            previousTask = MADE;
+            previousTask = Task.Made;
             Close();
         }
         else

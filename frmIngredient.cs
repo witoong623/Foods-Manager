@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
+using FoodsManagerExtension;
 
 /// <summary>
 /// คลาสสำหรับแสดงฟอร์มและทำการอัพจัดข้อมูลก่อนการเขียนข้อมูลลงฐานข้อมูล
 /// </summary>
 public class frmIngredient : Form
 {
-    private const int ADD = 1;
-    private const int EDIT = 2;
-    private const int DELETE = 3;
-
     private Label label1;
     private Label lblQuantity;
     private TextBox txtQuantity;
@@ -33,8 +30,8 @@ public class frmIngredient : Form
     private DBConnector myDB = new DBConnector();
     private RadioButton rdbGrain;
 
+    private Task previousTask;
     private int currentQuantity;
-    private int previousTask;
     private string currentName;
 
     #region windows code
@@ -495,7 +492,7 @@ public class frmIngredient : Form
         }
     }
 
-    public int PreviousTask
+    public Task PreviousTask
     {
         get
         {
@@ -539,8 +536,9 @@ public class frmIngredient : Form
             return;
         }
 
-        if (myDB.InsertIngredient(TypeSelected(), txtIngredientName.Text, quantity, UnitSelected()) == true)
+        if (myDB.InsertIngredient(TypeSelected(), txtIngredientName.Text, quantity, UnitSelected()))
         {
+            previousTask = Task.Add;
             Close();
         }
         else
@@ -575,7 +573,7 @@ public class frmIngredient : Form
         {
             myDB.Update(TypeSelected(), txtIngredientName.Text, quantity, UnitSelected());
             currentName = txtIngredientName.Text;
-            previousTask = EDIT;
+            previousTask = Task.Edit;
         }
         Close();
     }
