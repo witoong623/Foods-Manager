@@ -100,7 +100,7 @@ public class frmRecipe : Form
             this.lstvIngredientTable.TabIndex = 0;
             this.lstvIngredientTable.UseCompatibleStateImageBehavior = false;
             this.lstvIngredientTable.View = System.Windows.Forms.View.Details;
-            this.lstvIngredientTable.Click += new System.EventHandler(this.SelectedListViewChange);
+            this.lstvIngredientTable.Click += new System.EventHandler(this.SelectedListViewToEdit);
             // 
             // columnHeader1
             // 
@@ -164,7 +164,6 @@ public class frmRecipe : Form
             this.cbIngredientType.FormattingEnabled = true;
             this.cbIngredientType.Items.AddRange(new object[] {
             "ทั้งหมด",
-            "เครื่องปรุง",
             "เนื้อสัตว์",
             "ผัก",
             "ผลไม้"});
@@ -189,6 +188,7 @@ public class frmRecipe : Form
             this.btnAddIngredient.Name = "btnAddIngredient";
             this.btnAddIngredient.Size = new System.Drawing.Size(75, 23);
             this.btnAddIngredient.TabIndex = 4;
+            this.btnAddIngredient.Text = "เพิ่มวัตถุดิบ";
             this.btnAddIngredient.UseVisualStyleBackColor = true;
             this.btnAddIngredient.Click += new System.EventHandler(this.btnAddIngredient_Click);
             // 
@@ -243,7 +243,6 @@ public class frmRecipe : Form
             this.btnAddNewIngredient.TabIndex = 10;
             this.btnAddNewIngredient.Text = "เพิ่มวัตถุดิบใหม่";
             this.btnAddNewIngredient.UseVisualStyleBackColor = true;
-            this.btnAddNewIngredient.Visible = false;
             this.btnAddNewIngredient.Click += new System.EventHandler(this.btnAddEmptyTextbox);
             // 
             // cbIngredientName
@@ -526,8 +525,11 @@ public class frmRecipe : Form
             ListCollection.SubItems.Add(txtQuantity.Text);
             ListCollection.SubItems.Add(myDB.SelectIngredientUnitID(cbIngredientName.Text).ToIngredientUnitString());
             lstvIngredientTable.Items[CurrentSelectedIndex] = ListCollection;
+            btnAddIngredient.Text = "เพิ่มวัตถุดิบ";
         }
-
+        CurrentSelectedIndex = -1;
+        cbIngredientName.Text = "";
+        txtQuantity.Clear();
         
     }
 
@@ -623,13 +625,41 @@ public class frmRecipe : Form
         }
     }
 
-    private void SelectedListViewChange(object sender, EventArgs e)
+    private void SelectedListViewToEdit(object sender, EventArgs e)
     {
         ListViewItem SelectedItem = lstvIngredientTable.SelectedItems[0];
 
         CurrentSelectedIndex = lstvIngredientTable.SelectedIndices[0];
         cbIngredientName.Text = SelectedItem.SubItems[0].Text;
         txtQuantity.Text = SelectedItem.SubItems[1].Text;
+        btnAddIngredient.Text = "แก้ไขวัตถุดิบ";
+        cbIngredientName.Enabled = false;
+    }
+
+    /// <summary>
+    /// ล้างกล่องข้อความเพื่อเตรียมรับข้อมูลจากผู้ใช้ใหม่
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void btnAddEmptyTextbox(object sender, EventArgs e)
+    {
+        txtQuantity.Clear();
+        CurrentSelectedIndex = -1;
+        btnAddIngredient.Text = "เพิ่มวัตถุดิบ";
+        cbIngredientName.Text = "";
+        cbIngredientName.Enabled = true;
+    }
+
+    private void rdbQuantity_CheckedChange(object sender, EventArgs e)
+    {
+        if (rdbCustomMakeQuantity.Checked)
+        {
+            txtCustomMakeQuantity.Enabled = true;
+        }
+        else
+        {
+            txtCustomMakeQuantity.Enabled = false;
+        }
     }
 
     #endregion event handler
@@ -640,7 +670,6 @@ public class frmRecipe : Form
     private void AdditionFormDisplay()
     {
         this.Text = "เพิ่มสูตรอาหาร";
-        btnAddIngredient.Text = "เพิ่มวัตถุดิบ";
         btnSubmit.Text = "เพิ่มสูตรอาหาร";
         btnCancel.Text = "ยกเลิก";
         txtFoodName.Select();
@@ -655,7 +684,6 @@ public class frmRecipe : Form
     private void EditorFormDisplay()
     {
         this.Text = "แก้ไขสูตรอาหาร";
-        btnAddIngredient.Text = "แก้ไขวัตถุดิบ";
         btnSubmit.Text = "แก้ไขสูตร";
         btnCancel.Text = "ลบสูตรอาหาร";
         btnAddNewIngredient.Visible = true;
@@ -814,7 +842,7 @@ public class frmRecipe : Form
 
         CanMakeQuantity = int.Parse(RecipeDetail[1]);
         txtFoodName.Text = name;
-        lblUnitString.Text = UnitIDToString(int.Parse(RecipeDetail[2]));
+        lblUnitString.Text = int.Parse(RecipeDetail[2]).ToRecipeUnitString();
         UnitIDToCheck(int.Parse(RecipeDetail[2]));
         lblCurrentQuantityCanMake.Text += " " + RecipeDetail[1] + " " + lblUnitString.Text;
         rdb1ea.Text += lblUnitString.Text;
@@ -843,30 +871,6 @@ public class frmRecipe : Form
         else
         {
             rdbMeatDish.Enabled = false;
-        }
-    }
-
-    /// <summary>
-    /// ล้างกล่องข้อความเพื่อเตรียมรับข้อมูลจากผู้ใช้ใหม่
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void btnAddEmptyTextbox(object sender, EventArgs e)
-    {
-        cbIngredientName.SelectedText = "";
-        txtQuantity.Clear();
-        btnAddIngredient.Text = "เพิ่มวัตถุดิบ";
-    }
-
-    private void rdbQuantity_CheckedChange(object sender, EventArgs e)
-    {
-        if (rdbCustomMakeQuantity.Checked)
-        {
-            txtCustomMakeQuantity.Enabled = true;
-        }
-        else
-        {
-            txtCustomMakeQuantity.Enabled = false;
         }
     }
 
@@ -940,32 +944,8 @@ public class frmRecipe : Form
         }
     }
 
-    private string UnitIDToString(int typeID)
-    {
-        switch (typeID)
-        {
-            case 1:
-                return "จาน";
-            case 2:
-                return "ชาม";
-            case 3:
-                return "ถ้วย";
-            case 4:
-                return "ไม้";
-            case 5:
-                return "ถุง";
-            default :
-                return "หน่วยผิด";
-        }
-    }
-
     private void CloseForm(object sender, EventArgs e)
     {
         Close();
-    }
-
-    private void SelectedListViewChange(object sender, ListViewItemSelectionChangedEventArgs e)
-    {
-
     }
 }
