@@ -429,14 +429,14 @@ public class frmRecipe : Form
 
         if (txtFoodName.Text.Length == 0)
         {
-            MessageBox.Show("กรุณาใส่ชื่อสูตรอาหาร");
+            MessageBox.Show("กรุณาใส่ชื่อสูตรอาหาร", "กรอกข้อมูลไม่ครบถ้วน", MessageBoxButtons.OK, MessageBoxIcon.Error);
             txtFoodName.Select();
             return;
         }
 
         if (lstvIngredientTable.Items.Count == 0)
         {
-            MessageBox.Show("กรุณาเพิ่มวัตถุดิบ\nลงไปในรายการทางด้านซ้าย");
+            MessageBox.Show("กรุณาเพิ่มวัตถุดิบ\nลงไปในรายการทางด้านซ้าย", "กรอกข้อมูลไม่ครบถ้วน", MessageBoxButtons.OK, MessageBoxIcon.Error);
             cbIngredientName.Select();
             return;
         }
@@ -482,14 +482,14 @@ public class frmRecipe : Form
 
         if (cbIngredientName.Text.Length == 0)
         {
-            MessageBox.Show("กรุณาใส่ชื่อวัตถุดิบ");
+            MessageBox.Show("กรุณาใส่ชื่อวัตถุดิบ", "กรอกข้อมูลไม่ครบถ้วน", MessageBoxButtons.OK, MessageBoxIcon.Error);
             cbIngredientName.Select();
             return;
         }
 
         if (txtQuantity.Text.Length == 0)
         {
-            MessageBox.Show("กรุณาใส่ปริมาณที่ต้องใช้");
+            MessageBox.Show("กรุณาใส่ปริมาณที่ต้องใช้", "กรอกข้อมูลไม่ครบถ้วน", MessageBoxButtons.OK, MessageBoxIcon.Error);
             txtQuantity.Select();
             return;
         }
@@ -498,7 +498,7 @@ public class frmRecipe : Form
 
         if (!flag)
         {
-            MessageBox.Show("กรุณาป้อนจำนวนเป็นตัวเลข");
+            MessageBox.Show("กรุณาป้อนจำนวนเป็นตัวเลข", "กรอกข้อมูลผิดพลาด", MessageBoxButtons.OK, MessageBoxIcon.Error);
             txtQuantity.Select();
             return;
         }
@@ -509,13 +509,20 @@ public class frmRecipe : Form
             {
                 if (lstvIngredientTable.Items[i].SubItems[0].Text.Equals(cbIngredientName.Text))
                 {
-                    MessageBox.Show("มีวัตถุดิบนี้อยู่แล้ว");
+                    MessageBox.Show("มีวัตถุดิบนี้อยู่แล้ว", "กรอกข้อมูลซ้ำ", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
 
             ListCollection = new ListViewItem(cbIngredientName.Text);
             ListCollection.SubItems.Add(txtQuantity.Text);
+            string temp = myDB.SelectIngredientUnitID(cbIngredientName.Text).ToIngredientUnitString();
+            if (flag)
+            {
+                MessageBox.Show("ไม่มีวัตถุดิบนี้ในฐานข้อมูล", "กรอกข้อมูลซ้ำ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else
             ListCollection.SubItems.Add(myDB.SelectIngredientUnitID(cbIngredientName.Text).ToIngredientUnitString());
             lstvIngredientTable.Items.Add(ListCollection);
         }

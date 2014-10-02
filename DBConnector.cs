@@ -154,27 +154,28 @@ public class DBConnector
     {
         try
         {
-            List<string> ingredient_id = new List<string>();
             int i;
-            string recipeID = "1";
-            string query = "INSERT INTO recipe (recipe_type_id, recipe_name, recipe_unit_id)" +
-                           "VALUES ('" + type + "', '" + name + "', '" + unitID + "')";
+            string recipeID = "0";
+            string query = "SELECT recipe_id FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
+            List<string> ingredient_id = new List<string>();
 
             if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
-                // Insert name of food to recipe table
-                cmd.ExecuteNonQuery();
-
-                // Get recipe id after insert
-                query = "SELECT recipe_id FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
-                cmd.CommandText = query;
                 MySqlDataReader dataReader = cmd.ExecuteReader();
+
                 while (dataReader.Read())
                 {
                     recipeID = dataReader.GetString("recipe_id");
                 }
+
                 dataReader.Close();
+
+                if (!recipeID.Equals("0"))
+                {
+                    MessageBox.Show("มีสูตร " + name + " อยู่แล้ว", "ไม่สามารถเพิ่มสูตรใหม่ได้");
+                    return false;
+                }
 
                 // Get ingredient id specify by name
                 for (i = 0; i < ingredient[0].Count; i++)
@@ -182,12 +183,32 @@ public class DBConnector
                     query = "SELECT ingredient_id FROM ingredient WHERE ingredient_name='" + ingredient[0][i] + "' LIMIT 1";
                     cmd.CommandText = query;
                     dataReader = cmd.ExecuteReader();
+
                     while (dataReader.Read())
                     {
                         ingredient_id.Add(dataReader.GetString("ingredient_id"));
                     }
+
                     dataReader.Close();
                 }
+
+                // Insert name of food to recipe table
+                query = "INSERT INTO recipe (recipe_type_id, recipe_name, recipe_unit_id)" +
+                           "VALUES ('" + type + "', '" + name + "', '" + unitID + "')";
+                cmd.CommandText = query;
+                cmd.ExecuteNonQuery();
+
+                // Get recipe id after insert
+                query = "SELECT recipe_id FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
+                cmd.CommandText = query;
+                dataReader = cmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    recipeID = dataReader.GetString("recipe_id");
+                }
+
+                dataReader.Close();
 
                 // Insert ingredient of recipe to 3rd relation table(recipe_ingredient)
                 for (i = 0; i < ingredient[0].Count; i++)
@@ -472,7 +493,7 @@ public class DBConnector
     public int SelectIngredientUnitID(string name)
     {
         string query = "SELECT unit_id FROM ingredient WHERE ingredient_name='" + name + "' LIMIT 1";
-        int id = 10;
+        int id = 0;
 
         if (OpenConnection())
         {
@@ -728,20 +749,22 @@ public class DBConnector
     {
         try
         {
-            List<string> ingredient_id = new List<string>();
             int i;
             string recipeID = "1";
-            string query = query = "SELECT recipe_id FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
+            string query = "SELECT recipe_id FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
+            List<string> ingredient_id = new List<string>();
 
-            if (OpenConnection() == true)
+            if (OpenConnection())
             {
                 // Get recipe id after insert
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 MySqlDataReader dataReader = cmd.ExecuteReader();
+
                 while (dataReader.Read())
                 {
                     recipeID = dataReader.GetString("recipe_id");
                 }
+
                 dataReader.Close();
 
                 // Get ingredient id specify by name
@@ -755,6 +778,7 @@ public class DBConnector
                     {
                         ingredient_id.Add(dataReader.GetString("ingredient_id"));
                     }
+
                     dataReader.Close();
                 }
 

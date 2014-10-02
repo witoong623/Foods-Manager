@@ -21,6 +21,8 @@ namespace FoodsManagerExtension
         {
             switch (unit)
             {
+                case 0:
+                    return "ไม่มีวัตถุดิบนี้";
                 case 10:
                     return "ฟอง";
                 case 11:
