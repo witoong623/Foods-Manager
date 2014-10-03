@@ -20,7 +20,6 @@ public class frmIngredient : Form
     private RadioButton rdbFong;
     private GroupBox gbType;
     private RadioButton rdbMeat;
-    private RadioButton rdbFlavoring;
     private RadioButton rdbFruit;
     private RadioButton rdbVegetable;
     private TextBox txtIngredientName;
@@ -52,7 +51,6 @@ public class frmIngredient : Form
             this.rdbGram = new System.Windows.Forms.RadioButton();
             this.rdbFong = new System.Windows.Forms.RadioButton();
             this.gbType = new System.Windows.Forms.GroupBox();
-            this.rdbFlavoring = new System.Windows.Forms.RadioButton();
             this.rdbFruit = new System.Windows.Forms.RadioButton();
             this.rdbVegetable = new System.Windows.Forms.RadioButton();
             this.rdbMeat = new System.Windows.Forms.RadioButton();
@@ -194,7 +192,6 @@ public class frmIngredient : Form
             // 
             // gbType
             // 
-            this.gbType.Controls.Add(this.rdbFlavoring);
             this.gbType.Controls.Add(this.rdbFruit);
             this.gbType.Controls.Add(this.rdbVegetable);
             this.gbType.Controls.Add(this.rdbMeat);
@@ -205,20 +202,10 @@ public class frmIngredient : Form
             this.gbType.TabStop = false;
             this.gbType.Text = "ประเภท";
             // 
-            // rdbFlavoring
-            // 
-            this.rdbFlavoring.AutoSize = true;
-            this.rdbFlavoring.Location = new System.Drawing.Point(181, 19);
-            this.rdbFlavoring.Name = "rdbFlavoring";
-            this.rdbFlavoring.Size = new System.Drawing.Size(72, 17);
-            this.rdbFlavoring.TabIndex = 10;
-            this.rdbFlavoring.Text = "เครื่องปรุง";
-            this.rdbFlavoring.UseVisualStyleBackColor = true;
-            // 
             // rdbFruit
             // 
             this.rdbFruit.AutoSize = true;
-            this.rdbFruit.Location = new System.Drawing.Point(122, 19);
+            this.rdbFruit.Location = new System.Drawing.Point(168, 19);
             this.rdbFruit.Name = "rdbFruit";
             this.rdbFruit.Size = new System.Drawing.Size(51, 17);
             this.rdbFruit.TabIndex = 7;
@@ -228,7 +215,7 @@ public class frmIngredient : Form
             // rdbVegetable
             // 
             this.rdbVegetable.AutoSize = true;
-            this.rdbVegetable.Location = new System.Drawing.Point(75, 19);
+            this.rdbVegetable.Location = new System.Drawing.Point(121, 19);
             this.rdbVegetable.Name = "rdbVegetable";
             this.rdbVegetable.Size = new System.Drawing.Size(39, 17);
             this.rdbVegetable.TabIndex = 6;
@@ -238,7 +225,7 @@ public class frmIngredient : Form
             // rdbMeat
             // 
             this.rdbMeat.AutoSize = true;
-            this.rdbMeat.Location = new System.Drawing.Point(6, 19);
+            this.rdbMeat.Location = new System.Drawing.Point(52, 19);
             this.rdbMeat.Name = "rdbMeat";
             this.rdbMeat.Size = new System.Drawing.Size(63, 17);
             this.rdbMeat.TabIndex = 5;
@@ -334,19 +321,15 @@ public class frmIngredient : Form
     {
         if (rdbMeat.Checked)
         {
-            return 2;
+            return 1;
         }
         else if (rdbVegetable.Checked)
         {
-            return 3;
-        }
-        else if (rdbFruit.Checked)
-        {
-            return 3;
+            return 2;
         }
         else
         {
-            return 1;
+            return 3;
         }
     }
 
@@ -477,17 +460,14 @@ public class frmIngredient : Form
     {
         switch (type)
         {
-            case 2 :
+            case 1 :
                 rdbMeat.Checked = true;
                 break;
-            case 3 :
+            case 2 :
                 rdbVegetable.Checked = true;
                 break;
-            case 4 :
+            case 3 :
                 rdbFruit.Checked = true;
-                break;
-            case 1 :
-                rdbFlavoring.Checked = true;
                 break;
         }
     }

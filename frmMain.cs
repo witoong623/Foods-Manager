@@ -269,7 +269,6 @@ public class frmMain : Form
             this.cbMaterialsInStock.FormattingEnabled = true;
             this.cbMaterialsInStock.Items.AddRange(new object[] {
             "ทั้งหมด",
-            "เครื่องปรุง",
             "เนื้อสัตว์",
             "ผัก",
             "ผลไม้"});
@@ -316,7 +315,6 @@ public class frmMain : Form
             this.cbMaterialsOutOfStock.FormattingEnabled = true;
             this.cbMaterialsOutOfStock.Items.AddRange(new object[] {
             "ทั้งหมด",
-            "เครื่องปรุง",
             "เนื้อสัตว์",
             "ผัก",
             "ผลไม้"});
@@ -357,13 +355,13 @@ public class frmMain : Form
             this.mnMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.smnSelectOrCreateDB});
             this.mnMenu.Name = "mnMenu";
-            this.mnMenu.Size = new System.Drawing.Size(39, 20);
+            this.mnMenu.Size = new System.Drawing.Size(36, 20);
             this.mnMenu.Text = "เมนู";
             // 
             // smnSelectOrCreateDB
             // 
             this.smnSelectOrCreateDB.Name = "smnSelectOrCreateDB";
-            this.smnSelectOrCreateDB.Size = new System.Drawing.Size(163, 22);
+            this.smnSelectOrCreateDB.Size = new System.Drawing.Size(157, 22);
             this.smnSelectOrCreateDB.Text = "เลือกไฟล์ฐานข้อมูล";
             this.smnSelectOrCreateDB.Click += new System.EventHandler(this.RestoreDatabaseClick);
             // 
@@ -372,13 +370,13 @@ public class frmMain : Form
             this.mnHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.smnAbout});
             this.mnHelp.Name = "mnHelp";
-            this.mnHelp.Size = new System.Drawing.Size(63, 20);
+            this.mnHelp.Size = new System.Drawing.Size(59, 20);
             this.mnHelp.Text = "ช่วยเหลือ";
             // 
             // smnAbout
             // 
             this.smnAbout.Name = "smnAbout";
-            this.smnAbout.Size = new System.Drawing.Size(113, 22);
+            this.smnAbout.Size = new System.Drawing.Size(109, 22);
             this.smnAbout.Text = "เกี่ยวกับ";
             this.smnAbout.Click += new System.EventHandler(this.AboutMenuClick);
             // 

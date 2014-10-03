@@ -351,7 +351,6 @@ public class DBConnector
     /// <returns>string[] ที่บรรจุชื่อของวัตถุดิบตามประเภทที่กำหนด</returns>
     public string[] AddIngredientNameToComboBoxCollection(int typeID)
     {
-        int i;
         string query;
         string[] IngredientName;
         List<string> list = new List<string>();
