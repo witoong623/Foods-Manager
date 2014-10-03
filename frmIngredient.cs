@@ -521,7 +521,7 @@ public class frmIngredient : Form
 
         if (txtIngredientName.Text.Length == 0)
         {
-            MessageBox.Show("กรุณาใส่ชื่อวัตถุดิบ", "ข้อมูลผิดพลาด");
+            MessageBox.Show("กรุณาใส่ชื่อวัตถุดิบ", "ข้อมูลไม่ครบถ้วน", MessageBoxButtons.OK, MessageBoxIcon.Information);
             txtIngredientName.Clear();
             txtIngredientName.Select();
             return;
@@ -530,7 +530,7 @@ public class frmIngredient : Form
         flag = int.TryParse(txtQuantity.Text, out quantity);
         if(flag == false)
         {
-            MessageBox.Show("กรุณาป้องจำนวนเป็นตัวเลข", "ข้อมูลผิดพลาด");
+            MessageBox.Show("กรุณาป้องจำนวนเป็นตัวเลข", "ข้อมูลผิดพลาด", MessageBoxButtons.OK, MessageBoxIcon.Information);
             txtQuantity.Clear();
             txtQuantity.Select();
             return;
@@ -543,7 +543,7 @@ public class frmIngredient : Form
         }
         else
         {
-            MessageBox.Show("กรุณาใส่ชื่อวัตถุดิบอื่น", "ข้อมูลผิดพลาด");
+            MessageBox.Show("มีวัตถุดิบนี้อยู่แล้ว\nกรุณาใส่ชื่อวัตถุดิบอื่น", "ข้อมูลซ้ำกัน", MessageBoxButtons.OK, MessageBoxIcon.Information);
             txtIngredientName.Clear();
             txtIngredientName.Select();
             return;
@@ -561,7 +561,7 @@ public class frmIngredient : Form
         quantity = int.Parse(txtQuantity.Text);
         if (quantity < currentQuantity)
         {
-            MessageBox.Show("คูณไม่สามารถปรับลดปริมาณของวัตถุดิบ\nให้ต่ำกว่าเดิมได้", "ข้อมูลผิดพลาด");
+            MessageBox.Show("คูณไม่สามารถปรับลดปริมาณของวัตถุดิบ\nให้ต่ำกว่าเดิมได้", "ข้อมูลผิดพลาด", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return;
         }
 
