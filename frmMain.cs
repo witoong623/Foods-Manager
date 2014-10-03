@@ -638,7 +638,7 @@ public class frmMain : Form
         int i;
         List<string>[] data = new List<string>[4];
 
-        data = myDB.SelectIngredient(cbMaterialsInStock.SelectedIndex, INSTOCK);
+        data = myDB.SelectIngredient(cbMaterialsInStock.SelectedIndex, Stock.InStock);
         lstvMaterialsInStock.Items.Clear();
 
         if (data[0].Count == 0)
@@ -662,7 +662,7 @@ public class frmMain : Form
         int i;
         List<string>[] data = new List<string>[4];
 
-        data = myDB.SelectIngredient(cbMaterialsOutOfStock.SelectedIndex, OUTOFSTOCK);
+        data = myDB.SelectIngredient(cbMaterialsOutOfStock.SelectedIndex, Stock.OutOfStock);
         lstvMaterialsOutOfStock.Items.Clear();
 
         if (data[0].Count == 0)

@@ -571,7 +571,7 @@ public class frmIngredient : Form
         }
         else
         {
-            myDB.Update(CheckedToTypeID(), txtIngredientName.Text, quantity, UnitSelected());
+            myDB.UpdateIngredient(CheckedToTypeID(), txtIngredientName.Text, quantity, UnitSelected());
             currentName = txtIngredientName.Text;
             previousTask = Task.Edit;
         }

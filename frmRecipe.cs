@@ -514,16 +514,17 @@ public class frmRecipe : Form
                 }
             }
 
-            ListCollection = new ListViewItem(cbIngredientName.Text);
-            ListCollection.SubItems.Add(txtQuantity.Text);
             string temp = myDB.SelectIngredientUnitID(cbIngredientName.Text).ToIngredientUnitString();
-            if (flag)
+
+            if (temp.Equals("ไม่มีวัตถุดิบนี้"))
             {
-                MessageBox.Show("ไม่มีวัตถุดิบนี้ในฐานข้อมูล", "กรอกข้อมูลซ้ำ", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("ไม่มีวัตถุดิบนี้ในฐานข้อมูล", "ไม่มีข้อมูล", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            else
-            ListCollection.SubItems.Add(myDB.SelectIngredientUnitID(cbIngredientName.Text).ToIngredientUnitString());
+
+            ListCollection = new ListViewItem(cbIngredientName.Text);
+            ListCollection.SubItems.Add(txtQuantity.Text);
+            ListCollection.SubItems.Add(temp);
             lstvIngredientTable.Items.Add(ListCollection);
         }
         else
@@ -534,6 +535,7 @@ public class frmRecipe : Form
             lstvIngredientTable.Items[CurrentSelectedIndex] = ListCollection;
             btnAddIngredient.Text = "เพิ่มวัตถุดิบ";
         }
+
         CurrentSelectedIndex = -1;
         cbIngredientName.Text = "";
         txtQuantity.Clear();

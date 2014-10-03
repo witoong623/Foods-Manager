@@ -7,24 +7,28 @@ using FoodsManagerExtension;
 using FileManage;
 
 /// <summary>
-/// To Connect and perform task concern to DB
+/// ใช้สำหรับเชื่อมต่อและทำงานเกี่ยวกับฐานข้อมูล
 /// </summary>
 public class DBConnector
 {
     private const int INSTOCK = 1;
     private const int OUTOFSTOCK = 0;
-
     private MySqlConnection connection;
 
+    
     /// <summary>
-    /// To Initialize about DB information such as server database id etc.
+    /// สร้าง instance ของคลาส DBConnector
     /// </summary>
     public DBConnector()
     {
         Initialize();
     }
 
-    public void Initialize()
+    #region helper methods
+    /// <summary>
+    /// สร้าง instance ของ MySqlConnection เพื่อใช้เชื่อมต่อฐานข้อมูลภายในคลาส
+    /// </summary>
+    private void Initialize()
     {
         clsBuildConnectionString build = new clsBuildConnectionString("sqldetail.txt");
         if (build.BuildConnectionString())
@@ -34,10 +38,10 @@ public class DBConnector
     }
 
     /// <summary>
-    /// To open connection to DB
-    /// It is helper method and use only in this class
+    /// ใช้สำหรับเปิดการเชื่อมต่อของ MySqlConnection ถูกเรียกใช้ทุกครั้งเมื่อทำงานในเมธอดใดเมธอดหนึ่งภายในคลาสนี้
+    /// และถูกปิดการทำงานทันทีหลังทำงานภายในเมธอดเสร็จ
     /// </summary>
-    /// <returns>true if connection open otherwise false and show exception messange</returns>
+    /// <returns>จริง เมื่อเชื่อมต่อสำเร็จ นอกเหนือจากนั้นไม่จริง</returns>
     private bool OpenConnection()
     {
         try
@@ -47,11 +51,11 @@ public class DBConnector
         }
         catch (MySqlException ex)
         {
-            //When handling errors, you can your application's response based 
-            //on the error number.
-            //The two most common error numbers when connecting are as follows:
-            //0: Cannot connect to server.
-            //1045: Invalid user name and/or password.
+            // When handling errors, you can your application's response based 
+            // on the error number.
+            // The two most common error numbers when connecting are as follows:
+            // 0: Cannot connect to server.
+            // 1045: Invalid user name and/or password.
             switch (ex.Number)
             {
                 case 0:
@@ -62,7 +66,7 @@ public class DBConnector
                     MessageBox.Show("Invalid username/password, please try again");
                     break;
                 default :
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(ex.Message, "Error number : " + ex.Number, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
             }
             return false;
@@ -74,9 +78,9 @@ public class DBConnector
     }
 
     /// <summary>
-    /// To close connection this is helper method use only in this class
+    /// ใช้สำหรับปิดการเชื่อมต่อของ MySqlConnection ถูกเรียกใช้ทุกครั้งหลังทำงานภายในเมธอดใดๆ เสร็จ
     /// </summary>
-    /// <returns>True if close otherwise false and show exception message</returns>
+    /// <returns>จริง เมื่อปิดการเชื่อมต่อสำเร็จ นอกเหนือจากนั้นไม่จริง</returns>
     private bool CloseConnection()
     {
         try
@@ -90,6 +94,33 @@ public class DBConnector
             return false;
         }
     }
+
+    /// <summary>
+    /// ดึงค่า recipe id ออกมาหนึ่งค่าที่ตรงกับชื่อ
+    /// </summary>
+    /// <param name="name">ชื่อสูตรอาหาร</param>
+    /// <returns>ค่า recipe_id จากตาราง recipe</returns>
+    private int SelectRecipeID(string name)
+    {
+        int id = 0;
+        string query = "SELECT recipe_id, quantity FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
+        if (OpenConnection() == true)
+        {
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            while (dataReader.Read())
+            {
+                id = dataReader.GetInt32("recipe_id");
+            }
+            dataReader.Close();
+            CloseConnection();
+        }
+        return id;
+    }
+
+    #endregion helper methods
+
+    // ============= non query task ===============
 
     public bool TestConnection
     {
@@ -107,13 +138,16 @@ public class DBConnector
         }
     }
 
+    #region ingredient general methods
+
     /// <summary>
-    /// Insert new ingredient to ingredient table
+    /// เพิ่มวัตถุดิบเข้าสู่ฐานข้อมูล(ingredient)
     /// </summary>
-    /// <param name="type">Ingredient type</param>
-    /// <param name="name">Ingredient name</param>
-    /// <param name="initial">Ingredient initial quantity</param>
-    /// <param name="unit">Ingredient unit called</param>
+    /// <param name="type">ประเภทวัตถุดิบ</param>
+    /// <param name="name">ชื่อวัตถุดิบ</param>
+    /// <param name="initial">ปริมาณของวัตถุดิบ</param>
+    /// <param name="unit">หน่วยของวัตถุดิบ</param>
+    /// <returns>จริง เมื่อเพิ่มสำเร็จ ไม่จริงเมื่อเพิ่มไม่สำเร็จ</returns>
     public bool InsertIngredient(int type, string name, int initial, int unit)
     {
         try
@@ -133,7 +167,12 @@ public class DBConnector
         {
             if (ex.Number == 1062)
             {
-                MessageBox.Show(name + "ถูกเพิ่มแล้ว", "ข้อมูลซ้ำกัน", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(name + "ถูกเพิ่มแล้ว", "ข้อมูลซ้ำกัน", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace, "Error number : " + ex.Number,
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return false;
         }
@@ -144,124 +183,28 @@ public class DBConnector
     }
 
     /// <summary>
-    /// Insert recipe to database
+    /// ดึงข้อมูลของวัตถุดิบขึ้นมา 1 อย่างโดยข้อมูลต้องตรงกับชื่อที่ถูกส่งมา
     /// </summary>
-    /// <param name="name">string name of recipe</param>
-    /// <param name="type">int type of recipe</param>
-    /// <param name="ingredient">List string name of ingredient and quantity to use in string format</param>
-    /// <returns>True if sucesses otherwise false</returns>
-    public bool InsertRecipe(string name, int type, List<string>[] ingredient, int unitID)
-    {
-        try
-        {
-            int i;
-            string recipeID = "0";
-            string query = "SELECT recipe_id FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
-            List<string> ingredient_id = new List<string>();
-
-            if (OpenConnection())
-            {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                MySqlDataReader dataReader = cmd.ExecuteReader();
-
-                while (dataReader.Read())
-                {
-                    recipeID = dataReader.GetString("recipe_id");
-                }
-
-                dataReader.Close();
-
-                if (!recipeID.Equals("0"))
-                {
-                    MessageBox.Show("มีสูตร " + name + " อยู่แล้ว", "ไม่สามารถเพิ่มสูตรใหม่ได้");
-                    return false;
-                }
-
-                // Get ingredient id specify by name
-                for (i = 0; i < ingredient[0].Count; i++)
-                {
-                    query = "SELECT ingredient_id FROM ingredient WHERE ingredient_name='" + ingredient[0][i] + "' LIMIT 1";
-                    cmd.CommandText = query;
-                    dataReader = cmd.ExecuteReader();
-
-                    while (dataReader.Read())
-                    {
-                        ingredient_id.Add(dataReader.GetString("ingredient_id"));
-                    }
-
-                    dataReader.Close();
-                }
-
-                // Insert name of food to recipe table
-                query = "INSERT INTO recipe (recipe_type_id, recipe_name, recipe_unit_id)" +
-                           "VALUES ('" + type + "', '" + name + "', '" + unitID + "')";
-                cmd.CommandText = query;
-                cmd.ExecuteNonQuery();
-
-                // Get recipe id after insert
-                query = "SELECT recipe_id FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
-                cmd.CommandText = query;
-                dataReader = cmd.ExecuteReader();
-
-                while (dataReader.Read())
-                {
-                    recipeID = dataReader.GetString("recipe_id");
-                }
-
-                dataReader.Close();
-
-                // Insert ingredient of recipe to 3rd relation table(recipe_ingredient)
-                for (i = 0; i < ingredient[0].Count; i++)
-                {
-                    query = "INSERT INTO recipe_ingredient (recipe_id, ingredient_id, quantity)" +
-                            "VALUES('" + recipeID + "', '" + ingredient_id[i] + "', '" + ingredient[1][i] + "')";
-                    cmd.CommandText = query;
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            return true;
-        }
-        catch (MySqlException ex)
-        {
-            if (ex.Number == 1062)
-            {
-                MessageBox.Show(name + "ถูกเพิ่มแล้ว", "ข้อมูลซ้ำกัน", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            return false;
-        }
-        finally
-        {
-            CloseConnection();
-        }
-    }
-
+    /// <param name="name">ชื่อของวัตถุดิบ</param>
+    /// <returns></returns>
     public string[] SelectSpecifiedIngredient(string name)
     {
-        string query = "SELECT type_id,ingredient_name,ingredient_quantity,unit_id " +
-                        "FROM ingredient " +
-                        "WHERE ingredient_name='" + name + "'";
+        string query = "SELECT type_id, ingredient_name, ingredient_quantity, unit_id " +
+                       "FROM ingredient " +
+                       "WHERE ingredient_name='" + name + "'";
 
-        // Create a list to store the result
         string[] list = new string[4];
 
-        // Open connection
         if (OpenConnection())
         {
-            // Create Command
             MySqlCommand cmd = new MySqlCommand(query, connection);
-            // Create a data reader and Execute the command
             MySqlDataReader dataReader = cmd.ExecuteReader();
-            // Read from database
             dataReader.Read();
-            // Assign to list
-            // type_id
-            // ingreient_name
-            // ingredient_quantity
-            // unit_id
-            list[0] = dataReader.GetString(0);
-            list[1] = dataReader.GetString(1);
-            list[2] = dataReader.GetString(2);
-            list[3] = dataReader.GetString(3);
+
+            list[0] = dataReader.GetString("type_id");
+            list[1] = dataReader.GetString("ingredient_name");
+            list[2] = dataReader.GetString("ingredient_quantity");
+            list[3] = dataReader.GetString("unit_id");
             dataReader.Close();
             CloseConnection();
             return list;
@@ -273,16 +216,46 @@ public class DBConnector
     }
 
     /// <summary>
-    /// Select Ingredient information from table by specific type id and quantity
+    /// ดึงค่าหน่วยของวัตถุดิบตามชื่อที่ถูกส่งมาให้
     /// </summary>
-    /// <param name="typeID">Ingredient type</param>
-    /// <param name="quantity">Ingredient quantity</param>
-    /// <returns>ingredient name and quantity</returns>
-    public List<string>[] SelectIngredient(int typeID, int quantity)
+    /// <param name="name">ชื่อของวัตถุดิบ</param>
+    /// <returns>ไอดีหน่วยของวัตถุดิบ</returns>
+    public int SelectIngredientUnitID(string name)
+    {
+        string query = "SELECT unit_id FROM ingredient WHERE ingredient_name='" + name + "' LIMIT 1";
+        int id = 0;
+
+        if (OpenConnection())
+        {
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            if (dataReader.Read())
+            {
+                id = dataReader.GetInt32("unit_id");
+            }
+
+            dataReader.Close();
+            CloseConnection();
+            return id;
+        }
+        else
+        {
+            return id;
+        }
+    }
+
+    /// <summary>
+    /// ดึงชื่อและปริมาณที่มีอยู่ของวัตถุดิบ คัดเลือกโดยประเภทและปริมาณ
+    /// </summary>
+    /// <param name="typeID">ประเภทของวัตถุดิบ</param>
+    /// <param name="quantity">ปริมาณของวัตถุดิบ กำหนดได้เฉพาะที่หมดและที่มีอยู่เท่านั้น</param>
+    /// <returns>ชื่อของวัตถุดิบพร้อมกับปริมาณที่มีอยู่ ในรูปแบบ List string[] โดยลำดับที่อยู่จะตรงกันเสมอ</returns>
+    public List<string>[] SelectIngredient(int typeID, Stock quantity)
     {
         string query;
 
-        if (quantity == INSTOCK)
+        if (quantity == Stock.InStock)
         {
             if (typeID == 0)
             {
@@ -305,21 +278,16 @@ public class DBConnector
             }
         }
 
-        // Create a list to store the result
         List<string>[] list = new List<string>[3];
         list[0] = new List<string>();
         list[1] = new List<string>();
         list[2] = new List<string>();
 
-        // Open connection
         if (OpenConnection())
         {
-            // Create Command
             MySqlCommand cmd = new MySqlCommand(query, connection);
-            // Create a data reader and Execute the command
             MySqlDataReader dataReader = cmd.ExecuteReader();
 
-            // Read the data and store them in the list
             while (dataReader.Read())
             {
                 list[0].Add(dataReader.GetString("ingredient_name"));
@@ -327,13 +295,9 @@ public class DBConnector
                 list[2].Add(dataReader.GetString("unit_id"));
             }
 
-            // Close Data Reader
             dataReader.Close();
-
-            // Close Connection
             CloseConnection();
 
-            // Return list to be displayed
             return list;
         }
         else
@@ -343,24 +307,26 @@ public class DBConnector
     }
 
     /// <summary>
-    /// Add ingredient name to AutoCompleteStringCollection that use in recipe form
+    /// เพื่อชื่อวัตถุดิบทั้งหมดเข้าสํ่ AutoCompleteStringCollection เพื่อใช้ในการเพิ่มสูตรอาหาร
     /// </summary>
-    /// <returns>a AutoCompleteStringCollection that contain name of ingredient</returns>
+    /// <returns>AutoCompleteStringCollection</returns>
     public AutoCompleteStringCollection AddIngredientNameToAutoComplete()
     {
         AutoCompleteStringCollection autoCom = new AutoCompleteStringCollection();
         try
         {
             string query = "SELECT ingredient_name FROM ingredient";
-
+            
             if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 MySqlDataReader dataReader = cmd.ExecuteReader();
+
                 while (dataReader.Read())
                 {
                     autoCom.Add(dataReader.GetString("ingredient_name"));
                 }
+
                 dataReader.Close();
                 CloseConnection();
                 return autoCom;
@@ -372,21 +338,22 @@ public class DBConnector
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message);
+            MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace, "Error number : " + ex.Number, 
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return autoCom;
         }
-        return autoCom;
     }
 
     /// <summary>
-    /// Add ingredient name to an array of string that is added to ComboBox filter by type id
+    /// เพิ่มชื่อวัตถุดิบเข้าสู่ string[] เพื่อใช้ในการคัดเลือกชื่อวัตถุดิบที่จะถูกแสดงใน ComboBox
     /// </summary>
-    /// <param name="typeID"></param>
-    /// <returns>an array of string that contain name of ingredient</returns>
+    /// <param name="typeID">ประเภทของวัตถุดิบ</param>
+    /// <returns>string[] ที่บรรจุชื่อของวัตถุดิบตามประเภทที่กำหนด</returns>
     public string[] AddIngredientNameToComboBoxCollection(int typeID)
     {
         int i;
-        string[] IngredientName;
         string query;
+        string[] IngredientName;
         List<string> list = new List<string>();
 
         if (typeID == 0)
@@ -407,14 +374,11 @@ public class DBConnector
             {
                 list.Add(dataReader.GetString("ingredient_name"));
             }
+
             dataReader.Close();
             CloseConnection();
             IngredientName = new string[list.Count];
-
-            for (i = 0; i < IngredientName.Length; i++)
-            {
-                IngredientName[i] = list[i];
-            }
+            list.CopyTo(IngredientName);
 
             return IngredientName;
         }
@@ -425,10 +389,235 @@ public class DBConnector
     }
 
     /// <summary>
-    /// Select ingredient of a recipe filter by name
+    /// ดึง ingredient_id จาก ingredient เพื่อส่งต่อไปปรับปริมาณที่กระทบกับกับเพิ่มของวัตถุดิบ
     /// </summary>
-    /// <param name="name">name of recipe</param>
-    /// <returns>ingredient of a recipe</returns>
+    /// <param name="name">ชื่อของวัตถุดิบ</param>
+    /// <returns>ไอดีของวัตถุดิบ</returns>
+    public int SelectOneIngredientID(string name)
+    {
+        int ID = 0;
+        string query = "SELECT ingredient_id FROM ingredient WHERE ingredient_name='" + name + "' LIMIT 1";
+
+        if (OpenConnection())
+        {
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            if (dataReader.Read())
+            {
+                ID = dataReader.GetInt32("ingredient_id");
+            }
+
+            dataReader.Close();
+            CloseConnection();
+            return ID;
+        }
+        return ID;
+    }
+
+    /// <summary>
+    /// ดึงชื่อของวัตถุดิบ คัดเลือดโดยไอดีของวัตถุดิบ เพื่อใช้แสดงในส่่วนของวัตถุดิบที่ขาด
+    /// </summary>
+    /// <param name="ID">ไอดีของวัตถุดิบ</param>
+    /// <returns>ชื่อของวัตถุดิบ</returns>
+    public string SelectIngredientName(int ID)
+    {
+        string IngredientName = "";
+        string query = "SELECT ingredient_name FROM ingredient WHERE ingredient_id='" + ID + "' LIMIT 1";
+
+        if (OpenConnection())
+        {
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                IngredientName = dataReader.GetString("ingredient_name");
+            }
+
+            dataReader.Close();
+            CloseConnection();
+        }
+        return IngredientName;
+    }
+
+    /// <summary>
+    /// วัตถุดิบ แต่ไม่สามารถแก้ไขชื่อได้
+    /// </summary>
+    /// <param name="type">ประเภทวัตถุดิบ</param>
+    /// <param name="name">ชื่อวัตถุดิบ</param>
+    /// <param name="initial">ปริมาณของวัตถุดิบ</param>
+    /// <param name="unit">หน่วยของวัตถุดิบ</param>
+    public bool UpdateIngredient(int type, string name, int initial, int unit)
+    {
+        try
+        {
+            string query = "UPDATE ingredient " +
+                        "SET type_id='" + type + "', ingredient_quantity='" + initial + "', unit_id='" + unit + "' " +
+                        "WHERE ingredient_name='" + name + "'";
+
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+
+                CloseConnection();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace, "Error number : " + ex.Number,
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// ลบวัตถุดิบออกจากฐานข้อมูล แต่จะไม่สามารถลบได้จนกว่าจะไม่มีสูตรที่ใช้วัตถุดิบนี้
+    /// </summary>
+    /// <param name="name">ชื่อวัตถุดิบ</param>
+    public bool DeleteIngredient(string name)
+    {
+        try
+        {
+            string query = "DELETE FROM ingredient WHERE ingredient_name='" + name + "'";
+
+            if (this.OpenConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (MySqlException ex)
+        {
+            if (ex.Number == 1451)
+            {
+                MessageBox.Show("กรุณาลบสูตรที่ใช้วัตถุดิบนี้ออกให้หมดก่อน", "ไม่สามารถลบวัตถุดิบนี้ได้", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+            else
+            {
+                MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace, "Error number : ", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+        }
+        finally
+        {
+            CloseConnection();
+        }
+    }
+
+    #endregion ingredient general methods
+
+    /// <summary>
+    /// เพิ่มสูตรลงสู่ฐานข้อมูล
+    /// </summary>
+    /// <param name="name">ชื่อสูตร</param>
+    /// <param name="type">ประเภทสูตร</param>
+    /// <param name="ingredient">รายชื่อวัตถุดิบและปริมาณที่ใช้สำหรับสูตรนี้</param>
+    /// <returns>จริงถ้าเพิ่มสำเร็จ ไม่จริงถ้าเพิ่มไม่สำเร็จ</returns>
+    public bool InsertRecipe(string name, int type, List<string>[] ingredient, int unitID)
+    {
+        try
+        {
+            int i;
+            string recipeID = "0";
+            string query = "SELECT recipe_id FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
+            List<string> ingredient_id = new List<string>();
+
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                if (dataReader.Read())
+                {
+                    recipeID = dataReader.GetString("recipe_id");
+                }
+
+                dataReader.Close();
+
+                if (!recipeID.Equals("0"))
+                {
+                    MessageBox.Show("มีสูตร" + name + "อยู่ในฐานข้อมูลแล้ว", "ไม่สามารถเพิ่มสูตรใหม่ได้", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return false;
+                }
+
+                // Get ingredient id specify by name
+                for (i = 0; i < ingredient[0].Count; i++)
+                {
+                    query = "SELECT ingredient_id FROM ingredient WHERE ingredient_name='" + ingredient[0][i] + "' LIMIT 1";
+                    cmd.CommandText = query;
+                    dataReader = cmd.ExecuteReader();
+
+                    if (dataReader.Read())
+                    {
+                        ingredient_id.Add(dataReader.GetString("ingredient_id"));
+                    }
+
+                    dataReader.Close();
+                }
+
+                // Insert name of food to recipe table
+                query = "INSERT INTO recipe (recipe_type_id, recipe_name, recipe_unit_id)" +
+                           "VALUES ('" + type + "', '" + name + "', '" + unitID + "')";
+                cmd.CommandText = query;
+                cmd.ExecuteNonQuery();
+
+                // Get recipe id after insert
+                query = "SELECT recipe_id FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
+                cmd.CommandText = query;
+                dataReader = cmd.ExecuteReader();
+
+                if (dataReader.Read())
+                {
+                    recipeID = dataReader.GetString("recipe_id");
+                }
+
+                dataReader.Close();
+
+                // Insert ingredient of recipe to 3rd relation table(recipe_ingredient)
+                for (i = 0; i < ingredient[0].Count; i++)
+                {
+                    query = "INSERT INTO recipe_ingredient (recipe_id, ingredient_id, quantity)" +
+                            "VALUES('" + recipeID + "', '" + ingredient_id[i] + "', '" + ingredient[1][i] + "')";
+                    cmd.CommandText = query;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            return true;
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace, "Error number : " + ex.Number,
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return false;
+        }
+        finally
+        {
+            CloseConnection();
+        }
+    }
+
+    /// <summary>
+    /// ดึงชื่อและปริมาณของวัตถุดิบที่สูตรที่ถูกส่งมาใช้
+    /// </summary>
+    /// <param name="name">ชื่อของสูตร</param>
+    /// <returns>ชื่อและปริมาณของวัตถุดิบที่ใช้</returns>
     public List<string>[] SelectIngredientOfRecipe(string name)
     {
         int ID = SelectRecipeID(name);
@@ -462,6 +651,11 @@ public class DBConnector
         }
     }
 
+    /// <summary>
+    /// ดึงรายละเอียดของสูตรร่วมถึงปริมาณที่ทำได้ขณะนั้นด้วย
+    /// </summary>
+    /// <param name="name">ชื่อสูตร</param>
+    /// <returns>ประเภทของสูตร, ปริมาณที่ทำได้และหน่วยของสูตร</returns>
     public List<string> SelectRecipeDetail(string name)
     {
         int ID = SelectRecipeID(name);
@@ -473,7 +667,7 @@ public class DBConnector
             MySqlCommand cmd = new MySqlCommand(query, connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
 
-            while (dataReader.Read())
+            if (dataReader.Read())
             {
                 list.Add(dataReader.GetString("recipe_type_id"));
                 list.Add(dataReader.GetString("quantity"));
@@ -490,36 +684,11 @@ public class DBConnector
         }
     }
 
-    public int SelectIngredientUnitID(string name)
-    {
-        string query = "SELECT unit_id FROM ingredient WHERE ingredient_name='" + name + "' LIMIT 1";
-        int id = 0;
-
-        if (OpenConnection())
-        {
-            MySqlCommand cmd = new MySqlCommand(query, connection);
-            MySqlDataReader dataReader = cmd.ExecuteReader();
-
-            while (dataReader.Read())
-            {
-                id = dataReader.GetInt32("unit_id");
-            }
-
-            dataReader.Close();
-            CloseConnection();
-            return id;
-        }
-        else
-        {
-            return id;
-        }
-    }
-
     /// <summary>
-    /// Select recipe that use specified ingredient
+    /// ดึงไอดีของสูตรทั้งหมดที่ใช้วัตถุดิบตามที่ถูกส่งมาให้
     /// </summary>
-    /// <param name="IngredientID">List of ingredient id</param>
-    /// <returns>List of recipe id</returns>
+    /// <param name="IngredientID">ลิสต์ของไอดีวัตถุดิบ</param>
+    /// <returns>ลิสต์ไอดีของสูตร</returns>
     public List<int> QualifyRelateRecipe(List<int> IngredientID)
     {
         List<int> List = new List<int>();
@@ -557,16 +726,16 @@ public class DBConnector
         }
         catch (MySqlException ex)
         {
-            MessageBox.Show(ex.Message);
+            MessageBox.Show(ex.Message + ex.StackTrace, "Error number : " + ex.Number, MessageBoxButtons.OK, MessageBoxIcon.Error);
             return List;
         }
     }
 
     /// <summary>
-    /// Select recipe that use specified ingredient
+    /// ดึงไอดีของสูตรทั้งหมดที่ใช้วัตถุดิบตามที่ถูกส่งมาให้
     /// </summary>
-    /// <param name="ID">ID of ingredient</param>
-    /// <returns>List of recipe id</returns>
+    /// <param name="ID">ไอดีของวัตถุดิบเป็นไอดีเดียวเท่านั้น</param>
+    /// <returns>ลิสต์ไอดีของสูตร</returns>
     public List<int> QualifyRelateRecipe(int ID)
     {
         List<int> List = new List<int>();
@@ -601,150 +770,12 @@ public class DBConnector
         }
     }
 
-    public int SelectOneIngredientID(string name)
-    {
-        int ID = 0;
-        string query = "SELECT ingredient_id FROM ingredient WHERE ingredient_name='" + name + "' LIMIT 1";
-
-        if (OpenConnection())
-        {
-            MySqlCommand cmd = new MySqlCommand(query, connection);
-            MySqlDataReader dataReader = cmd.ExecuteReader();
-
-            while (dataReader.Read())
-            {
-                ID = dataReader.GetInt32("ingredient_id");
-            }
-
-            dataReader.Close();
-            CloseConnection();
-            return ID;
-        }
-        return ID;
-    }
-
     /// <summary>
-    /// Update ingredient but can't edit name
+    /// แก้ไขวัตถุดิบของสูตรที่ถูกใช้ทั้งหมด โดยการลบวัตถุดิบทั้งหมดที่ใช้ออกก่อน หลังจากนั้นทำการเพิ่มวัตถุดิบและปริมาณที่ใช้ลงไปใหม่ทั้งหมด
     /// </summary>
-    /// <param name="type">Ingredient type</param>
-    /// <param name="name">Ingredient name</param>
-    /// <param name="initial">Ingredient initial quantity</param>
-    /// <param name="unit">Ingredient unit called</param>
-    public void Update(int type, string name, int initial, int unit)
-    {
-        string query = "UPDATE ingredient " +
-                        "SET type_id='" + type + "', ingredient_quantity='" + initial + "', unit_id='" + unit + "' " +
-                        "WHERE ingredient_name='" + name + "'";
-                        
-
-        //Open connection
-        if (OpenConnection())
-        {
-            // Create mysql command
-            MySqlCommand cmd = new MySqlCommand();
-            // Assign the query using CommandText
-            cmd.CommandText = query;
-            // Assign the connection using Connection
-            cmd.Connection = connection;
-
-            // Execute query
-            cmd.ExecuteNonQuery();
-
-            // Close connection
-            CloseConnection();
-        }
-    }
-
-    /// <summary>
-    /// Update recipe quantity, This method isn't process method
-    /// </summary>
-    /// <param name="name">name of recipe</param>
-    /// <param name="quantity">New quantity</param>
-    /// <returns>True if sucesses otherwise false</returns>
-    public bool UpdateDatabaseRecipeQuantity(string name, int quantity)
-    {
-        try
-        {
-            string query = "UPDATE recipe SET quantity='" + quantity + "' WHERE recipe_name='" + name + "'";
-            if (OpenConnection())
-            {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                cmd.ExecuteNonQuery();
-                CloseConnection();
-                return true;
-            }
-        }
-        catch (MySqlException ex)
-        {
-            MessageBox.Show(ex.Message + ex.StackTrace);
-            return false;
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// Update recipe quantity, This method isn't process method
-    /// </summary>
-    /// <param name="ID">ID of recipe</param>
-    /// <param name="quantity">New quantity</param>
-    /// <returns>True if sucesses otherwise false</returns>
-    public bool UpdateDatabaseRecipeQuantity(int ID, int quantity)
-    {
-        try
-        {
-            string query = "UPDATE recipe SET quantity='" + quantity + "' WHERE recipe_id='" + ID + "'";
-            if (OpenConnection())
-            {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                cmd.ExecuteNonQuery();
-                CloseConnection();
-                return true;
-            }
-        }
-        catch (MySqlException ex)
-        {
-            MessageBox.Show(ex.Message + ex.StackTrace);
-            return false;
-        }
-        return false;
-    }
-
-    public bool UpdateManyIngredientQuantity(List<int>[] NewQuantity)
-    {
-        int i;
-        string query;
-        try
-        {
-            if (OpenConnection())
-            {
-                MySqlCommand cmd = new MySqlCommand();
-                cmd.Connection = connection;
-                for (i = 0; i < NewQuantity[0].Count; i++)
-                {
-                    query = "UPDATE ingredient SET ingredient_quantity='" + NewQuantity[2][i] + 
-                            "' WHERE ingredient_id='" + NewQuantity[0][i] + "'";
-                    cmd.CommandText = query;
-                    cmd.ExecuteNonQuery();
-                }
-                CloseConnection();
-                return true;
-            }
-            return false;
-        }
-        catch (MySqlException ex)
-        {
-            MessageBox.Show(ex.Message);
-            return false;
-        }
-    }
-
-    /// <summary>
-    /// Edit ingredient of recipe by delete all of ingredient of recipe in recipe_ingredient and add
-    /// entire ingredient of recipe to recipe_ingredient again
-    /// </summary>
-    /// <param name="name"></param>
-    /// <param name="ingredient"></param>
-    /// <returns>true if sucesses otherwise false</returns>
+    /// <param name="name">ชื่อของสูตร</param>
+    /// <param name="ingredient">ลิสของชื่อวัตถุดิบและปริมาณที่ใช้</param>
+    /// <returns>จริงเมื่อแก้ไขสำเร็จ ไม่จริงเมื่อแก้ไขไม่สำเร็จ</returns>
     public bool EditIngredientOfRecipe(string name, List<string>[] ingredient)
     {
         try
@@ -760,7 +791,7 @@ public class DBConnector
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 MySqlDataReader dataReader = cmd.ExecuteReader();
 
-                while (dataReader.Read())
+                if (dataReader.Read())
                 {
                     recipeID = dataReader.GetString("recipe_id");
                 }
@@ -774,7 +805,7 @@ public class DBConnector
                     cmd.CommandText = query;
                     dataReader = cmd.ExecuteReader();
 
-                    while (dataReader.Read())
+                    if (dataReader.Read())
                     {
                         ingredient_id.Add(dataReader.GetString("ingredient_id"));
                     }
@@ -810,9 +841,11 @@ public class DBConnector
     }
 
     /// <summary>
-    /// Select recipe name and quantity without filter anything
+    /// ดึงชื่อของสูตรและปริมาณที่สามารถทำได้ คัดเลือดโดยประเภทและปริมาณที่สามารถทำได้
     /// </summary>
-    /// <returns>List of recipe name and quantity</returns>
+    /// <param name="typeID">ประเภทของสูตร</param>
+    /// <param name="quantity">ปริมาณที่ทำได้ของสูตร สามารถกำหนดได้แค่ ทำได้หรือไม่ได้เท่านั้น</param>
+    /// <returns>ลิสต์ของชื่อและปริมาณของสูตร</returns>
     public List<string>[] SelectRecipe(int typeID, int quantity)
     {
         string query;
@@ -838,6 +871,7 @@ public class DBConnector
                 query = "SELECT recipe_name, quantity, recipe_unit_id FROM recipe WHERE quantity = 0 AND recipe_type_id = '" + typeID + "'";
             }
         }
+
         List<string>[] list = new List<string>[3];
         list[0] = new List<string>();
         list[1] = new List<string>();
@@ -848,7 +882,7 @@ public class DBConnector
             MySqlCommand cmd = new MySqlCommand(query, connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
 
-            while(dataReader.Read())
+            while (dataReader.Read())
             {
                 list[0].Add(dataReader.GetString("recipe_name"));
                 list[1].Add(dataReader.GetString("quantity"));
@@ -865,94 +899,9 @@ public class DBConnector
     }
 
     /// <summary>
-    /// To count number of row in DB
+    /// ดึงปริมาณที่ใช้และปริมาณที่มีอยู่ของวัตถุดิบที่สูตรใช้
     /// </summary>
-    /// <returns>Number of row in DB</returns>
-    public int Count()
-    {
-        string query = "SELECT Count(*) FROM player_score";
-        int Count = -1;
-
-        //Open Connection
-        if (this.OpenConnection())
-        {
-            //Create Mysql Command
-            MySqlCommand cmd = new MySqlCommand(query, connection);
-
-            //ExecuteScalar will return one value
-            Count = int.Parse(cmd.ExecuteScalar() + "");
-
-            //close Connection
-            CloseConnection();
-
-            return Count;
-        }
-        else
-        {
-            return Count;
-        }
-    }
-
-    /// <summary>
-    /// Delete ingredient from database
-    /// </summary>
-    /// <param name="name">string name of ingredient</param>
-    public void DeleteIngredient(string name)
-    {
-        try
-        {
-            string query = "DELETE FROM ingredient WHERE ingredient_name='" + name + "'";
-
-            if (this.OpenConnection())
-            {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                cmd.ExecuteNonQuery();
-            }
-        }
-        catch(MySqlException ex)
-        {
-            if (ex.Number == 1451)
-            {
-                MessageBox.Show("กรุณาลบสูตรที่ใช้วัตถุดิบนี้ออกให้หมดก่อน");
-            }
-            else
-            {
-                MessageBox.Show(ex.Message, "พบข้อผิดพลาด");
-            }
-        }
-        finally
-        {
-            CloseConnection();
-        }
-    }
-
-    /// <summary>
-    /// Delete recipe from recipe table
-    /// </summary>
-    /// <param name="name">name of recipe</param>
-    public void DeleteRecipe(string name)
-    {
-        try
-        {
-            string query = "DELETE FROM recipe WHERE recipe_name='" + name + "'";
-
-            if (OpenConnection())
-            {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                cmd.ExecuteNonQuery();
-                CloseConnection();
-            }
-        }
-        catch (MySqlException ex)
-        {
-            MessageBox.Show(ex.Message, "พบข้อผิดพลาดในการลบ", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-    }
-
-    /// <summary>
-    /// Get require and current ingredient quantity of a recipe
-    /// </summary>
-    /// <param name="name">name of recipe</param>
+    /// <param name="name">ชื่อของสูตร</param>
     /// <returns>index 0 = ingredient_id, 1 = require, 2 = current</returns>
     public List<int>[] SelectCurrentRequireIngredient(string name)
     {
@@ -981,9 +930,9 @@ public class DBConnector
     }
 
     /// <summary>
-    /// Get require and current ingredient quantity of a recipe
+    /// ดึงปริมาณที่ใช้และปริมาณที่มีอยู่ของวัตถุดิบที่สูตรใช้
     /// </summary>
-    /// <param name="ID">ID of recipe</param>
+    /// <param name="ID">ไอดีของสูตร</param>
     /// <returns>index 0 = ingredient_id, 1 = require, 2 = current</returns>
     public List<int>[] SelectCurrentRequireIngredient(int ID)
     {
@@ -1010,55 +959,11 @@ public class DBConnector
         return RawData;
     }
 
-    public string SelectIngredientName(int ID)
-    {
-        string IngredientName = null;
-        string query = "SELECT ingredient_name FROM ingredient WHERE ingredient_id='" + ID + "' LIMIT 1";
-
-        if (OpenConnection())
-        {
-            MySqlCommand cmd = new MySqlCommand(query, connection);
-            MySqlDataReader dataReader = cmd.ExecuteReader();
-
-            while (dataReader.Read())
-            {
-                IngredientName = dataReader.GetString("ingredient_name");
-            }
-
-            dataReader.Close();
-            CloseConnection();
-        }
-        return IngredientName;
-    }
-
     /// <summary>
-    /// Select a recipe id
+    /// ดึงค่าปริมาณที่ทำได้ของสูตร คัดเลือดโดยชื่อ
     /// </summary>
-    /// <param name="name">recipe id</param>
-    /// <returns>recipe_id from recipe table</returns>
-    private int SelectRecipeID(string name)
-    {
-        int id = 0;
-        string query = "SELECT recipe_id, quantity FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
-        if (OpenConnection() == true)
-        {
-            MySqlCommand cmd = new MySqlCommand(query, connection);
-            MySqlDataReader dataReader = cmd.ExecuteReader();
-            while (dataReader.Read())
-            {
-                id = dataReader.GetInt32("recipe_id");
-            }
-            dataReader.Close();
-            CloseConnection();
-        }
-        return id;
-    }
-
-    /// <summary>
-    /// Get current quantity of recipe from recipe table by name
-    /// </summary>
-    /// <param name="name">name of recipe</param>
-    /// <returns>a current quantity</returns>
+    /// <param name="name">ชื่อของสูตร</param>
+    /// <returns>ปริมาณที่ทำได้ของสูตร</returns>
     public int GetCurrentQuantity(string name)
     {
         int quantity = 0;
@@ -1076,9 +981,133 @@ public class DBConnector
         return quantity;
     }
 
-    public bool SelectSpecifiedRecipe(string name)
+    /// <summary>
+    /// อัพเดทค่าปริมาณที่ทำได้ของสูตร
+    /// </summary>
+    /// <param name="name">ชื่อของสูตร</param>
+    /// <param name="quantity">ปริมาณที่ทำได้</param>
+    /// <returns>จริงเมื่ออัพเดทสำเร็จ ไม่จริงเมื่อแก้ไขไม่สำเร็จ</returns>
+    public bool UpdateDatabaseRecipeQuantity(string name, int quantity)
     {
-        return true;
+        try
+        {
+            string query = "UPDATE recipe SET quantity='" + quantity + "' WHERE recipe_name='" + name + "'";
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+                CloseConnection();
+                return true;
+            }
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace, "Error number : " + ex.Number, 
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            return false;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// อัพเดทค่าปริมาณที่ทำได้ของสูตร
+    /// </summary>
+    /// <param name="ID">ไอดีของสูตร</param>
+    /// <param name="quantity">ปริมาณของสูตร</param>
+    /// <returns>จริงเมื่ออัพเดทสำเร็จ ไม่จริงเมื่ออัพเดทไม่สำเร็จ</returns>
+    public bool UpdateDatabaseRecipeQuantity(int ID, int quantity)
+    {
+        try
+        {
+            string query = "UPDATE recipe SET quantity='" + quantity + "' WHERE recipe_id='" + ID + "'";
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+                CloseConnection();
+
+                return true;
+            }
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace, "Error number : " + ex.Number,
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            return false;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// อัพเดทปริมาณของวัตถุดิบที่มีอยู่ตามลิสต์ของไอดีที่ถูกส่งมา
+    /// </summary>
+    /// <param name="IngredientList">ปริมาณและไอดีของวัตถุดิบที่จะอัพเดท</param>
+    /// <returns>จริงเมื่ออัพเดทสำเร็จ ไม่จริงเมื่ออัพเดทไม่สำเร็จ</returns>
+    public bool UpdateManyIngredientQuantity(List<int>[] IngredientList)
+    {
+        int i;
+        string query;
+        try
+        {
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = connection;
+                for (i = 0; i < IngredientList[0].Count; i++)
+                {
+                    query = "UPDATE ingredient SET ingredient_quantity='" + IngredientList[2][i] +
+                            "' WHERE ingredient_id='" + IngredientList[0][i] + "'";
+                    cmd.CommandText = query;
+                    cmd.ExecuteNonQuery();
+                }
+                CloseConnection();
+
+                return true;
+            }
+            return false;
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace, "Error number : " + ex.Number,
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// ลบสูตรอาหารตามชื่อที่ถูกส่งมา
+    /// </summary>
+    /// <param name="name">ชื่อของสูตร</param>
+    /// <returns>จริงเมื่อลบสำเร็จ ไม่จริงเมื่อลบไม่สำเร็จ</returns>
+    public bool DeleteRecipe(string name)
+    {
+        try
+        {
+            string query = "DELETE FROM recipe WHERE recipe_name='" + name + "'";
+
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+                CloseConnection();
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace, "พบข้อผิดพลาดในการลบ", 
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            return false;
+        }
     }
 }
 
