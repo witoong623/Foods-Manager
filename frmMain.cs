@@ -540,12 +540,20 @@ public class frmMain : Form
             frmIngredient myEdit = new frmIngredient(lstvMaterialsOutOfStock.SelectedItems[0].Text);
             myEdit.ShowDialog();
 
-            if (myEdit.PreviousTask == Task.Edit)
+            if (myEdit.PreviousTask == Task.Edit || myEdit.PreviousTask == Task.Delete)
+            {
+                IngredientUpdate();
+            }
+            else if (myEdit.PreviousTask == Task.Increase)
             {
                 RecipeUpdateQuantity = new AdjustmentIngredient();
                 RecipeUpdateQuantity.UpdateOneRalateIngredient(myDB.SelectOneIngredientID(myEdit.CurrentName));
                 IngredientUpdate();
                 RecipeUpdate();
+            }
+            else
+            {
+                return;
             }
         }
     }
