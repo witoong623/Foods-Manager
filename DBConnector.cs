@@ -259,22 +259,26 @@ public class DBConnector
         {
             if (typeID == 0)
             {
-                query = "SELECT ingredient_name, ingredient_quantity, unit_id FROM ingredient WHERE ingredient_quantity > 0";
+                query = "SELECT ingredient_name, ingredient_quantity, unit_id " +
+                        "FROM ingredient WHERE ingredient_quantity > 0 ORDER BY ingredient_name";
             }
             else
             {
-                query = "SELECT ingredient_name, ingredient_quantity, unit_id FROM ingredient WHERE type_id='" + typeID + "' AND ingredient_quantity > 0";
+                query = "SELECT ingredient_name, ingredient_quantity, unit_id " +
+                        "FROM ingredient WHERE type_id='" + typeID + "' AND ingredient_quantity > 0 ORDER BY ingredient_name";
             }
         }
         else
         {
             if (typeID == 0)
             {
-                query = "SELECT ingredient_name, ingredient_quantity, unit_id FROM ingredient WHERE ingredient_quantity = 0";
+                query = "SELECT ingredient_name, ingredient_quantity, unit_id " +
+                        "FROM ingredient WHERE ingredient_quantity = 0 ORDER BY ingredient_name";
             }
             else
             {
-                query = "SELECT ingredient_name, ingredient_quantity, unit_id FROM ingredient WHERE type_id='" + typeID + "' AND ingredient_quantity = 0";
+                query = "SELECT ingredient_name, ingredient_quantity, unit_id " +
+                        "FROM ingredient WHERE type_id='" + typeID + "' AND ingredient_quantity = 0 ORDER BY ingredient_name";
             }
         }
 
@@ -315,7 +319,7 @@ public class DBConnector
         AutoCompleteStringCollection autoCom = new AutoCompleteStringCollection();
         try
         {
-            string query = "SELECT ingredient_name FROM ingredient";
+            string query = "SELECT ingredient_name FROM ingredient ORDER BY ingredient_name";
             
             if (OpenConnection())
             {
@@ -357,11 +361,11 @@ public class DBConnector
 
         if (typeID == 0)
         {
-            query = "SELECT ingredient_name FROM ingredient";
+            query = "SELECT ingredient_name FROM ingredient ORDER BY ingredient_name";
         }
         else
         {
-            query = "SELECT ingredient_name FROM ingredient WHERE type_id = '" + typeID + "'";
+            query = "SELECT ingredient_name FROM ingredient WHERE type_id = '" + typeID + "' ORDER BY ingredient_name";
         }
 
         if (OpenConnection())
@@ -613,7 +617,7 @@ public class DBConnector
     }
 
     /// <summary>
-    /// ดึงชื่อและปริมาณของวัตถุดิบที่สูตรที่ถูกส่งมาใช้
+    /// ดึงชื่อและปริมาณของวัตถุดิบที่สูตรใช้
     /// </summary>
     /// <param name="name">ชื่อของสูตร</param>
     /// <returns>ชื่อและปริมาณของวัตถุดิบที่ใช้</returns>
@@ -852,22 +856,22 @@ public class DBConnector
         {
             if (typeID == 0)
             {
-                query = "SELECT recipe_name, quantity, recipe_unit_id FROM recipe WHERE quantity > 0";
+                query = "SELECT recipe_name, quantity, recipe_unit_id FROM recipe WHERE quantity > 0 ORDER BY recipe_name";
             }
             else
             {
-                query = "SELECT recipe_name, quantity, recipe_unit_id FROM recipe WHERE quantity > 0 AND recipe_type_id = '" + typeID + "'";
+                query = "SELECT recipe_name, quantity, recipe_unit_id FROM recipe WHERE quantity > 0 AND recipe_type_id = '" + typeID + "' ORDER BY recipe_name";
             }
         }
         else
         {
             if (typeID == 0)
             {
-                query = "SELECT recipe_name, quantity, recipe_unit_id FROM recipe WHERE quantity = 0";
+                query = "SELECT recipe_name, quantity, recipe_unit_id FROM recipe WHERE quantity = 0 ORDER BY recipe_name";
             }
             else
             {
-                query = "SELECT recipe_name, quantity, recipe_unit_id FROM recipe WHERE quantity = 0 AND recipe_type_id = '" + typeID + "'";
+                query = "SELECT recipe_name, quantity, recipe_unit_id FROM recipe WHERE quantity = 0 AND recipe_type_id = '" + typeID + "' ORDER BY recipe_name";
             }
         }
 
