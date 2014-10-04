@@ -189,6 +189,7 @@ public class AdjustmentIngredient
     public string GetNotEnoughIngredient(string RecipeName)
     {
         int processQuantity;
+        int lack;
         string NotEnoughIngredient = null;
         List<int>[] IngredientQuantity = myDB.SelectCurrentRequireIngredient(RecipeName);
 
@@ -197,7 +198,8 @@ public class AdjustmentIngredient
             processQuantity = IngredientQuantity[2][i] - IngredientQuantity[1][i];
             if (processQuantity < 0)
             {
-                NotEnoughIngredient += myDB.SelectIngredientName(IngredientQuantity[0][i]);
+                lack = IngredientQuantity[1][i] - IngredientQuantity[2][i];
+                NotEnoughIngredient += myDB.SelectIngredientName(IngredientQuantity[0][i]) + " " + lack + " ";
             }
         }
 
