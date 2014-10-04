@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
+/// <summary>
+/// คลาสสำหรับใช้ปรับจำนวนอาหารที่สามารถทำได้
+/// </summary>
 public class AdjustmentIngredient
 {
     private int madeQuantity = 0;
@@ -15,18 +18,32 @@ public class AdjustmentIngredient
         myDB = new DBConnector();
     }
     /// <summary>
-    /// Initializes a new instance of AdjustmentIngredient with recipe's name
+    /// สร้างคลาสขึ้นมาสำหรับปรับปริมาณของสูตร
     /// </summary>
-    /// <param name="RecipeName">a name of recipe</param>
+    /// <param name="RecipeName">ชื่อของสูตร</param>
     public AdjustmentIngredient(string RecipeName) : this()
     {
         recipeName = RecipeName;
     }
 
+    /// <summary>
+    /// สร้างคลาสขึ้นมาสำหรับปรับปริมาณของสูตร ร่วมถึงสูตรอื่นๆ ที่ใช้วัตถุดิบร่วมกัน
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="quantity"></param>
     public AdjustmentIngredient(string name, int quantity) : this()
     {
         recipeName = name;
         madeQuantity = quantity;
+    }
+
+    /// <summary>
+    /// สร้างคลาสขึ้นมาสำหรับปรับปริมาณของสูตรที่ถูกส่งมาให้มากกว่า 1 สูตร
+    /// </summary>
+    /// <param name="ListOfName">List of recipe's name</param>
+    public AdjustmentIngredient(List<string> ListOfName)
+    {
+        ListName = ListOfName;
     }
 
     public int MadeQuantity
@@ -38,18 +55,9 @@ public class AdjustmentIngredient
     }
 
     /// <summary>
-    /// Initializes a new instance of AdjustmentIngredient with list of recipe's name
+    /// ปรับปริมาณที่ทำได้ของสูตร โดยใช้ชื่อซึ่งเป็น property ของคลาส
     /// </summary>
-    /// <param name="ListOfName">List of recipe's name</param>
-    public AdjustmentIngredient(List<string> ListOfName)
-    {
-        ListName = ListOfName;
-    }
-
-    /// <summary>
-    /// Adjust quantity of recipe
-    /// </summary>
-    /// <returns>True if sucesses otherwise false</returns>
+    /// <returns>จริงเมื่อปรับสำเร็จ ไม่จริงเมื่อปรับไม่สำเร็จ</returns>
     public bool UpdateRecipeQuantity()
     {
         int CurrentQuantity;
@@ -79,10 +87,10 @@ public class AdjustmentIngredient
     }
 
     /// <summary>
-    /// Adjust quantity of recipe
+    /// ปรับปริมาณที่ทำได้ของสูตรตามไอดีของสูตรที่ถูกส่งมา
     /// </summary>
-    /// <param name="ID">ID of recipe</param>
-    /// <returns>True if sucesses otherwise false</returns>
+    /// <param name="ID">ไอดีของสูตรที่ต้องการจะปรับ</param>
+    /// <returns>จริงเมื่อปรับสำเร็จ ไม่จริงเมื่อปรับไม่สำเร็จ</returns>
     public bool UpdateRecipeQuantity(int ID)
     {
         int CurrentQuantity;
@@ -112,11 +120,9 @@ public class AdjustmentIngredient
     }
 
     /// <summary>
-    /// Update ingredient quantity that is made
+    /// ปรับปริมาณของวัตถุดิบที่ถูกใช้ในการทำ ใช้ชื่อของสูตรซึ่งเป็น property ของคลาส
     /// </summary>
-    /// <param name="name">name of recipe</param>
-    /// <param name="quantity">quantity that is made</param>
-    /// <returns>true if sucesses otherwise false</returns>
+    /// <returns>จริงเมื่อปรับสำเร็จ ไม่จริงเมื่อปรับไม่สำเร็จ</returns>
     public bool UpdateManyIngredient()
     {
         int i;
@@ -140,10 +146,10 @@ public class AdjustmentIngredient
     }
 
     /// <summary>
-    /// Prepare List of id by qualify relate recipe with ingredient that use in another recipe
+    /// ถึงไอดีของสูตรที่ใช้วัตถุดิบตามลิสต์ที่ถูกส่งมา
     /// </summary>
-    /// <param name="ID">List of ingredient ID</param>
-    /// <returns></returns>
+    /// <param name="ID">ลิสต์ของไอดีวัตถุดิบ</param>
+    /// <returns>ไอดีของสูตรที่จะต้องถูกปรับ</returns>
     private List<int> PrepareUpdateRelateRecipe(List<int> ListOfIngredientID)
     {
         List<int> ListOfRecipe = myDB.QualifyRelateRecipe(ListOfIngredientID);
@@ -151,6 +157,10 @@ public class AdjustmentIngredient
         return RelateList;
     }
 
+    /// <summary>
+    /// ใช้สำหรับดึงไอดีของสูตรที่ต้องปรับ ตามไอดีของวัตถุดิบที่ถูกเพิ่ม
+    /// </summary>
+    /// <param name="IngredientID">ไอดีของวัตถุดิบที่ถูกเพิ่ม</param>
     public void UpdateOneRalateIngredient(int IngredientID)
     {
         List<int> RelateList = myDB.QualifyRelateRecipe(IngredientID);
@@ -158,10 +168,10 @@ public class AdjustmentIngredient
     }
 
     /// <summary>
-    /// Update ingredient relate to another recipe
+    /// Recursion method สำหรับปรับปริมาณที่ทำได้ของสูตรตามลิสต์ที่ถูกส่งมาให้
     /// </summary>
-    /// <param name="ListOfRelateRecipe"></param>
-    /// <param name="FirstIndex"></param>
+    /// <param name="ListOfRelateRecipe">ไอดีของสูตรที่ต้องการจะปรับ</param>
+    /// <param name="FirstIndex">Index ตัวแรกของลิสต์ ต้องเริ่มที่ 0 เสมอ</param>
     private void UpdateRelateRecipe(List<int> ListOfRelateRecipe, int FirstIndex)
     {
         if (FirstIndex < ListOfRelateRecipe.Count)
@@ -171,6 +181,11 @@ public class AdjustmentIngredient
         }
     }
 
+    /// <summary>
+    /// ดึงวัตถุดิบที่ขาดสำเร็จทำอาหารตามสูตรให้ได้อย่างน้อย 1 หน่วย
+    /// </summary>
+    /// <param name="RecipeName">ชื่อของสูตร</param>
+    /// <returns>ชื่อของวัตถุดิบที่ขาด</returns>
     public string GetNotEnoughIngredient(string RecipeName)
     {
         int processQuantity;
