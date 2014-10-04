@@ -29,7 +29,7 @@ public class frmIngredient : Form
     private DBConnector myDB = new DBConnector();
     private RadioButton rdbGrain;
 
-    private Task previousTask;
+    private Task previousTask = Task.None;
     private int currentQuantity;
     private string currentName;
 

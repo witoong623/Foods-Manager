@@ -49,7 +49,7 @@ public class frmRecipe : Form
     private int MakeQuantity;
     private int CanMakeQuantity;
     private int CurrentSelectedIndex = -1;
-    private Task previousTask;
+    private Task previousTask = Task.None;
     private string currentName = "";
 
     #region windows code
