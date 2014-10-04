@@ -4,20 +4,26 @@ using System.IO;
 
 namespace FoodsManagerExtension
 {
-    // public enum IngredientType { Flavoring = 1, Meat, Vegetable, Fruit };
-    // public enum IngredientUnit { Fong = 10, Gram, Ton, Hua, Luk, Mud, Greb };
-    public enum Task { None, Add, Edit, Delete, Made, Increase };
-    public enum Stock { InStock, OutOfStock };
     /// <summary>
-    /// This class use to collect all extension method
+    /// ใช้แสดงงานที่ทำภายในฟอร์มย่อย
+    /// </summary>
+    public enum Task { None, Add, Edit, Delete, Made, Increase };
+
+    /// <summary>
+    /// ใช้แสดงถึงปริมาณที่มีอยู่
+    /// </summary>
+    public enum Stock { InStock, OutOfStock };
+
+    /// <summary>
+    /// ใช้สำหรับเก็บ extension methods
     /// </summary>
     static class Convert
     {
         /// <summary>
-        /// Convert int unit to string 
+        /// เปลี่ยนไอดีของหน่วยวัตถุดิบเป็นตัวหนังสือ
         /// </summary>
-        /// <param name="unit">The number that indicate unit string</param>
-        /// <returns>Unit name in string format</returns>
+        /// <param name="unit">ไอดีของหน่วยวัตถุดิบ</param>
+        /// <returns>หน่วยของวัตถุดิบเป็นตัวอักษร</returns>
         public static string ToIngredientUnitString(this int unit)
         {
             switch (unit)
@@ -41,6 +47,11 @@ namespace FoodsManagerExtension
             }
         }
 
+        /// <summary>
+        /// เปลี่ยนไอดีของหน่วยอาหารเป็นตัวหนักสือ
+        /// </summary>
+        /// <param name="unit">ไอดีของหน่วยอาหาร</param>
+        /// <returns>หน่วยอาหารเป็นตัวหนังสือ</returns>
         public static string ToRecipeUnitString(this int unit)
         {
             switch (unit)
