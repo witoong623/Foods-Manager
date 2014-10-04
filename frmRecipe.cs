@@ -48,9 +48,12 @@ public class frmRecipe : Form
 
     private int MakeQuantity;
     private int CanMakeQuantity;
+    private int UnitID;
+    private int TypeID;
     private int CurrentSelectedIndex = -1;
-    private Task previousTask = Task.None;
     private string currentName = "";
+    private Task previousTask = Task.None;
+    private List<string>[] currentIngredient;
 
     #region windows code
     private void InitializeComponent()
@@ -581,13 +584,49 @@ public class frmRecipe : Form
                 ingredient[1].Add(subitem.SubItems[1].Text);
             }
 
-
-            if (myDB.EditIngredientOfRecipe(txtFoodName.Text, ingredient))
+            // Case edit detail but don't edit ingredient
+            if ((CheckedToTypeID() != TypeID) || (CheckedToUnitID() != UnitID) && !IsIngredientChange(ingredient))
             {
-                previousTask = Task.Edit;
-                currentName = txtFoodName.Text;
-                MessageBox.Show("แก้ไขสูตรเรียบร้อย", "แก้ไขสูตรเรียบร้อย", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                Close();
+                if (myDB.UpdateRecipeDetail(txtFoodName.Text, CheckedToTypeID(), CheckedToUnitID()))
+                {
+                    previousTask = Task.Edit;
+                    currentName = txtFoodName.Text;
+                    MessageBox.Show("แก้ไขสูตรเรียบร้อย", "แก้ไขสูตรเรียบร้อย", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Close();
+                }
+                else
+                {
+                    return;
+                }
+            }
+            // Case edit ingredient but don't edit detail
+            else if ((CheckedToTypeID() == TypeID) && (CheckedToUnitID() == UnitID) && IsIngredientChange(ingredient))
+            {
+                if (myDB.EditIngredientOfRecipe(txtFoodName.Text, ingredient))
+                {
+                    previousTask = Task.Edit;
+                    currentName = txtFoodName.Text;
+                    MessageBox.Show("แก้ไขสูตรเรียบร้อย", "แก้ไขสูตรเรียบร้อย", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Close();
+                }
+            }
+            // Case edit both
+            else
+            {
+                if (myDB.UpdateRecipeDetail(txtFoodName.Text, CheckedToTypeID(), CheckedToUnitID()))
+                {
+                    if(myDB.EditIngredientOfRecipe(txtFoodName.Text, ingredient))
+                    {
+                        previousTask = Task.Edit;
+                        currentName = txtFoodName.Text;
+                        MessageBox.Show("แก้ไขสูตรเรียบร้อย", "แก้ไขสูตรเรียบร้อย", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Close();
+                    }
+                }
+                else
+                {
+                    return;
+                }
             }
         }
     }
@@ -877,11 +916,16 @@ public class frmRecipe : Form
         int i;
         List<string> RecipeDetail = myDB.SelectRecipeDetail(name);
         List<string>[] IngredientOfRecipe = myDB.SelectIngredientOfRecipe(name);
+        currentIngredient = IngredientOfRecipe;
 
+        TypeID = int.Parse(RecipeDetail[0]);
         CanMakeQuantity = int.Parse(RecipeDetail[1]);
+        UnitID = int.Parse(RecipeDetail[2]);
+        
         txtFoodName.Text = name;
-        lblUnitString.Text = int.Parse(RecipeDetail[2]).ToRecipeUnitString();
-        UnitIDToCheck(int.Parse(RecipeDetail[2]));
+        lblUnitString.Text = UnitID.ToRecipeUnitString();
+        UnitIDToCheck(UnitID);
+        TypeIdToCheck(TypeID);
         lblCurrentQuantityCanMake.Text += " " + RecipeDetail[1] + " " + lblUnitString.Text;
         rdb1ea.Text += lblUnitString.Text;
         rdb2ea.Text += lblUnitString.Text;
@@ -901,15 +945,36 @@ public class frmRecipe : Form
         }
 
         txtFoodName.ReadOnly = true;
-        gbRecipeUnit.Enabled = false;
-        if (rdbMeatDish.Checked)
+    }
+
+    /// <summary>
+    /// ตรวจสอบว่ามีการเปลี่ยนแปลงวัตถุดิบของสูตรหรือไม่
+    /// </summary>
+    /// <param name="NewIngredient">เซตของวัตถุดิบขณะแก้ไขวัตถุดิบ</param>
+    /// <returns>จริงเมื่อมีการเปลี่ยนแปลง ไม่จริงเมื่อไม่มีการเปลี่ยนแปลง</returns>
+    private bool IsIngredientChange(List<string>[] NewIngredient)
+    {
+        if (NewIngredient[0].Count != currentIngredient[0].Count)
         {
-            rdbDessert.Enabled = false;
+            return true;
         }
-        else
+
+        for (var i = 0; i < NewIngredient[0].Count; i++)
         {
-            rdbMeatDish.Enabled = false;
+            if (NewIngredient[0][i].Equals(currentIngredient[0][i]))
+            {
+                if (!NewIngredient[1][i].Equals(currentIngredient[1][i]))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return true;
+            }
         }
+
+        return false;
     }
 
     /// <summary>

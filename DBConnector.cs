@@ -1009,6 +1009,10 @@ public class DBConnector
 
             return false;
         }
+        finally
+        {
+            CloseConnection();
+        }
     }
 
     /// <summary>
