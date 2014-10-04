@@ -6,7 +6,7 @@ namespace FoodsManagerExtension
 {
     // public enum IngredientType { Flavoring = 1, Meat, Vegetable, Fruit };
     // public enum IngredientUnit { Fong = 10, Gram, Ton, Hua, Luk, Mud, Greb };
-    public enum Task { None, Add, Edit, Delete, Made };
+    public enum Task { None, Add, Edit, Delete, Made, Increase };
     public enum Stock { InStock, OutOfStock };
     /// <summary>
     /// This class use to collect all extension method

@@ -539,23 +539,55 @@ public class frmIngredient : Form
     {
         int quantity;
         quantity = int.Parse(txtQuantity.Text);
+
+        // Can't descrease quantity
         if (quantity < currentQuantity)
         {
             MessageBox.Show("คูณไม่สามารถปรับลดปริมาณของวัตถุดิบ\nให้ต่ำกว่าเดิมได้", "ข้อมูลผิดพลาด", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return;
         }
 
+        // Delete case
         if (cbDelete.Checked)
         {
-            myDB.DeleteIngredient(txtIngredientName.Text);
+            if (myDB.DeleteIngredient(txtIngredientName.Text))
+            {
+                previousTask = Task.Delete;
+                Close();
+            }
+            else
+            {
+                return;
+            }
+            
         }
+        // Edit but don't increase case
+        else if (quantity == currentQuantity)
+        {
+            if (myDB.UpdateIngredient(CheckedToTypeID(), txtIngredientName.Text, quantity, UnitSelected()))
+            {
+                previousTask = Task.Edit;
+                Close();
+            }
+            else
+            {
+                return;
+            }
+        }
+            // Increase(maybe edit other detail) case
         else
         {
-            myDB.UpdateIngredient(CheckedToTypeID(), txtIngredientName.Text, quantity, UnitSelected());
-            currentName = txtIngredientName.Text;
-            previousTask = Task.Edit;
+            if (myDB.UpdateIngredient(CheckedToTypeID(), txtIngredientName.Text, quantity, UnitSelected()))
+            {
+                currentName = txtIngredientName.Text;
+                previousTask = Task.Edit;
+                Close();
+            }
+            else
+            {
+                return;
+            }
         }
-        Close();
     }
 
     private void btnClose_Click(object sender, EventArgs e)
