@@ -6,6 +6,9 @@ using System.Diagnostics;
 using System.IO;
 using FoodsManagerExtension;
 
+/// <summary>
+/// ฟอร์มหลักสำหรับแสดงสูตรอาหารและวัตถุดิบพร้อมทั้งจำนวน
+/// </summary>
 public class frmMain : Form
 {
     private const int INSTOCK = 1;
@@ -409,7 +412,7 @@ public class frmMain : Form
     #endregion windows component
 
     /// <summary>
-    /// Construct windows component and check if program ready to use
+    /// สร้างฟอร์มแสดงผลหลักและตรวจสอบการเชื่อมต่อฐานข้อมูล
     /// </summary>
     public frmMain()
     {
@@ -582,9 +585,9 @@ public class frmMain : Form
     #endregion event handler method
 
     /// <summary>
-    /// Get connection status by call ConnectDB.ConnectStstus and update status bar
+    /// ตรวจสอบว่าสามารถเชื่อมต่อกับฐานข้อมูลได้หรือไม่
     /// </summary>
-    /// <returns>True if connected otherwise false</returns>
+    /// <returns>จริงเมื่อสามารถเชื่อมต่อได้ ไม่จริงเมื่อไม่สามารถเชื่อมต่อได้</returns>
     private bool DBConnectStatus()
     {
         myDB = new DBConnector();
@@ -608,6 +611,9 @@ public class frmMain : Form
         }
     }
 
+    /// <summary>
+    /// ปิดฟอร์มบางส่วนเพื่อไม่ให้ใช้งานได้
+    /// </summary>
     private void DisableForm()
     {
         gbFoodsCanMake.Enabled = false;
@@ -616,6 +622,9 @@ public class frmMain : Form
         gbMaterialsOut.Enabled = false;
     }
 
+    /// <summary>
+    /// เปิดฟอร์มเพื่อให้สามารถใช้งานได้
+    /// </summary>
     private void EnableForm()
     {
         gbFoodsCanMake.Enabled = true;
@@ -631,7 +640,7 @@ public class frmMain : Form
     }
 
     /// <summary>
-    /// (โหลดทั้งสองกรณีของสูตรที่แสดงผลใน ListView)Reload both case of recipe to display in recipe ListView
+    /// อัพเดทข้อมูลสูตรอาหารและวัตถุดิบ
     /// </summary>
     private void RecipeUpdate()
     {
@@ -639,6 +648,9 @@ public class frmMain : Form
         RecipeOutOfStockUpdate();
     }
 
+    /// <summary>
+    /// อัพเดทข้อมูลวัตถุดิบที่มีอยู่
+    /// </summary>
     private void IngredientInStockUpdate()
     {
         int i;
@@ -663,6 +675,9 @@ public class frmMain : Form
         }
     }
 
+    /// <summary>
+    /// อัพเดทข้อมูลวัตถุดิบที่หมด
+    /// </summary>
     private void IngredientOutOfStockUpdate()
     {
         int i;
@@ -684,6 +699,9 @@ public class frmMain : Form
         }
     }
 
+    /// <summary>
+    /// อัพเดทสูตรอาหารที่สามารถทำได้
+    /// </summary>
     private void RecipeInStockUpdate()
     {
         int i;
@@ -701,6 +719,9 @@ public class frmMain : Form
 
     }
 
+    /// <summary>
+    /// อัพเดทสูตรอาหารที่ไม่สามารถทำได้
+    /// </summary>
     private void RecipeOutOfStockUpdate()
     {
         int i;
