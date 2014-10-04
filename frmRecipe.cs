@@ -369,12 +369,19 @@ public class frmRecipe : Form
     }
     #endregion windows code
 
+    /// <summary>
+    /// ใช้สำหรับสร้างฟอร์มและโหลดข้อมูลใส่ ComboBox
+    /// </summary>
     public frmRecipe()
     {
         InitializeComponent();
         AutoCompleteSource();
     }
-
+    
+    /// <summary>
+    /// ใช้สำหรับสร้างฟอร์มที่ถูกต้องกับการทำงานและโหลดข้อมูลขึ้นมาแสดง
+    /// </summary>
+    /// <param name="call"></param>
     public frmRecipe(string call) : this()
     {
         cbIngredientType.SelectedIndex = 0;
@@ -416,7 +423,7 @@ public class frmRecipe : Form
     #region event handler
 
     /// <summary>
-    /// Add a new recipe to recipe and ingredient of recipe to recipe_ingredient table
+    /// อีเว้นท์สำหรับเพิ่มสูตรอาหาร โดยตรวจสอบเงื่อนไขต่างๆ ก่อน
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -456,7 +463,7 @@ public class frmRecipe : Form
     }
 
     /// <summary>
-    /// Add item Collection to ingredient name Combobox
+    /// อีเว้นสำหรับเปลี่ยนค่าภายใน ComboBox ตามประเภทที่ถูกเลือก
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -470,7 +477,7 @@ public class frmRecipe : Form
     }
 
     /// <summary>
-    /// Add ingredient to List View
+    /// อีเว้นสำหรับเพิ่มวัตถุดิบที่ต้องการเข้าไปในสูตร พร้อมตรวจสอบเงื่อนไขต่างๆ ก่อนด้วย
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -542,6 +549,11 @@ public class frmRecipe : Form
         
     }
 
+    /// <summary>
+    /// อีเว้นท์สำหรับลบหรือแก้ไขสูตร แต่จะไม่สามารถแก้ไขชื่อสูตรได้
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void btnEditRecipe_Click(object sender, EventArgs e)
     {
         if (cbDeleteRecipe.Checked)
@@ -580,6 +592,11 @@ public class frmRecipe : Form
         }
     }
 
+    /// <summary>
+    /// อีเว้นสำหรับทำอาหาร โดยจะทำการตัดวัตถุดิบทั้งหมดที่ต้องการใช้ตามปริมาณที่ต้องการใช้ในภายหลัง
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void btnMakeFood_Click(object sender, EventArgs e)
     {
         if ((MessageBox.Show("ต้องการจะทำอาหารนี้ใช่หรือไม่", "ยืนยันการทำอาหาร", MessageBoxButtons.YesNo,
@@ -671,10 +688,20 @@ public class frmRecipe : Form
         }
     }
 
+    /// <summary>
+    /// อีเว้นสำหรับปิดฟอร์ม
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void CloseForm(object sender, EventArgs e)
+    {
+        Close();
+    }
+
     #endregion event handler
 
     /// <summary>
-    /// (การแสดงผล การเพิ่มจาก โหมด) Display Addition form mode
+    /// แก้ไขฟอร์มเพื่อใช้สำหรับเพิ่มสูตร
     /// </summary>
     private void AdditionFormDisplay()
     {
@@ -688,7 +715,7 @@ public class frmRecipe : Form
     }
 
     /// <summary>
-    /// (การแสดงผล การแก้ไขจากโหมด) Display Editor form mode
+    /// แก้ไขฟอร์มเพื่อใช้สำหรับแก้ไขสูตร
     /// </summary>
     private void EditorFormDisplay()
     {
@@ -704,7 +731,7 @@ public class frmRecipe : Form
 
     #region new control in editor form
     /// <summary>
-    /// Contruct new control items to form
+    /// สร้างฟอร์มบางส่วนขึ้นมาใหม่เพื่อใช้สำหรับแก้ไขสูตร
     /// </summary>
     private void AddNewControlToEditForm()
     {
@@ -827,7 +854,7 @@ public class frmRecipe : Form
     #endregion new control in editor form
 
     /// <summary>
-    /// (รับข้อมูลจากฐานข้อมูล และ เพิ่มชุดเก็บข้อมูล) Get information from database and add to autostring collection
+    /// ดึงข้อมูลจากฐานข้อมูลเพื่อนำมาใส่ใน AutoCompleteStringCollection
     /// </summary>
     private void AutoCompleteSource()
     {
@@ -840,9 +867,9 @@ public class frmRecipe : Form
     }
 
     /// <summary>
-    /// (โหลดรายละเอียดของสูตรกับส่วนผสม และกำหนดรูปแบบ) Load recipe detail with ingredient of recipe and assign to form
+    /// ดึงรายละเอียดของสูตรและวัตถุดิบที่ต้องการมาแสดง
     /// </summary>
-    /// <param name="name">name of recipe</param>
+    /// <param name="name">ชื่อของสูตร</param>
     private void LoadRecipeToDisplay(string name)
     {
         int i;
@@ -883,6 +910,10 @@ public class frmRecipe : Form
         }
     }
 
+    /// <summary>
+    /// เปลี่ยนฟอร์มที่ถูกติกเป็นไอดีของหน่วยอาหาร
+    /// </summary>
+    /// <returns>ไอดีของหน่วยอาหาร</returns>
     private int CheckedToUnitID()
     {
         if (rdbPlate.Checked)
@@ -907,6 +938,10 @@ public class frmRecipe : Form
         }
     }
 
+    /// <summary>
+    /// เปลี่ยนฟอร์มที่ถูกติกเป็นไอดีของประเภทอาหาร
+    /// </summary>
+    /// <returns>ไอดีของประเภทอาหาร</returns>
     private int CheckedToTypeID()
     {
         if (rdbMeatDish.Checked)
@@ -919,6 +954,10 @@ public class frmRecipe : Form
         }
     }
 
+    /// <summary>
+    /// เปลี่ยนไอดีของประเภทอาหารมาติกที่ฟอร์ม
+    /// </summary>
+    /// <param name="typeID">ไอดีของประเภทอาหาร</param>
     private void TypeIdToCheck(int typeID)
     {
         if (typeID == 1)
@@ -931,6 +970,10 @@ public class frmRecipe : Form
         }
     }
 
+    /// <summary>
+    /// เปลี่ยนไอดีของหน่วยอาหารมาติกที่ฟอร์ม
+    /// </summary>
+    /// <param name="unitID">ไอดีของหน่วยอาหาร</param>
     private void UnitIDToCheck(int unitID)
     {
         switch (unitID)
@@ -951,10 +994,5 @@ public class frmRecipe : Form
                 rdbBag.Checked = true;
                 break;
         }
-    }
-
-    private void CloseForm(object sender, EventArgs e)
-    {
-        Close();
     }
 }
