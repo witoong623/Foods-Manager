@@ -580,7 +580,7 @@ public class frmIngredient : Form
             if (myDB.UpdateIngredient(CheckedToTypeID(), txtIngredientName.Text, quantity, UnitSelected()))
             {
                 currentName = txtIngredientName.Text;
-                previousTask = Task.Edit;
+                previousTask = Task.Increase;
                 Close();
             }
             else
@@ -592,6 +592,7 @@ public class frmIngredient : Form
 
     private void btnClose_Click(object sender, EventArgs e)
     {
+        previousTask = Task.None;
         Close();
     }
 }
