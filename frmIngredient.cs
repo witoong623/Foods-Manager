@@ -11,7 +11,7 @@ public class frmIngredient : Form
     private Label lblQuantity;
     private TextBox txtQuantity;
     private GroupBox gbUnit;
-    private RadioButton rdbGreb;
+    private RadioButton rdbBundle;
     private RadioButton rdbMud;
     private RadioButton rdbLuk;
     private RadioButton rdbHua;
@@ -43,7 +43,7 @@ public class frmIngredient : Form
             this.txtQuantity = new System.Windows.Forms.TextBox();
             this.gbUnit = new System.Windows.Forms.GroupBox();
             this.rdbGrain = new System.Windows.Forms.RadioButton();
-            this.rdbGreb = new System.Windows.Forms.RadioButton();
+            this.rdbBundle = new System.Windows.Forms.RadioButton();
             this.rdbMud = new System.Windows.Forms.RadioButton();
             this.rdbLuk = new System.Windows.Forms.RadioButton();
             this.rdbHua = new System.Windows.Forms.RadioButton();
@@ -95,7 +95,7 @@ public class frmIngredient : Form
             // gbUnit
             // 
             this.gbUnit.Controls.Add(this.rdbGrain);
-            this.gbUnit.Controls.Add(this.rdbGreb);
+            this.gbUnit.Controls.Add(this.rdbBundle);
             this.gbUnit.Controls.Add(this.rdbMud);
             this.gbUnit.Controls.Add(this.rdbLuk);
             this.gbUnit.Controls.Add(this.rdbHua);
@@ -120,15 +120,15 @@ public class frmIngredient : Form
             this.rdbGrain.Text = "เม็ด";
             this.rdbGrain.UseVisualStyleBackColor = true;
             // 
-            // rdbGreb
+            // rdbBundle
             // 
-            this.rdbGreb.AutoSize = true;
-            this.rdbGreb.Location = new System.Drawing.Point(131, 42);
-            this.rdbGreb.Name = "rdbGreb";
-            this.rdbGreb.Size = new System.Drawing.Size(45, 17);
-            this.rdbGreb.TabIndex = 9;
-            this.rdbGreb.Text = "กลีบ";
-            this.rdbGreb.UseVisualStyleBackColor = true;
+            this.rdbBundle.AutoSize = true;
+            this.rdbBundle.Location = new System.Drawing.Point(131, 42);
+            this.rdbBundle.Name = "rdbBundle";
+            this.rdbBundle.Size = new System.Drawing.Size(38, 17);
+            this.rdbBundle.TabIndex = 9;
+            this.rdbBundle.Text = "ห่อ";
+            this.rdbBundle.UseVisualStyleBackColor = true;
             // 
             // rdbMud
             // 
@@ -388,7 +388,7 @@ public class frmIngredient : Form
         {
             return 15;
         }
-        else if (rdbGreb.Checked)
+        else if (rdbBundle.Checked)
         {
             return 16;
         }
@@ -469,7 +469,7 @@ public class frmIngredient : Form
                 rdbMud.Checked = true;
                 break;
             case 16:
-                rdbGreb.Checked = true;
+                rdbBundle.Checked = true;
                 break;
             case 17:
                 rdbGrain.Checked = true;

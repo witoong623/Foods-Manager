@@ -43,7 +43,7 @@ namespace FoodsManagerExtension
                 case 15:
                     return "มัด";
                 default:
-                    return "กลีบ";
+                    return "ห่อ";
             }
         }
 
