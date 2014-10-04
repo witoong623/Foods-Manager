@@ -723,7 +723,7 @@ public class frmRecipe : Form
     {
         this.Text = "แก้ไขสูตรอาหาร";
         btnSubmit.Text = "แก้ไขสูตร";
-        btnCancel.Text = "ลบสูตรอาหาร";
+        btnCancel.Text = "ยกเลิก";
         btnAddNewIngredient.Visible = true;
         AddNewControlToEditForm();
         rdb1ea.Checked = true;
