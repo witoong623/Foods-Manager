@@ -984,6 +984,33 @@ public class DBConnector
         return quantity;
     }
 
+    public bool UpdateRecipeDetail(string name, int TypeId, int UnitID)
+    {
+        try
+        {
+            string query = "UPDATE recipe SET recipe_type_id='" + TypeId + "', recipe_unit_id='" + UnitID + "'" +
+                       " WHERE recipe_name='" + name + "'";
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (MySqlException ex)
+        {
+            MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace, "Error number : " + ex.Number,
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            return false;
+        }
+    }
+
     /// <summary>
     /// อัพเดทค่าปริมาณที่ทำได้ของสูตร
     /// </summary>
