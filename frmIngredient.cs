@@ -551,13 +551,6 @@ public class frmIngredient : Form
         int quantity;
         quantity = int.Parse(txtQuantity.Text);
 
-        // Can't descrease quantity
-        if (quantity < currentQuantity)
-        {
-            MessageBox.Show("คูณไม่สามารถปรับลดปริมาณของวัตถุดิบ\nให้ต่ำกว่าเดิมได้", "ข้อมูลผิดพลาด", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            return;
-        }
-
         // Delete case
         if (cbDelete.Checked)
         {
@@ -572,7 +565,6 @@ public class frmIngredient : Form
             }
             
         }
-        // Edit but don't increase case
         else if (quantity == currentQuantity)
         {
             if (myDB.UpdateIngredient(CheckedToTypeID(), txtIngredientName.Text, quantity, UnitSelected()))
