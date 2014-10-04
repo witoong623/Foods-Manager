@@ -288,13 +288,16 @@ public class frmIngredient : Form
     }
     #endregion windows code
 
+    /// <summary>
+    /// ฟอร์มสำหรับให้ผู้ใช้จัดการวัตถุดิบ
+    /// </summary>
     public frmIngredient()
     {
         InitializeComponent();
     }
 
     /// <summary>
-    /// Constructor use to build form that correspond to task
+    /// สร้างตัวฟอร์มและโหลดข้อมูลที่จำเป็นขึ้นมาให้ผู้ใช้
     /// </summary>
     /// <param name="item">ชื่อของส่วนผสม หรือ ส่วนผสมที่ต้องการเพิ่ม</param>
     public frmIngredient(string item) : this()
@@ -308,6 +311,28 @@ public class frmIngredient : Form
             EditForm();
             LoadIngredient(item);
             txtQuantity.Select(txtQuantity.Text.Length, 0);
+        }
+    }
+
+    /// <summary>
+    /// ใช้ดึงข้อมูลว่าใช้ฟอร์มนี้ทำอะไรในฟอร์มหลัก
+    /// </summary>
+    public Task PreviousTask
+    {
+        get
+        {
+            return previousTask;
+        }
+    }
+
+    /// <summary>
+    /// ใช้ดึงชื่อของวัตถุดิบที่ถูกแสดงจากฟอร์มหลัก
+    /// </summary>
+    public string CurrentName
+    {
+        get
+        {
+            return currentName;
         }
     }
 
@@ -334,9 +359,9 @@ public class frmIngredient : Form
     }
 
     /// <summary>
-    /// To determine what unit of ingredient is checked
+    /// เปลี่ยนข้อมูลที่ถูกเช็คไว้มาเป็นไอดีของหน่วยวัตถุดิย
     /// </summary>
-    /// <returns>int    that indicate what unit is to insert to database</returns>
+    /// <returns>ไอดีของหน่วยวัตถุดิบ</returns>
     private int UnitSelected()
     {
         if (rdbGram.Checked)
@@ -374,7 +399,7 @@ public class frmIngredient : Form
     }
 
     /// <summary>
-    /// Construct form to add ingredient
+    /// สร้างฟอร์มและแก้ไขข้อมูลของฟอร์มที่มีอยู่สำหรับเพิ่มวัตถุดิบ
     /// </summary>
     private void AddForm()
     {
@@ -389,7 +414,7 @@ public class frmIngredient : Form
     }
 
     /// <summary>
-    /// Construct form to edit/delete ingredient
+    /// สร้างฟอร์มและแก้ไขข้อมูลของฟอร์มที่มีอยู่สำหรับแก้ไขวัตถุดิบ
     /// </summary>
     private void EditForm()
     {
@@ -401,9 +426,9 @@ public class frmIngredient : Form
     }
 
     /// <summary>
-    /// Load specified ingredient by name to edit form
+    /// ใช้โหลดข้อมูลวัตถุดิบจากฐานข้อมูลมาแสดงและจัดการนำข้อมูลเข้าสู่ Textbox ที่ถูกต้อง
     /// </summary>
-    /// <param name="item">string   name of ingredient</param>
+    /// <param name="item">ชื่อวัตถุดิบ</param>
     private void LoadIngredient(string item)
     {
         string[] data;
@@ -418,9 +443,9 @@ public class frmIngredient : Form
     }
 
     /// <summary>
-    /// To determine which radio button is checked. This method is call only when load exist ingredient
+    /// ใช้ตรวจสอบไอดีของหน่วยวัตถุดิบและนำไปติกให้ถูกต้อง
     /// </summary>
-    /// <param name="unit">int  value of unit in database</param>
+    /// <param name="unit">ไอดีของหน่วยวัตถุดิบ</param>
     private void UnitIdToCheck(int unit)
     {
         switch (unit)
@@ -453,9 +478,9 @@ public class frmIngredient : Form
     }
 
     /// <summary>
-    /// Determine which radio button is checked.  This method is call only when load exist ingredient
+    /// ใช้ตรวจสอบไอดีของประเภทวัตถุดิบและนำไปติกให้ถูกต้อง
     /// </summary>
-    /// <param name="type">int  value of type in database</param>
+    /// <param name="type">ไอดีของประเภทวัตถุดิบ</param>
     private void TypeIdToCheck(int type)
     {
         switch (type)
@@ -472,21 +497,7 @@ public class frmIngredient : Form
         }
     }
 
-    public Task PreviousTask
-    {
-        get
-        {
-            return previousTask;
-        }
-    }
-
-    public string CurrentName
-    {
-        get
-        {
-            return currentName;
-        }
-    }
+    
     #endregion Helper method
 
     /// <summary>
@@ -574,7 +585,7 @@ public class frmIngredient : Form
                 return;
             }
         }
-            // Increase(maybe edit other detail) case
+        // Increase(maybe edit other detail) case
         else
         {
             if (myDB.UpdateIngredient(CheckedToTypeID(), txtIngredientName.Text, quantity, UnitSelected()))
@@ -590,6 +601,11 @@ public class frmIngredient : Form
         }
     }
 
+    /// <summary>
+    /// อีเว้นใช้ปิดฟอร์ม
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void btnClose_Click(object sender, EventArgs e)
     {
         previousTask = Task.None;
