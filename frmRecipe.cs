@@ -647,6 +647,8 @@ public class frmRecipe : Form
             {
                 ListViewItem SelectedDelete = lstvIngredientTable.SelectedItems[i];
                 lstvIngredientTable.Items[SelectedDelete.Index].Remove();
+                cbIngredientName.Text = "";
+                txtQuantity.Clear();
             }
         }
     }
