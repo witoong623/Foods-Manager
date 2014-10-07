@@ -76,6 +76,7 @@ public class frmIngredient : Form
             this.txtIngredientName.Name = "txtIngredientName";
             this.txtIngredientName.Size = new System.Drawing.Size(154, 20);
             this.txtIngredientName.TabIndex = 1;
+            this.txtIngredientName.Click += new System.EventHandler(this.txtIngredientName_Click);
             // 
             // lblQuantity
             // 
@@ -91,6 +92,7 @@ public class frmIngredient : Form
             this.txtQuantity.Name = "txtQuantity";
             this.txtQuantity.Size = new System.Drawing.Size(154, 20);
             this.txtQuantity.TabIndex = 3;
+            this.txtQuantity.Click += new System.EventHandler(this.txtQuantity_Click);
             // 
             // gbUnit
             // 
@@ -591,6 +593,16 @@ public class frmIngredient : Form
                 return;
             }
         }
+    }
+
+    private void txtIngredientName_Click(object sender, EventArgs e)
+    {
+        txtIngredientName.SelectAll();
+    }
+
+    private void txtQuantity_Click(object sender, EventArgs e)
+    {
+        txtQuantity.SelectAll();
     }
 
     /// <summary>
