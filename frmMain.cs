@@ -440,7 +440,7 @@ public class frmMain : Form
         // Pass null to indicate that this is form for add a new item
         frmRecipe myRecipe = new frmRecipe(null);
         myRecipe.ShowDialog();
-        if (myRecipe.CurrentName.Length != 0)
+        if (myRecipe.PreviousTask == Task.Add)
         {
             RecipeUpdateQuantity = new AdjustmentIngredient(myRecipe.CurrentName);
             RecipeUpdateQuantity.UpdateRecipeQuantity();

@@ -135,6 +135,7 @@ public class frmRecipe : Form
             this.txtFoodName.Name = "txtFoodName";
             this.txtFoodName.Size = new System.Drawing.Size(411, 20);
             this.txtFoodName.TabIndex = 1;
+            this.txtFoodName.Click += new System.EventHandler(this.txtFoodName_Click);
             // 
             // label2
             // 
@@ -160,6 +161,7 @@ public class frmRecipe : Form
             this.txtQuantity.Name = "txtQuantity";
             this.txtQuantity.Size = new System.Drawing.Size(152, 20);
             this.txtQuantity.TabIndex = 3;
+            this.txtQuantity.Click += new System.EventHandler(this.txtQuantity_Click);
             // 
             // cbIngredientType
             // 
@@ -255,6 +257,7 @@ public class frmRecipe : Form
             this.cbIngredientName.Name = "cbIngredientName";
             this.cbIngredientName.Size = new System.Drawing.Size(152, 21);
             this.cbIngredientName.TabIndex = 11;
+            this.cbIngredientName.Click += new System.EventHandler(this.cbIngredientName_Click);
             // 
             // gbRecipeUnit
             // 
@@ -461,6 +464,7 @@ public class frmRecipe : Form
         if (myDB.InsertRecipe(txtFoodName.Text, CheckedToTypeID(), ingredient, CheckedToUnitID()))
         {
             currentName = txtFoodName.Text;
+            previousTask = Task.Add;
             Close();
         }
     }
@@ -729,6 +733,26 @@ public class frmRecipe : Form
         }
     }
 
+    private void txtFoodName_Click(object sender, EventArgs e)
+    {
+        txtFoodName.SelectAll();
+    }
+
+    private void cbIngredientName_Click(object sender, EventArgs e)
+    {
+        cbIngredientName.Select();
+    }
+
+    private void txtQuantity_Click(object sender, EventArgs e)
+    {
+        txtQuantity.SelectAll();
+    }
+
+    private void txtCustomMakeQuantity_Click(object sender, EventArgs e)
+    {
+        txtCustomMakeQuantity.SelectAll();
+    }
+
     /// <summary>
     /// อีเว้นสำหรับปิดฟอร์ม
     /// </summary>
@@ -806,6 +830,7 @@ public class frmRecipe : Form
         this.txtCustomMakeQuantity.Name = "txtCustomMakeQuantity";
         this.txtCustomMakeQuantity.Size = new System.Drawing.Size(63, 20);
         this.txtCustomMakeQuantity.TabIndex = 21;
+        this.txtCustomMakeQuantity.Click += new EventHandler(this.txtCustomMakeQuantity_Click);
         // 
         // btnMakeFood
         // 
