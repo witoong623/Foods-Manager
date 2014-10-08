@@ -655,7 +655,17 @@ public class frmRecipe : Form
             }
             else
             {
-                MakeQuantity = int.Parse(txtCustomMakeQuantity.Text);
+                if (!int.TryParse(txtCustomMakeQuantity.Text, out MakeQuantity))
+                {
+                    MessageBox.Show("กรุณาป้อนจำนวนเป็นตัวเลข", "ข้อมูลผิดพลาด", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                if (MakeQuantity <= 0)
+                {
+                    MessageBox.Show("กรุณาป้อนปริมาณที่มากกว่า 0", "ข้อมูลที่รับมาไม่ถูกต้อง", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
             }
 
             if (MakeQuantity > CanMakeQuantity)
