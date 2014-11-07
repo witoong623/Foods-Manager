@@ -69,6 +69,9 @@
     <Compile Include="src\frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="src\frmMain.Designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
     <Compile Include="src\frmRecipe.cs">
       <SubType>Form</SubType>
     </Compile>

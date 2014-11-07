@@ -6,6 +6,7 @@ namespace FoodsManager
 {
     public enum Task { None, Add, Edit, Delete, Made, Increase };
     public enum Stock { InStock, OutOfStock };
+
     static class Convert
     {
         /// <summary>
