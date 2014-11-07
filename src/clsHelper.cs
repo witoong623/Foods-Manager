@@ -2,21 +2,10 @@
 using System.Windows.Forms;
 using System.IO;
 
-namespace FoodsManagerExtension
+namespace FoodsManager
 {
-    /// <summary>
-    /// ใช้แสดงงานที่ทำภายในฟอร์มย่อย
-    /// </summary>
     public enum Task { None, Add, Edit, Delete, Made, Increase };
-
-    /// <summary>
-    /// ใช้แสดงถึงปริมาณที่มีอยู่
-    /// </summary>
     public enum Stock { InStock, OutOfStock };
-
-    /// <summary>
-    /// ใช้สำหรับเก็บ extension methods
-    /// </summary>
     static class Convert
     {
         /// <summary>

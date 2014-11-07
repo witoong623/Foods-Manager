@@ -32,13 +32,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>frmMain</StartupObject>
+    <StartupObject>FoodsManager.frmMain</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="src\App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="MySql.Data, Version=6.9.2.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+    <Reference Include="MySql.Data, Version=6.9.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -50,23 +50,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdjustmentIngredient.cs" />
-    <Compile Include="clsFileManage.cs" />
-    <Compile Include="clsHelper.cs" />
-    <Compile Include="frmAbout.cs">
+    <Compile Include="src\AdjustmentIngredient.cs" />
+    <Compile Include="src\clsFileManage.cs" />
+    <Compile Include="src\clsHelper.cs" />
+    <Compile Include="src\frmAbout.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCreateDB.cs">
+    <Compile Include="src\frmCreateDB.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmIngredient.cs">
+    <Compile Include="src\frmIngredient.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DBConnector.cs" />
-    <Compile Include="frmMain.cs">
+    <Compile Include="src\DBConnector.cs" />
+    <Compile Include="src\frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmRecipe.cs">
+    <Compile Include="src\frmRecipe.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
@@ -76,19 +76,19 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="frmAbout.resx">
+    <EmbeddedResource Include="src\frmAbout.resx">
       <DependentUpon>frmAbout.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmCreateDB.resx">
+    <EmbeddedResource Include="src\frmCreateDB.resx">
       <DependentUpon>frmCreateDB.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmIngredient.resx">
+    <EmbeddedResource Include="src\frmIngredient.resx">
       <DependentUpon>frmIngredient.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmMain.resx">
+    <EmbeddedResource Include="src\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmRecipe.resx">
+    <EmbeddedResource Include="src\frmRecipe.resx">
       <DependentUpon>frmRecipe.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

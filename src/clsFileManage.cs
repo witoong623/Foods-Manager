@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 
-namespace FileManage
+namespace FoodsManager.Extension
 {
     [Serializable]
     class clsBuildConnectionString
