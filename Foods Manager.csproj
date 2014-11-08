@@ -53,26 +53,26 @@
     <Compile Include="src\AdjustmentIngredient.cs" />
     <Compile Include="src\clsFileManage.cs" />
     <Compile Include="src\clsHelper.cs" />
-    <Compile Include="src\frmAbout.cs">
+    <Compile Include="src\frmAbout\frmAbout.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\frmAbout.Designer.cs">
+    <Compile Include="src\frmAbout\frmAbout.Designer.cs">
       <DependentUpon>frmAbout.cs</DependentUpon>
     </Compile>
     <Compile Include="src\frmCreateDB.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\DBConnector.cs" />
-    <Compile Include="src\frmIngredient.cs">
+    <Compile Include="src\frmIngredient\frmIngredient.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\frmIngredient.Designer.cs">
+    <Compile Include="src\frmIngredient\frmIngredient.Designer.cs">
       <DependentUpon>frmIngredient.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\frmMain.cs">
+    <Compile Include="src\frmMain\frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\frmMain.Designer.cs">
+    <Compile Include="src\frmMain\frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
@@ -80,28 +80,28 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="src\frmRecipe.cs">
+    <Compile Include="src\frmRecipe\frmRecipe.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\frmRecipe.Designer.cs">
+    <Compile Include="src\frmRecipe\frmRecipe.Designer.cs">
       <DependentUpon>frmRecipe.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="src\frmAbout.resx">
+    <EmbeddedResource Include="src\frmAbout\frmAbout.resx">
       <DependentUpon>frmAbout.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\frmCreateDB.resx">
       <DependentUpon>frmCreateDB.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\frmMain.resx">
+    <EmbeddedResource Include="src\frmMain\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\frmRecipe.resx">
+    <EmbeddedResource Include="src\frmRecipe\frmRecipe.resx">
       <DependentUpon>frmRecipe.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
