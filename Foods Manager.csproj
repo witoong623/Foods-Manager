@@ -53,14 +53,17 @@
     <Compile Include="src\AdjustmentIngredient.cs" />
     <Compile Include="src\clsFileManage.cs" />
     <Compile Include="src\clsHelper.cs" />
+    <Compile Include="src\frmCreateDB\frmCreateDB.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\frmCreateDB\frmCreateDB.Designer.cs">
+      <DependentUpon>frmCreateDB.cs</DependentUpon>
+    </Compile>
     <Compile Include="src\frmAbout\frmAbout.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\frmAbout\frmAbout.Designer.cs">
       <DependentUpon>frmAbout.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\frmCreateDB.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\DBConnector.cs" />
     <Compile Include="src\frmIngredient\frmIngredient.cs">
@@ -91,7 +94,7 @@
     <EmbeddedResource Include="src\frmAbout\frmAbout.resx">
       <DependentUpon>frmAbout.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\frmCreateDB.resx">
+    <EmbeddedResource Include="src\frmCreateDB\frmCreateDB.resx">
       <DependentUpon>frmCreateDB.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\frmMain\frmMain.resx">
