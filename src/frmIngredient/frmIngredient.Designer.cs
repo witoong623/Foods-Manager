@@ -280,6 +280,7 @@ namespace FoodsManager
             this.gbType.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion

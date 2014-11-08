@@ -97,6 +97,9 @@
     <EmbeddedResource Include="src\frmCreateDB\frmCreateDB.resx">
       <DependentUpon>frmCreateDB.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\frmIngredient\frmIngredient.resx">
+      <DependentUpon>frmIngredient.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\frmMain\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
