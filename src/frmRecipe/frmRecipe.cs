@@ -25,8 +25,7 @@ namespace FoodsManager
         /// ใช้สำหรับสร้างฟอร์มที่ถูกต้องกับการทำงานและโหลดข้อมูลขึ้นมาแสดง
         /// </summary>
         /// <param name="call"></param>
-        public frmRecipe(string call)
-            : this()
+        public frmRecipe(string call) : this()
         {
             cbIngredientType.SelectedIndex = 0;
             if (call == null)
