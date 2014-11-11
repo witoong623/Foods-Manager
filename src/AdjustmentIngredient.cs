@@ -195,12 +195,13 @@ namespace FoodsManager
         {
             int processQuantity;
             int lack;
-            string NotEnoughIngredient = null;
+            string NotEnoughIngredient = "";
             List<int>[] IngredientQuantity = myDB.SelectCurrentRequireIngredient(RecipeName);
 
             for (var i = 0; i < IngredientQuantity[0].Count; i++)
             {
                 processQuantity = IngredientQuantity[2][i] - IngredientQuantity[1][i];
+
                 if (processQuantity < 0)
                 {
                     lack = IngredientQuantity[1][i] - IngredientQuantity[2][i];
