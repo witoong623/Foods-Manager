@@ -255,7 +255,8 @@ namespace FoodsManager
             }
             else
             {
-                MessageBox.Show("มีวัตถุดิบนี้อยู่แล้ว\nกรุณาใส่ชื่อวัตถุดิบอื่น", "ข้อมูลซ้ำกัน", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                string message = "พบข้อผิดพลาดกรุณาตรวจสอบว่า\nข้อมูลอาจถูกเพิ่มแล้ว\nมีข้อผิดพลาดอื่นๆ ในข้อมูลที่ถูกเพิ่ม";
+                MessageBox.Show(message, "ข้อมูลซ้ำกัน", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtIngredientName.Clear();
                 txtIngredientName.Select();
                 return;
