@@ -103,20 +103,19 @@ namespace FoodsManager
         /// <returns>ค่า recipe_id จากตาราง recipe</returns>
         private int SelectRecipeID(string name)
         {
-            int id = 0;
-            string query = "SELECT recipe_id, quantity FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
+            string query = "SELECT recipe_id, quantity FROM recipe WHERE recipe_name = @name LIMIT 1";
             if (OpenConnection() == true)
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
-                MySqlDataReader dataReader = cmd.ExecuteReader();
-                while (dataReader.Read())
-                {
-                    id = dataReader.GetInt32("recipe_id");
-                }
-                dataReader.Close();
+                cmd.Parameters.AddWithValue("@name", name);
+
+                int id = Convert.ToInt32(cmd.ExecuteScalar());
+
                 CloseConnection();
+
+                return id;
             }
-            return id;
+            return 0;
         }
 
         #endregion helper methods
@@ -153,28 +152,35 @@ namespace FoodsManager
         {
             try
             {
-                string query = "INSERT INTO ingredient (type_id, ingredient_name," +
-                        " ingredient_quantity, unit_id) VALUES('" + type + "', '" +
-                        name + "', '" + initial + "', '" + unit + "')";
+                string query = "INSERT INTO ingredient (type_id, ingredient_name, ingredient_quantity, unit_id)" + 
+                    " VALUES(@type, @name, @initial, @unit)";
 
                 if (OpenConnection())
                 {
                     MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@type", type);
+                    cmd.Parameters.AddWithValue("@name", name);
+                    cmd.Parameters.AddWithValue("@initial", initial);
+                    cmd.Parameters.AddWithValue("@unit", unit);
                     cmd.ExecuteNonQuery();
+
+                    return true;
                 }
-                return true;
+
+                return false;
             }
             catch (MySqlException ex)
             {
                 if (ex.Number == 1062)
                 {
-                    MessageBox.Show(name + "ถูกเพิ่มแล้ว", "ข้อมูลซ้ำกัน", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(ex.Message, "ข้อมูลซ้ำกัน", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
                     MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace, "Error number : " + ex.Number,
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+
                 return false;
             }
             finally
@@ -191,21 +197,24 @@ namespace FoodsManager
         public string[] SelectSpecifiedIngredient(string name)
         {
             string query = "SELECT type_id, ingredient_name, ingredient_quantity, unit_id " +
-                           "FROM ingredient " +
-                           "WHERE ingredient_name='" + name + "'";
+                           "FROM ingredient WHERE ingredient_name = @name";
 
             string[] list = new string[4];
 
             if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@name", name);
                 MySqlDataReader dataReader = cmd.ExecuteReader();
-                dataReader.Read();
-
-                list[0] = dataReader.GetString("type_id");
-                list[1] = dataReader.GetString("ingredient_name");
-                list[2] = dataReader.GetString("ingredient_quantity");
-                list[3] = dataReader.GetString("unit_id");
+                
+                if (dataReader.Read())
+                {
+                    list[0] = dataReader.GetString("type_id");
+                    list[1] = dataReader.GetString("ingredient_name");
+                    list[2] = dataReader.GetString("ingredient_quantity");
+                    list[3] = dataReader.GetString("unit_id");
+                }
+                
                 dataReader.Close();
                 CloseConnection();
                 return list;
@@ -223,27 +232,21 @@ namespace FoodsManager
         /// <returns>ไอดีหน่วยของวัตถุดิบ</returns>
         public int SelectIngredientUnitID(string name)
         {
-            string query = "SELECT unit_id FROM ingredient WHERE ingredient_name='" + name + "' LIMIT 1";
-            int id = 0;
+            string query = "SELECT unit_id FROM ingredient WHERE ingredient_name = @name LIMIT 1";
 
             if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
-                MySqlDataReader dataReader = cmd.ExecuteReader();
+                cmd.Parameters.AddWithValue("@name", name);
 
-                if (dataReader.Read())
-                {
-                    id = dataReader.GetInt32("unit_id");
-                }
+                int id = Convert.ToInt32(cmd.ExecuteScalar());
 
-                dataReader.Close();
                 CloseConnection();
+
                 return id;
             }
-            else
-            {
-                return id;
-            }
+
+            return 0;
         }
 
         /// <summary>
@@ -266,7 +269,7 @@ namespace FoodsManager
                 else
                 {
                     query = "SELECT ingredient_name, ingredient_quantity, unit_id " +
-                            "FROM ingredient WHERE type_id='" + typeID + "' AND ingredient_quantity > 0 ORDER BY ingredient_name";
+                            "FROM ingredient WHERE type_id = @typeid AND ingredient_quantity > 0 ORDER BY ingredient_name";
                 }
             }
             else
@@ -279,7 +282,7 @@ namespace FoodsManager
                 else
                 {
                     query = "SELECT ingredient_name, ingredient_quantity, unit_id " +
-                            "FROM ingredient WHERE type_id='" + typeID + "' AND ingredient_quantity = 0 ORDER BY ingredient_name";
+                            "FROM ingredient WHERE type_id = @typeid AND ingredient_quantity = 0 ORDER BY ingredient_name";
                 }
             }
 
@@ -291,6 +294,12 @@ namespace FoodsManager
             if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
+
+                if (typeID != 0)
+                {
+                    cmd.Parameters.AddWithValue("@typeid", typeID);
+                }
+
                 MySqlDataReader dataReader = cmd.ExecuteReader();
 
                 while (dataReader.Read())
@@ -366,12 +375,18 @@ namespace FoodsManager
             }
             else
             {
-                query = "SELECT ingredient_name FROM ingredient WHERE type_id = '" + typeID + "' ORDER BY ingredient_name";
+                query = "SELECT ingredient_name FROM ingredient WHERE type_id = @typeid ORDER BY ingredient_name";
             }
 
             if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
+
+                if (typeID != 0)
+                {
+                    cmd.Parameters.AddWithValue("@typeid", typeID);
+                }
+
                 MySqlDataReader dataReader = cmd.ExecuteReader();
 
                 while (dataReader.Read())
@@ -399,24 +414,21 @@ namespace FoodsManager
         /// <returns>ไอดีของวัตถุดิบ</returns>
         public int SelectOneIngredientID(string name)
         {
-            int ID = 0;
-            string query = "SELECT ingredient_id FROM ingredient WHERE ingredient_name='" + name + "' LIMIT 1";
+            string query = "SELECT ingredient_id FROM ingredient WHERE ingredient_name = @name LIMIT 1";
 
             if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
-                MySqlDataReader dataReader = cmd.ExecuteReader();
+                cmd.Parameters.AddWithValue("@name", name);
 
-                if (dataReader.Read())
-                {
-                    ID = dataReader.GetInt32("ingredient_id");
-                }
+                int id = Convert.ToInt32(cmd.ExecuteScalar());
 
-                dataReader.Close();
                 CloseConnection();
-                return ID;
+
+                return id;
             }
-            return ID;
+
+            return 0;
         }
 
         /// <summary>
@@ -426,23 +438,28 @@ namespace FoodsManager
         /// <returns>ชื่อของวัตถุดิบ</returns>
         public string SelectIngredientName(int ID)
         {
-            string IngredientName = "";
-            string query = "SELECT ingredient_name FROM ingredient WHERE ingredient_id='" + ID + "' LIMIT 1";
+            string query = "SELECT ingredient_name FROM ingredient WHERE ingredient_id = @id LIMIT 1";
 
             if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
-                MySqlDataReader dataReader = cmd.ExecuteReader();
+                cmd.Parameters.AddWithValue("@id", ID);
 
-                while (dataReader.Read())
-                {
-                    IngredientName = dataReader.GetString("ingredient_name");
-                }
+                string IngredientName = Convert.ToString(cmd.ExecuteScalar());
 
-                dataReader.Close();
                 CloseConnection();
+
+                if (IngredientName != null)
+                {
+                    return IngredientName;
+                }
+                else
+                {
+                    return string.Empty;
+                }
             }
-            return IngredientName;
+
+            return string.Empty;
         }
 
         /// <summary>
@@ -456,16 +473,18 @@ namespace FoodsManager
         {
             try
             {
-                string query = "UPDATE ingredient " +
-                            "SET type_id='" + type + "', ingredient_quantity='" + initial + "', unit_id='" + unit + "' " +
-                            "WHERE ingredient_name='" + name + "'";
+                string query = "UPDATE ingredient SET type_id = @type, ingredient_quantity = @quantity, unit_id = @unit " +
+                            "WHERE ingredient_name = @name";
 
                 if (OpenConnection())
                 {
                     MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@type", type);
+                    cmd.Parameters.AddWithValue("@quantity", initial);
+                    cmd.Parameters.AddWithValue("@unit", unit);
+                    cmd.Parameters.AddWithValue("@name", name);
                     cmd.ExecuteNonQuery();
 
-                    CloseConnection();
                     return true;
                 }
                 else
@@ -479,6 +498,10 @@ namespace FoodsManager
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
+            finally
+            {
+                CloseConnection();
+            }
         }
 
         /// <summary>
@@ -489,11 +512,12 @@ namespace FoodsManager
         {
             try
             {
-                string query = "DELETE FROM ingredient WHERE ingredient_name='" + name + "'";
+                string query = "DELETE FROM ingredient WHERE ingredient_name = @name";
 
                 if (this.OpenConnection())
                 {
                     MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@name", name);
                     cmd.ExecuteNonQuery();
 
                     return true;
@@ -531,75 +555,70 @@ namespace FoodsManager
         /// </summary>
         /// <param name="name">ชื่อสูตร</param>
         /// <param name="type">ประเภทสูตร</param>
-        /// <param name="ingredient">รายชื่อวัตถุดิบและปริมาณที่ใช้สำหรับสูตรนี้</param>
+        /// <param name="unitID">ID of recipe unit</param>
         /// <returns>จริงถ้าเพิ่มสำเร็จ ไม่จริงถ้าเพิ่มไม่สำเร็จ</returns>
         public bool InsertRecipe(string name, int type, List<string>[] ingredient, int unitID)
         {
             try
             {
                 int i;
-                string recipeID = "0";
-                string query = "SELECT recipe_id FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
-                List<string> ingredient_id = new List<string>();
+                string query = "SELECT recipe_id FROM recipe WHERE recipe_name = @name LIMIT 1";
+                List<int> ingredient_id = new List<int>();
 
                 if (OpenConnection())
                 {
                     MySqlCommand cmd = new MySqlCommand(query, connection);
-                    MySqlDataReader dataReader = cmd.ExecuteReader();
+                    cmd.Parameters.AddWithValue("@name", name);
 
-                    if (dataReader.Read())
-                    {
-                        recipeID = dataReader.GetString("recipe_id");
-                    }
+                    int recipeID = Convert.ToInt32(cmd.ExecuteScalar());
 
-                    dataReader.Close();
-
-                    if (!recipeID.Equals("0"))
+                    if (recipeID != 0)
                     {
                         MessageBox.Show("มีสูตร" + name + "อยู่ในฐานข้อมูลแล้ว", "ไม่สามารถเพิ่มสูตรใหม่ได้", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return false;
                     }
 
+                    cmd.Parameters.Clear();
+
                     // Get ingredient id specify by name
                     for (i = 0; i < ingredient[0].Count; i++)
                     {
-                        query = "SELECT ingredient_id FROM ingredient WHERE ingredient_name='" + ingredient[0][i] + "' LIMIT 1";
+                        query = "SELECT ingredient_id FROM ingredient WHERE ingredient_name = @ingredient_name LIMIT 1";
+                        cmd.Parameters.AddWithValue("@ingredient_name", ingredient[0][i]);
                         cmd.CommandText = query;
-                        dataReader = cmd.ExecuteReader();
-
-                        if (dataReader.Read())
-                        {
-                            ingredient_id.Add(dataReader.GetString("ingredient_id"));
-                        }
-
-                        dataReader.Close();
+                        ingredient_id.Add(Convert.ToInt32(cmd.ExecuteScalar()));
+                        cmd.Parameters.Clear();
                     }
 
                     // Insert name of food to recipe table
                     query = "INSERT INTO recipe (recipe_type_id, recipe_name, recipe_unit_id)" +
-                               "VALUES ('" + type + "', '" + name + "', '" + unitID + "')";
+                               "VALUES (@type, @name, @unitID)";
+                    cmd.Parameters.AddWithValue("@type", type);
+                    cmd.Parameters.AddWithValue("@name", name);
+                    cmd.Parameters.AddWithValue("@unitID", unitID);
                     cmd.CommandText = query;
                     cmd.ExecuteNonQuery();
+                    cmd.Parameters.Clear();
 
                     // Get recipe id after insert
-                    query = "SELECT recipe_id FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
+                    query = "SELECT recipe_id FROM recipe WHERE recipe_name = @name LIMIT 1";
                     cmd.CommandText = query;
-                    dataReader = cmd.ExecuteReader();
-
-                    if (dataReader.Read())
-                    {
-                        recipeID = dataReader.GetString("recipe_id");
-                    }
-
-                    dataReader.Close();
+                    cmd.Parameters.AddWithValue("@name", name);
+                    recipeID = Convert.ToInt32(cmd.ExecuteScalar());
+                    cmd.Parameters.Clear();
+                    
 
                     // Insert ingredient of recipe to 3rd relation table(recipe_ingredient)
                     for (i = 0; i < ingredient[0].Count; i++)
                     {
                         query = "INSERT INTO recipe_ingredient (recipe_id, ingredient_id, quantity)" +
-                                "VALUES('" + recipeID + "', '" + ingredient_id[i] + "', '" + ingredient[1][i] + "')";
+                                "VALUES(@recipeID, @ingredient_id, @quantity)";
+                        cmd.Parameters.AddWithValue("@recipeID", recipeID);
+                        cmd.Parameters.AddWithValue("@ingredient_id", ingredient_id[i]);
+                        cmd.Parameters.AddWithValue("@quantity", ingredient[1][i]);
                         cmd.CommandText = query;
                         cmd.ExecuteNonQuery();
+                        cmd.Parameters.Clear();
                     }
                 }
 
@@ -627,7 +646,7 @@ namespace FoodsManager
             int ID = SelectRecipeID(name);
             string query = "SELECT ingredient_id, (SELECT ingredient_name FROM ingredient WHERE ingredient_id=ri.ingredient_id), " +
                            "quantity, (SELECT unit_id FROM ingredient WHERE ingredient_id=ri.ingredient_id) " +
-                           "FROM recipe_ingredient ri WHERE recipe_id='" + ID + "'";
+                           "FROM recipe_ingredient ri WHERE recipe_id = @id";
             List<string>[] list = new List<string>[3];
             list[0] = new List<string>();
             list[1] = new List<string>();
@@ -636,6 +655,7 @@ namespace FoodsManager
             if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@id", ID);
                 MySqlDataReader dataReader = cmd.ExecuteReader();
 
                 while (dataReader.Read())
@@ -647,6 +667,7 @@ namespace FoodsManager
 
                 dataReader.Close();
                 CloseConnection();
+
                 return list;
             }
             else
@@ -663,12 +684,13 @@ namespace FoodsManager
         public List<string> SelectRecipeDetail(string name)
         {
             int ID = SelectRecipeID(name);
-            string query = "SELECT recipe_type_id, quantity, recipe_unit_id FROM recipe WHERE recipe_name='" + name + "'";
+            string query = "SELECT recipe_type_id, quantity, recipe_unit_id FROM recipe WHERE recipe_name = @name";
             List<string> list = new List<string>();
 
             if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@name", name);
                 MySqlDataReader dataReader = cmd.ExecuteReader();
 
                 if (dataReader.Read())
@@ -708,8 +730,9 @@ namespace FoodsManager
 
                     for (i = 0; i < IngredientID.Count; i++)
                     {
-                        query = "SELECT recipe_id FROM recipe_ingredient WHERE ingredient_id='" + IngredientID[i] + "'";
+                        query = "SELECT recipe_id FROM recipe_ingredient WHERE ingredient_id = @ingredient";
                         cmd.CommandText = query;
+                        cmd.Parameters.AddWithValue("@ingredient", IngredientID[i]);
                         MySqlDataReader dataReader = cmd.ExecuteReader();
 
                         while (dataReader.Read())
@@ -718,9 +741,9 @@ namespace FoodsManager
                         }
 
                         dataReader.Close();
+                        cmd.Parameters.Clear();
                     }
 
-                    CloseConnection();
                     return List;
                 }
                 else
@@ -732,6 +755,10 @@ namespace FoodsManager
             {
                 MessageBox.Show(ex.Message + ex.StackTrace, "Error number : " + ex.Number, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return List;
+            }
+            finally
+            {
+                CloseConnection();
             }
         }
 
@@ -745,11 +772,12 @@ namespace FoodsManager
             List<int> List = new List<int>();
             try
             {
-                string query = "SELECT recipe_id FROM recipe_ingredient WHERE ingredient_id='" + ID + "'";
+                string query = "SELECT recipe_id FROM recipe_ingredient WHERE ingredient_id = @id";
 
                 if (OpenConnection())
                 {
                     MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@id", ID);
                     MySqlDataReader dataReader = cmd.ExecuteReader();
 
                     while (dataReader.Read())
@@ -758,8 +786,8 @@ namespace FoodsManager
                     }
 
                     dataReader.Close();
-
                     CloseConnection();
+
                     return List;
                 }
                 else
@@ -769,7 +797,7 @@ namespace FoodsManager
             }
             catch (MySqlException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, "Error number : " + ex.Number, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return List;
             }
         }
@@ -785,52 +813,48 @@ namespace FoodsManager
             try
             {
                 int i;
-                string recipeID = "1";
-                string query = "SELECT recipe_id FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
-                List<string> ingredient_id = new List<string>();
+                string query = "SELECT recipe_id FROM recipe WHERE recipe_name = @name LIMIT 1";
+                List<int> ingredient_id = new List<int>();
 
                 if (OpenConnection())
                 {
                     // Get recipe id after insert
                     MySqlCommand cmd = new MySqlCommand(query, connection);
-                    MySqlDataReader dataReader = cmd.ExecuteReader();
-
-                    if (dataReader.Read())
-                    {
-                        recipeID = dataReader.GetString("recipe_id");
-                    }
-
-                    dataReader.Close();
+                    cmd.Parameters.AddWithValue("@name", name);
+                    int recipeID = Convert.ToInt32(cmd.ExecuteScalar());
+                    cmd.Parameters.Clear();
 
                     // Get ingredient id specify by name
                     for (i = 0; i < ingredient[0].Count; i++)
                     {
-                        query = "SELECT ingredient_id FROM ingredient WHERE ingredient_name='" + ingredient[0][i] + "' LIMIT 1";
+                        query = "SELECT ingredient_id FROM ingredient WHERE ingredient_name = @name LIMIT 1";
+                        cmd.Parameters.AddWithValue("@name", ingredient[0][i]);
                         cmd.CommandText = query;
-                        dataReader = cmd.ExecuteReader();
-
-                        if (dataReader.Read())
-                        {
-                            ingredient_id.Add(dataReader.GetString("ingredient_id"));
-                        }
-
-                        dataReader.Close();
+                        ingredient_id.Add(Convert.ToInt32(cmd.ExecuteScalar()));
+                        cmd.Parameters.Clear();
                     }
 
                     // Delete all ingredient from recipe_ingredient(3rd relationship)
-                    query = "DELETE FROM recipe_ingredient WHERE recipe_id='" + recipeID + "'";
+                    query = "DELETE FROM recipe_ingredient WHERE recipe_id = @recipeID";
+                    cmd.Parameters.AddWithValue("@recipeID", recipeID);
                     cmd.CommandText = query;
                     cmd.ExecuteNonQuery();
+                    cmd.Parameters.Clear();
 
                     // Insert ingredient of recipe to 3rd relation table(recipe_ingredient)
                     for (i = 0; i < ingredient[0].Count; i++)
                     {
                         query = "INSERT INTO recipe_ingredient (recipe_id, ingredient_id, quantity)" +
-                                "VALUES('" + recipeID + "', '" + ingredient_id[i] + "', '" + ingredient[1][i] + "')";
+                                "VALUES(@recipeID, @ingredientID, @quantity)";
+                        cmd.Parameters.AddWithValue("@recipeID", recipeID);
+                        cmd.Parameters.AddWithValue("@ingredientID", ingredient_id[i]);
+                        cmd.Parameters.AddWithValue("@quantity", ingredient[1][i]);
                         cmd.CommandText = query;
                         cmd.ExecuteNonQuery();
+                        cmd.Parameters.Clear();
                     }
                 }
+
                 return true;
             }
             catch (MySqlException ex)
@@ -861,7 +885,7 @@ namespace FoodsManager
                 }
                 else
                 {
-                    query = "SELECT recipe_name, quantity, recipe_unit_id FROM recipe WHERE quantity > 0 AND recipe_type_id = '" + typeID + "' ORDER BY recipe_name";
+                    query = "SELECT recipe_name, quantity, recipe_unit_id FROM recipe WHERE quantity > 0 AND recipe_type_id = @typeID ORDER BY recipe_name";
                 }
             }
             else
@@ -872,7 +896,7 @@ namespace FoodsManager
                 }
                 else
                 {
-                    query = "SELECT recipe_name, quantity, recipe_unit_id FROM recipe WHERE quantity = 0 AND recipe_type_id = '" + typeID + "' ORDER BY recipe_name";
+                    query = "SELECT recipe_name, quantity, recipe_unit_id FROM recipe WHERE quantity = 0 AND recipe_type_id = @typeID ORDER BY recipe_name";
                 }
             }
 
@@ -884,6 +908,12 @@ namespace FoodsManager
             if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
+
+                if (typeID != 0)
+                {
+                    cmd.Parameters.AddWithValue("@typeID", typeID);
+                }
+
                 MySqlDataReader dataReader = cmd.ExecuteReader();
 
                 while (dataReader.Read())
@@ -894,6 +924,7 @@ namespace FoodsManager
                 }
                 dataReader.Close();
                 CloseConnection();
+
                 return list;
             }
             else
@@ -916,17 +947,20 @@ namespace FoodsManager
             int recipeID = SelectRecipeID(name);
 
             string query = "SELECT ingredient_id, quantity, (SELECT ingredient_quantity FROM ingredient WHERE ingredient_id=ri.ingredient_id)" +
-            "FROM recipe_ingredient ri WHERE recipe_id='" + recipeID + "'";
+            "FROM recipe_ingredient ri WHERE recipe_id = @recipeID";
             if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@recipeID", recipeID);
                 MySqlDataReader dataReader = cmd.ExecuteReader();
+
                 while (dataReader.Read())
                 {
                     RawData[0].Add(dataReader.GetInt32(0));
                     RawData[1].Add(dataReader.GetInt32(1));
                     RawData[2].Add(dataReader.GetInt32(2));
                 }
+
                 dataReader.Close();
                 CloseConnection();
             }
@@ -946,17 +980,20 @@ namespace FoodsManager
             RawData[2] = new List<int>();
 
             string query = "SELECT ingredient_id, quantity, (SELECT ingredient_quantity FROM ingredient WHERE ingredient_id=ri.ingredient_id)" +
-            "FROM recipe_ingredient ri WHERE recipe_id='" + ID + "'";
+            "FROM recipe_ingredient ri WHERE recipe_id = @id";
             if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@id", ID);
                 MySqlDataReader dataReader = cmd.ExecuteReader();
+
                 while (dataReader.Read())
                 {
                     RawData[0].Add(dataReader.GetInt32(0));
                     RawData[1].Add(dataReader.GetInt32(1));
                     RawData[2].Add(dataReader.GetInt32(2));
                 }
+
                 dataReader.Close();
                 CloseConnection();
             }
@@ -970,30 +1007,35 @@ namespace FoodsManager
         /// <returns>ปริมาณที่ทำได้ของสูตร</returns>
         public int GetCurrentQuantity(string name)
         {
-            int quantity = 0;
-            string query = "SELECT quantity FROM recipe WHERE recipe_name='" + name + "' LIMIT 1";
+            string query = "SELECT quantity FROM recipe WHERE recipe_name = @name LIMIT 1";
+
             if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
-                MySqlDataReader dataReader = cmd.ExecuteReader();
-                while (dataReader.Read())
-                {
-                    quantity = dataReader.GetInt32("quantity");
-                }
+                cmd.Parameters.AddWithValue("@name", name);
+
+                int quantity = Convert.ToInt32(cmd.ExecuteScalar());
+ 
                 CloseConnection();
+
+                return quantity;
             }
-            return quantity;
+
+            return 0;
         }
 
         public bool UpdateRecipeDetail(string name, int TypeId, int UnitID)
         {
             try
             {
-                string query = "UPDATE recipe SET recipe_type_id='" + TypeId + "', recipe_unit_id='" + UnitID + "'" +
-                           " WHERE recipe_name='" + name + "'";
+                string query = "UPDATE recipe SET recipe_type_id = @typdID, recipe_unit_id = @unitID" +
+                           " WHERE recipe_name = @name";
                 if (OpenConnection())
                 {
                     MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@typeID", TypeId);
+                    cmd.Parameters.AddWithValue("@unitID", UnitID);
+                    cmd.Parameters.AddWithValue("@name", name);
                     cmd.ExecuteNonQuery();
 
                     return true;
@@ -1026,12 +1068,16 @@ namespace FoodsManager
         {
             try
             {
-                string query = "UPDATE recipe SET quantity='" + quantity + "' WHERE recipe_name='" + name + "'";
+                string query = "UPDATE recipe SET quantity = @quantity WHERE recipe_name = @name";
+
                 if (OpenConnection())
                 {
                     MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@quantity", quantity);
+                    cmd.Parameters.AddWithValue("@name", name);
                     cmd.ExecuteNonQuery();
                     CloseConnection();
+
                     return true;
                 }
             }
@@ -1042,6 +1088,7 @@ namespace FoodsManager
 
                 return false;
             }
+
             return false;
         }
 
@@ -1055,10 +1102,12 @@ namespace FoodsManager
         {
             try
             {
-                string query = "UPDATE recipe SET quantity='" + quantity + "' WHERE recipe_id='" + ID + "'";
+                string query = "UPDATE recipe SET quantity = @quantity WHERE recipe_id = @id";
                 if (OpenConnection())
                 {
                     MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@quantity", quantity);
+                    cmd.Parameters.AddWithValue("@id", ID);
                     cmd.ExecuteNonQuery();
                     CloseConnection();
 
@@ -1072,6 +1121,7 @@ namespace FoodsManager
 
                 return false;
             }
+
             return false;
         }
 
@@ -1090,15 +1140,19 @@ namespace FoodsManager
                 {
                     MySqlCommand cmd = new MySqlCommand();
                     cmd.Connection = connection;
+
                     for (i = 0; i < IngredientList[0].Count; i++)
                     {
-                        query = "UPDATE ingredient SET ingredient_quantity='" + IngredientList[2][i] +
-                                "' WHERE ingredient_id='" + IngredientList[0][i] + "'";
+                        query = "UPDATE ingredient SET ingredient_quantity = @quantity" +
+                                " WHERE ingredient_id = @id";
+                        cmd.Parameters.AddWithValue("@quantity", IngredientList[2][i]);
+                        cmd.Parameters.AddWithValue("@id", IngredientList[0][i]);
                         cmd.CommandText = query;
                         cmd.ExecuteNonQuery();
+                        cmd.Parameters.Clear();
                     }
-                    CloseConnection();
 
+                    CloseConnection();
                     return true;
                 }
                 return false;
@@ -1121,11 +1175,12 @@ namespace FoodsManager
         {
             try
             {
-                string query = "DELETE FROM recipe WHERE recipe_name='" + name + "'";
+                string query = "DELETE FROM recipe WHERE recipe_name = @name";
 
                 if (OpenConnection())
                 {
                     MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@name", name);
                     cmd.ExecuteNonQuery();
                     CloseConnection();
 
@@ -1146,5 +1201,3 @@ namespace FoodsManager
         }
     }
 }
-
-
