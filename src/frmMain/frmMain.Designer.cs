@@ -82,7 +82,7 @@ namespace FoodsManager
             this.gbFoodsCanMake.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbFoodsCanMake.Location = new System.Drawing.Point(3, 3);
             this.gbFoodsCanMake.Name = "gbFoodsCanMake";
-            this.gbFoodsCanMake.Size = new System.Drawing.Size(254, 300);
+            this.gbFoodsCanMake.Size = new System.Drawing.Size(268, 300);
             this.gbFoodsCanMake.TabIndex = 0;
             this.gbFoodsCanMake.TabStop = false;
             this.gbFoodsCanMake.Text = "อาหารที่ทำได้";
@@ -111,7 +111,7 @@ namespace FoodsManager
             this.lstvRecipeCanMake.GridLines = true;
             this.lstvRecipeCanMake.Location = new System.Drawing.Point(6, 20);
             this.lstvRecipeCanMake.Name = "lstvRecipeCanMake";
-            this.lstvRecipeCanMake.Size = new System.Drawing.Size(238, 243);
+            this.lstvRecipeCanMake.Size = new System.Drawing.Size(252, 243);
             this.lstvRecipeCanMake.TabIndex = 4;
             this.lstvRecipeCanMake.UseCompatibleStateImageBehavior = false;
             this.lstvRecipeCanMake.View = System.Windows.Forms.View.Details;
@@ -140,7 +140,7 @@ namespace FoodsManager
             "ทั้งหมด",
             "อาหารคาว",
             "อาหารหวาน"});
-            this.cbRecipeCanMake.Location = new System.Drawing.Point(123, 269);
+            this.cbRecipeCanMake.Location = new System.Drawing.Point(137, 269);
             this.cbRecipeCanMake.Name = "cbRecipeCanMake";
             this.cbRecipeCanMake.Size = new System.Drawing.Size(121, 21);
             this.cbRecipeCanMake.TabIndex = 1;
@@ -154,9 +154,9 @@ namespace FoodsManager
             this.gbFoodsCannotMake.Controls.Add(this.lstvRecipeCannotMake);
             this.gbFoodsCannotMake.Controls.Add(this.cbRecipeCannotMake);
             this.gbFoodsCannotMake.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbFoodsCannotMake.Location = new System.Drawing.Point(263, 3);
+            this.gbFoodsCannotMake.Location = new System.Drawing.Point(277, 3);
             this.gbFoodsCannotMake.Name = "gbFoodsCannotMake";
-            this.gbFoodsCannotMake.Size = new System.Drawing.Size(360, 300);
+            this.gbFoodsCannotMake.Size = new System.Drawing.Size(344, 300);
             this.gbFoodsCannotMake.TabIndex = 1;
             this.gbFoodsCannotMake.TabStop = false;
             this.gbFoodsCannotMake.Text = "อาหารที่ทำไม่ได้";
@@ -173,7 +173,7 @@ namespace FoodsManager
             this.lstvRecipeCannotMake.GridLines = true;
             this.lstvRecipeCannotMake.Location = new System.Drawing.Point(6, 20);
             this.lstvRecipeCannotMake.Name = "lstvRecipeCannotMake";
-            this.lstvRecipeCannotMake.Size = new System.Drawing.Size(348, 243);
+            this.lstvRecipeCannotMake.Size = new System.Drawing.Size(332, 243);
             this.lstvRecipeCannotMake.TabIndex = 5;
             this.lstvRecipeCannotMake.UseCompatibleStateImageBehavior = false;
             this.lstvRecipeCannotMake.View = System.Windows.Forms.View.Details;
@@ -198,7 +198,7 @@ namespace FoodsManager
             "ทั้งหมด",
             "อาหารคาว",
             "อาหารหวาน"});
-            this.cbRecipeCannotMake.Location = new System.Drawing.Point(217, 269);
+            this.cbRecipeCannotMake.Location = new System.Drawing.Point(201, 269);
             this.cbRecipeCannotMake.Name = "cbRecipeCannotMake";
             this.cbRecipeCannotMake.Size = new System.Drawing.Size(121, 21);
             this.cbRecipeCannotMake.TabIndex = 3;
@@ -213,9 +213,9 @@ namespace FoodsManager
             this.gbMaterialsHave.Controls.Add(this.lstvMaterialsInStock);
             this.gbMaterialsHave.Controls.Add(this.cbMaterialsInStock);
             this.gbMaterialsHave.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbMaterialsHave.Location = new System.Drawing.Point(629, 3);
+            this.gbMaterialsHave.Location = new System.Drawing.Point(627, 3);
             this.gbMaterialsHave.Name = "gbMaterialsHave";
-            this.gbMaterialsHave.Size = new System.Drawing.Size(254, 300);
+            this.gbMaterialsHave.Size = new System.Drawing.Size(260, 300);
             this.gbMaterialsHave.TabIndex = 2;
             this.gbMaterialsHave.TabStop = false;
             this.gbMaterialsHave.Text = "วัตถุดิบที่มี";
@@ -245,7 +245,7 @@ namespace FoodsManager
             this.lstvMaterialsInStock.GridLines = true;
             this.lstvMaterialsInStock.Location = new System.Drawing.Point(7, 20);
             this.lstvMaterialsInStock.Name = "lstvMaterialsInStock";
-            this.lstvMaterialsInStock.Size = new System.Drawing.Size(238, 243);
+            this.lstvMaterialsInStock.Size = new System.Drawing.Size(244, 243);
             this.lstvMaterialsInStock.TabIndex = 5;
             this.lstvMaterialsInStock.UseCompatibleStateImageBehavior = false;
             this.lstvMaterialsInStock.View = System.Windows.Forms.View.Details;
@@ -275,7 +275,7 @@ namespace FoodsManager
             "เนื้อสัตว์",
             "ผัก",
             "ผลไม้"});
-            this.cbMaterialsInStock.Location = new System.Drawing.Point(123, 269);
+            this.cbMaterialsInStock.Location = new System.Drawing.Point(129, 269);
             this.cbMaterialsInStock.Name = "cbMaterialsInStock";
             this.cbMaterialsInStock.Size = new System.Drawing.Size(121, 21);
             this.cbMaterialsInStock.TabIndex = 3;
@@ -289,9 +289,9 @@ namespace FoodsManager
             this.gbMaterialsOut.Controls.Add(this.lstvMaterialsOutOfStock);
             this.gbMaterialsOut.Controls.Add(this.cbMaterialsOutOfStock);
             this.gbMaterialsOut.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbMaterialsOut.Location = new System.Drawing.Point(889, 3);
+            this.gbMaterialsOut.Location = new System.Drawing.Point(893, 3);
             this.gbMaterialsOut.Name = "gbMaterialsOut";
-            this.gbMaterialsOut.Size = new System.Drawing.Size(148, 300);
+            this.gbMaterialsOut.Size = new System.Drawing.Size(144, 300);
             this.gbMaterialsOut.TabIndex = 3;
             this.gbMaterialsOut.TabStop = false;
             this.gbMaterialsOut.Text = "วัตถุดิบที่หมด";
@@ -307,7 +307,7 @@ namespace FoodsManager
             this.lstvMaterialsOutOfStock.GridLines = true;
             this.lstvMaterialsOutOfStock.Location = new System.Drawing.Point(6, 20);
             this.lstvMaterialsOutOfStock.Name = "lstvMaterialsOutOfStock";
-            this.lstvMaterialsOutOfStock.Size = new System.Drawing.Size(134, 243);
+            this.lstvMaterialsOutOfStock.Size = new System.Drawing.Size(130, 243);
             this.lstvMaterialsOutOfStock.TabIndex = 4;
             this.lstvMaterialsOutOfStock.UseCompatibleStateImageBehavior = false;
             this.lstvMaterialsOutOfStock.View = System.Windows.Forms.View.Details;
@@ -328,7 +328,7 @@ namespace FoodsManager
             "เนื้อสัตว์",
             "ผัก",
             "ผลไม้"});
-            this.cbMaterialsOutOfStock.Location = new System.Drawing.Point(19, 269);
+            this.cbMaterialsOutOfStock.Location = new System.Drawing.Point(15, 269);
             this.cbMaterialsOutOfStock.Name = "cbMaterialsOutOfStock";
             this.cbMaterialsOutOfStock.Size = new System.Drawing.Size(121, 21);
             this.cbMaterialsOutOfStock.TabIndex = 3;
@@ -370,6 +370,7 @@ namespace FoodsManager
             // 
             // smnSelectOrCreateDB
             // 
+            this.smnSelectOrCreateDB.Enabled = false;
             this.smnSelectOrCreateDB.Name = "smnSelectOrCreateDB";
             this.smnSelectOrCreateDB.Size = new System.Drawing.Size(157, 22);
             this.smnSelectOrCreateDB.Text = "เลือกไฟล์ฐานข้อมูล";
