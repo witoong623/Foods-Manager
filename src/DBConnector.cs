@@ -2,8 +2,8 @@
 using System.Data;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Configuration;
 using MySql.Data.MySqlClient;
-using FoodsManager.Extension;
 
 namespace FoodsManager
 {
@@ -22,22 +22,11 @@ namespace FoodsManager
         /// </summary>
         public DBConnector()
         {
-            Initialize();
+            string connectionString = ConfigurationManager.ConnectionStrings["food-manager"].ConnectionString;
+            connection = new MySqlConnection(connectionString);
         }
 
         #region helper methods
-        /// <summary>
-        /// สร้าง instance ของ MySqlConnection เพื่อใช้เชื่อมต่อฐานข้อมูลภายในคลาส
-        /// </summary>
-        private void Initialize()
-        {
-            clsBuildConnectionString build = new clsBuildConnectionString("sqldetail.txt");
-            if (build.BuildConnectionString())
-            {
-                connection = new MySqlConnection(build.ConnectionString);
-            }
-        }
-
         /// <summary>
         /// ใช้สำหรับเปิดการเชื่อมต่อของ MySqlConnection ถูกเรียกใช้ทุกครั้งเมื่อทำงานในเมธอดใดเมธอดหนึ่งภายในคลาสนี้
         /// และถูกปิดการทำงานทันทีหลังทำงานภายในเมธอดเสร็จ
@@ -606,17 +595,18 @@ namespace FoodsManager
                     cmd.Parameters.AddWithValue("@name", name);
                     recipeID = Convert.ToInt32(cmd.ExecuteScalar());
                     cmd.Parameters.Clear();
-                    
 
                     // Insert ingredient of recipe to 3rd relation table(recipe_ingredient)
+                    query = "INSERT INTO recipe_ingredient (recipe_id, ingredient_id, quantity)" +
+                                "VALUES(@recipeID, @ingredient_id, @quantity)";
+                    cmd.CommandText = query;
+
                     for (i = 0; i < ingredient[0].Count; i++)
                     {
-                        query = "INSERT INTO recipe_ingredient (recipe_id, ingredient_id, quantity)" +
-                                "VALUES(@recipeID, @ingredient_id, @quantity)";
+                        
                         cmd.Parameters.AddWithValue("@recipeID", recipeID);
                         cmd.Parameters.AddWithValue("@ingredient_id", ingredient_id[i]);
                         cmd.Parameters.AddWithValue("@quantity", ingredient[1][i]);
-                        cmd.CommandText = query;
                         cmd.ExecuteNonQuery();
                         cmd.Parameters.Clear();
                     }

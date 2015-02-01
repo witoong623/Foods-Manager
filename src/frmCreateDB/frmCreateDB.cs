@@ -2,7 +2,6 @@
 using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
-using FoodsManager.Extension;
 
 namespace FoodsManager
 {
@@ -10,7 +9,6 @@ namespace FoodsManager
     {
 
         // private string FilePath;
-        clsBuildConnectionString build = new clsBuildConnectionString("sqldetail.txt");
 
         public frmCreateDB()
         {
@@ -99,7 +97,7 @@ namespace FoodsManager
                 return;
             }
 
-            if (WriteConnectionString())
+            /*if (WriteConnectionString())
             {
                 Close();
             }
@@ -107,10 +105,10 @@ namespace FoodsManager
             {
                 MessageBox.Show("ไม่สามารถเขียนไฟล์เผื่อเก็บข้อมูลได้", "เกิดข้อผิดพลาด", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
-            }
+            }*/
         }
 
-        private bool WriteConnectionString()
+        /*private bool WriteConnectionString()
         {
             build.Server = txtSqlServer.Text;
             build.Database = txtDatabase.Text;
@@ -126,6 +124,6 @@ namespace FoodsManager
             {
                 return false;
             }
-        }
+        }*/
     }
 }
